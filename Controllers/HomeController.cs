@@ -23,8 +23,10 @@ namespace demoWebCore_1.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Contact()
         {
+            TempData["type"] = "nav1";
+
             return View();
         }
 

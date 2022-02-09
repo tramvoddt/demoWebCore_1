@@ -23,6 +23,7 @@ namespace demoWebCore_1.Controllers
         {
             var post = dt.Post.FromSqlRaw("select * from posts").ToList();
             ViewData["Title"] = "Posts";
+            TempData["type"] = "nav1";
             return View(post);
         }
       

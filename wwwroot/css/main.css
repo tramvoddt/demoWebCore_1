@@ -1,0 +1,12 @@
+﻿.top-bar {
+    margin-left: 1vw;
+    color: #a9c8b6;
+}
+
+    .top-bar:hover {
+        text-decoration: none;
+    }
+
+.active {
+    color: red;
+}

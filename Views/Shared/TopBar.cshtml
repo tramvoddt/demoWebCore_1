@@ -1,0 +1,24 @@
+﻿
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 ">
+        <div class="container col-11">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/lib/imgs/logo.png" width="110" /></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between col-4">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="top-bar" asp-area="" id="nav1" asp-controller="Post" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="top-bar" asp-area="" id="nav2" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <div style="background:red; width:100px; height:40px;" class="col-5"></div>
+            <div style="background:yellow; width:100px; height:40px;" class="col-5"></div>
+        </div>
+    </nav>
+</header>
