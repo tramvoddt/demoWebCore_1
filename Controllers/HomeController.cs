@@ -19,13 +19,17 @@ namespace demoWebCore_1.Controllers
         }
 
         public IActionResult Index()
+
         {
+
+            TempData["type"] = "nav1";
+
             return View();
         }
 
         public IActionResult Contact()
         {
-            TempData["type"] = "nav1";
+            TempData["type"] = "nav2";
 
             return View();
         }

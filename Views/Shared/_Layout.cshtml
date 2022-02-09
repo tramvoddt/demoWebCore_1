@@ -17,7 +17,7 @@
 <body>
     @{Html.RenderPartial("TopBar"); }
 
-    <div class="container" style="width:800px; min-height:500px;">
+    <div class="container col-12" style="height:auto; min-height:500px;padding-top:70px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -31,7 +31,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 <script type="text/javascript">
       document.addEventListener("DOMContentLoaded", function (event) {
-    document.getElementById('@TempData["type"]').classList.add("active");
+    document.getElementById('@TempData["type"]').classList.add("active-nav");
     });
 </script>
 </body>

@@ -1,12 +1,77 @@
 ﻿.top-bar {
-    margin-left: 1vw;
     color: #a9c8b6;
+    padding: 15px 21px;
+    font-size: 14px;
 }
 
     .top-bar:hover {
         text-decoration: none;
+        color: #07c280;
+        border-bottom: 3px solid #07c280;
     }
 
-.active {
-    color: red;
+.active-nav {
+    color: #07c280;
+    border-bottom: 3px solid #07c280;
+    font-size: 16px;
+    font-weight: 600;
+}
+.ip-search{
+    width:auto;
+    min-width:20vw;
+    background:#ade2cb;
+    border-radius:20px;
+}
+.button-search {
+    padding: 5px 15px;
+    background: #59d1a0;
+    border-radius: 20px;
+    border: none;
+    margin-left: 0.5vw;
+}
+    .button-search:focus, .button-search:active, .button-search:hover {
+        outline: none;
+        background: #1cab78;
+        transition: 0.4s all ease-out;
+    }
+.user-login {
+    padding: 7px 20px;
+    background: #eb6a46;
+    border-radius: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    transition: 0.4s all ease-out;
+}
+.user-signup {
+    padding: 0 20px;
+    background: none;
+    font-weight: 700;
+    color: #eb6a46;
+    border: none;
+    transition: 0.4s all ease-out;
+}
+    .user-signup:hover {
+        border-bottom: 3px solid #eb6a46;
+    }
+.user-login:hover {
+    background: #f17350;
+    
+}
+.user-login:focus,.user-signup:focus, .icon-current:focus{
+    outline:none;
+}
+
+.icon-current {
+    border-radius: 25px;
+    border: none;
+    padding: 8px 13px;
+    background:#4ec087;
+    
+}
+.user-current {
+    padding: 7px 25px;
+    background: #ebf6f0;
+    color: #309d63;
+    font-weight:500;
 }
