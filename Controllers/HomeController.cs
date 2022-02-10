@@ -1,5 +1,6 @@
 ﻿using demoWebCore_1.Models;
 using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,9 @@ namespace demoWebCore_1.Controllers
         public IActionResult Contact()
         {
             TempData["type"] = "nav2";
+             BCrypt.Net.BCrypt.HashPassword("123456");
+
+            TempData["aaa"] = BCrypt.Net.BCrypt.Verify("Pa$$w0rd", "$2a$11$GOXvcuJUAhq0rcN.5dzhauG0pOqIgd3OlYgKGKmjRq68Kw1Wq/1AG");
 
             return View();
         }

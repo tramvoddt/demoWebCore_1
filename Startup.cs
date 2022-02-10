@@ -25,8 +25,11 @@ namespace demoWebCore_1
         {
             services.AddControllersWithViews();
             services.AddMvc();
+            services.AddControllersWithViews();
+
             string strconn = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<Models.DataContext>(options => options.UseSqlServer(strconn, options => options.EnableRetryOnFailure()));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

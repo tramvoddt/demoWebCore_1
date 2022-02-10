@@ -1,1 +1,1 @@
-update posts set subject='oklaa' where id =2
+select*from users

@@ -18,23 +18,23 @@
                 </ul>
             </div>
             <div class="input-group" style="margin-left:2vw">
-                <input type="search" class="form-control rounded" placeholder="Search..." aria-describedby="search-addon" style="border-radius:30px!important;background:#ecf7f2; border:none;padding-left:1.5vw;" />
+                <input type="search" class="form-control rounded" placeholder="Search..." aria-describedby="search-addon" style="border-radius:30px!important;background:#ecf7f2; border:none;padding-left:1.5vw; min-width:100px" />
                 <button type="button" class="button-search">
                     <i class="fa fa-search" style="color:white"></i>
                 </button>
 
 
             </div>
-            @if (false)
+            @if (true)
             {
 
 
                 <div style=" width:100px; height:40px;float:right;text-align:right" class="col-5">
-                    <button type="button" class="user-signup">
+                    <button type="button" class="user-signup" onclick="window.location.href='@Url.Action("Auth","Auth",new { type="sign-up" })'">
                         Sign Up
                     </button>
 
-                    <button type="button" class="user-login">
+                    <button type="button" class="user-login" onclick="window.location.href='@Url.Action("Auth","Auth",new { type="login" })'">
                         Login
                     </button>
                 </div>

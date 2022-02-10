@@ -1,0 +1,43 @@
+﻿@model demoWebCore_1.Models.ModelViews.Users
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    if (TempData["type-auth"].ToString() == "login")
+    {
+        <div class="text-center" style="background:yellow;min-height:100px;">
+
+        </div>
+        <h2>login</h2>
+    }
+    if (TempData["type-auth"].ToString() == "sign-up")
+    {
+        using (Html.BeginForm("SignUpAction", "Auth", FormMethod.Post))
+        {
+
+            @Html.AntiForgeryToken()
+            <div class="container form-signup" style=" margin-top:1vh">
+                <h3 class="container" style="color:#993829;text-align:center; padding-top:2vh">Sign Up</h3>
+
+                @Html.TextBoxFor(d => d.name, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "name" })
+                @Html.ValidationMessageFor(d => d.name, "", new { @class = "_error  col-lg-12  contaiter" })
+
+                @Html.TextBoxFor(d => d.email, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "email" })
+                @Html.ValidationMessageFor(d => d.email, "", new { @class = "_error  col-lg-12  contaiter" })
+
+                @Html.TextBoxFor(d => d.phone, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "phone" })
+                @Html.ValidationMessageFor(d => d.phone, "", new { @class = "_error  col-lg-12  contaiter" })
+
+                @Html.TextBoxFor(d => d.password, new { @class = "inputType col-lg-12  contaiter ", @type = "password", @placeholder = "password" })
+                @Html.ValidationMessageFor(d => d.password, "", new { @class = "_error  col-lg-12  contaiter" })
+                <div class="container  col-lg-12">
+                    <button type="submit" class="btnSignup col-lg-12">Sign Up</button>
+                    <a href="@Url.Action("Auth","Auth",new { type = "login" })" style="color:#993829;text-decoration:underline;font-size:13px;" class="container col-lg-12">Already have an account? Log in now.</a>
+
+                </div>
+
+            </div>
+        }
+    }
+}
