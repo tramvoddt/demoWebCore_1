@@ -1,5 +1,10 @@
 ﻿
 <header>
+<style>
+    .show{
+        display:block!important;
+    }
+</style>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 col-12 " style="padding: 5px 0; position: fixed; z-index: 100; box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
         <div class="container col-11">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/lib/imgs/logo.png" width="110" /></a>
@@ -28,8 +33,44 @@
             @if (true)
             {
 
+                <div style="width:100px; height:40px;float:right;text-align:right" class="col-3">
+                    <button type="button" class="icon-current">
+                        <i class="fa fa-bell" style="color: #f6fbf9; font-size: 20px;"></i>
+                    </button>
 
-                <div style=" width:100px; height:40px;float:right;text-align:right" class="col-5">
+                    <button type="button" class="icon-current user-current">
+                        @demoWebCore_1.Models.AuthRequest.name
+                    </button>
+                    <button type="button" class="icon-current dropbtn" onclick="ShowAction()" style="padding: 0; background: none;">
+                        <i class="fa fa-chevron-down" style="color:#0d7b41;font-size:12px;"></i>
+                    </button>
+                    <div class="dropdown" style=" float: right;  position: relative;display: inline-block;">
+
+                        <div id="myDropdown" class="dropdown-content" style=" display: none; z-index: 5;margin-left: 11vw; background: rgb(104 167 135 / 0.92); width: 220px; height: 280px; box-shadow: rgb(169 204 189 / 0.2) 5px 5px; border-radius: 10px;">
+                            <a href="#" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                                <i class="fa fa-gear" style="padding:0 10px;"></i>Setting
+                            </a>
+
+                            <a href="#" class="col-12"  style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                                <i class="fa fa-user" style="padding:0 10px;"></i> My Account
+
+
+                            </a>
+
+                            <a href="#" class="col-12"  style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                                <i class="fa fa-arrow-right-from-bracket" style="padding:0 10px;"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            }
+            else
+            {
+                <div style=" width:100px; height:40px;float:right;text-align:right" class="col-3">
                     <button type="button" class="user-signup" onclick="window.location.href='@Url.Action("Auth","Auth",new { type="sign-up" })'">
                         Sign Up
                     </button>
@@ -38,22 +79,6 @@
                         Login
                     </button>
                 </div>
-
-            }
-            else
-            {
-        <div style="width:100px; height:40px;float:right;text-align:right" class="col-5">
-            <button type="button" class="icon-current">
-                <i class="fa fa-bell" style="color: #f6fbf9; font-size: 20px;"></i>
-            </button>
-
-            <button type="button" class="icon-current user-current">
-                Ngoc Tram
-            </button>
-            <button type="button" class="icon-current" style="padding: 0; background: none;">
-                <i class="fa fa-chevron-down" style="color:#0d7b41;font-size:12px;"></i>
-            </button>
-        </div>
             }
         </div>
     </nav>

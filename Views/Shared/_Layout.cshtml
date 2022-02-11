@@ -41,10 +41,33 @@
 
 
 
-    <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function (event) {
-    document.getElementById('@TempData["type"]').classList.add("active-nav");
-    });
-    </script>
+
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<script type="text/javascript">
+    
+       function ShowAction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+      document.addEventListener("DOMContentLoaded", function (e) {
+    document.getElementById('@TempData["type"]').classList.add("active-nav");
+      });
+   @* window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+
+        }
+
+
+    }*@
+</script>

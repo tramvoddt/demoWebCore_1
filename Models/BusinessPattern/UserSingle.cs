@@ -45,7 +45,7 @@ namespace demoWebCore_1.Models.BusinessPattern
             var u = dt.Users.FromSqlRaw("select * from users").ToList();
             return u;
         }
-        public Users LoginAction(string user, string pass, DataContext dt)
+        public static Users LoginAction(string user, string pass, DataContext dt)
         {
 
             Users d = dt.Users.FirstOrDefault(x => (x.phone == user || x.email == user) && x.status == true);

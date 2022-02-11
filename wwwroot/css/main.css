@@ -75,3 +75,38 @@
     color: #309d63;
     font-weight:500;
 }
+.drop-down {
+  /*  float: right;
+    position: relative;
+    display: inline-block;*/
+    float: left;
+    margin-left: 11vw;
+    background: rgb(104 167 135 / 0.92);
+    width: 220px;
+    height: 280px;
+    box-shadow: rgb(169 204 189 / 0.2) 5px 5px;
+    border-radius: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;   
+    z-index: 5;
+}
+
+    .dropdown-content a {
+        color: white;
+        padding: 15px 16px;
+        text-align: left;
+        text-decoration: none;
+        display: block;
+    }
+
+.drop-down a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: block!important;
+}

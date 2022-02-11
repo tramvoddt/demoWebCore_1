@@ -2,9 +2,13 @@
 using demoWebCore_1.Models.BusinessPattern;
 using demoWebCore_1.Models.ModelViews;
 using demoWebCore_1.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,9 +25,15 @@ namespace demoWebCore_1.Controllers
             
             dt = db;
         }
+       
         public IActionResult Auth(string type) //login and sign-up
         {
             TempData["type-auth"] = type;
+            if (type == "sign-up")
+            {
+                TempData["user"] = "";
+                TempData["pass"] = "";
+            }
             return View();
         }
         [HttpPost]
@@ -45,8 +55,30 @@ namespace demoWebCore_1.Controllers
 
             return RedirectToAction("Auth", "Auth", new { type="login" });
         }
+        [HttpPost]
         public IActionResult ClientLogin()
         {
+            if (ModelState.IsValid)
+            {
+                string uName = Request.Form["username"];
+                string psw = Request.Form["psw"];
+                var str = JsonConvert.SerializeObject(UserSingle.LoginAction(uName, psw, dt));
+                HttpContext.Session.SetString("auth", str);  
+                if (UserSingle.LoginAction(uName, psw, dt) is null)
+                {
+                    TempData["ErrorLogin"] = "Invalid login, please try again";
+                    TempData["user"] = uName;
+                   TempData["pass"] = psw;
+                    return RedirectToAction("Auth","Auth",new { type="login"});
+                }
+                var str1 = HttpContext.Session.GetString("auth");
+                var obj = JsonConvert.DeserializeObject<Users>(str1);
+                AuthRequest.id = obj.id;
+                AuthRequest.name = obj.name;
+                AuthRequest.roleId = (int)obj.role_id;
+
+            }
+            ModelState.Clear();
             return RedirectToAction("Index", "Home");
 
         }

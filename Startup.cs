@@ -26,7 +26,10 @@ namespace demoWebCore_1
             services.AddControllersWithViews();
             services.AddMvc();
             services.AddControllersWithViews();
-
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(60); 
+            });
             string strconn = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<Models.DataContext>(options => options.UseSqlServer(strconn, options => options.EnableRetryOnFailure()));
 
@@ -35,6 +38,7 @@ namespace demoWebCore_1
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -48,7 +52,7 @@ namespace demoWebCore_1
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

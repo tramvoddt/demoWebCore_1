@@ -4,15 +4,65 @@
 *@
 
 @{
+    string user="", pass = "";
+    if (TempData["user"] != null)
+    {
+        user = TempData["user"].ToString();
+        pass = TempData["pass"].ToString();
+    }
+    
     if (TempData["type-auth"].ToString() == "login")
     {
-        <div class="text-center" style="background:yellow;min-height:100px;">
+        ViewBag.Title = "Login";
 
-        </div>
-        <h2>login</h2>
+
+    <div class="text-center" style="background:yellow;min-height:100px;">
+        <form action="@Url.Action("ClientLogin","Auth")" method="post" class="container form-signup" style=" margin-top:5vh;min-height:350px;">
+
+            <i class="fa fa-lock container" style="color: #dd5b36; text-align: center; font-size: 30px; margin-top: 5vh; "></i>
+
+            <h3 class="container" style="color:#993829;text-align:center; margin-bottom:5vh;">Sign In</h3>
+            @if (TempData["Message"] != null)
+            {
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+                <label class="alert alert-success container mb-2 col-lg-12" id="msg">
+                    @TempData["Message"]
+                </label>
+                TempData["Message"] = null;
+                <script type="text/javascript">
+                    $("#msg").delay(2000).fadeOut(300);
+                </script>
+
+            }
+            <input class="inputType col-lg-12  contaiter" placeholder="email / phone" name="username" type="text" value="@user" />
+            <input class="inputType col-lg-12  contaiter" placeholder="password" name="psw" type="password" value="@pass" />
+            <button type="submit" class="btnSignup col-lg-12" style="padding:10px 12px">Login</button>
+            <a href="@Url.Action("Auth", "Auth",new  {type="sign-up" })" style="color:#993829;text-decoration:underline;font-size:13px;" class="container col-lg-12">Do not have an account?</a>
+            @if (TempData["ErrorLogin"] != null)
+            {
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                <label class="alert alert-danger container mt-2" id="msgerror">
+                    @TempData["ErrorLogin"]
+                </label>
+                TempData["ErrorLogin"] = null;
+                <script type="text/javascript">
+                    $("#msgerror").delay(2000).fadeOut(300);
+                </script>
+
+            }
+
+
+
+        </form>
+
+       
+    </div>
     }
     if (TempData["type-auth"].ToString() == "sign-up")
     {
+        ViewBag.Title = "Sign Up";
+
         using (Html.BeginForm("SignUpAction", "Auth", FormMethod.Post))
         {
 
