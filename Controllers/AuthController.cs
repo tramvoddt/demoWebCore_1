@@ -55,6 +55,7 @@ namespace demoWebCore_1.Controllers
 
             return RedirectToAction("Auth", "Auth", new { type="login" });
         }
+        //LOGIN
         [HttpPost]
         public IActionResult ClientLogin()
         {
@@ -82,12 +83,18 @@ namespace demoWebCore_1.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+        //LOGOUT
+        public IActionResult ClientLogout()
+        {
+            HttpContext.Session.SetString("auth", ""); 
+            AuthRequest.ClearSession();
+            return RedirectToAction("Index", "Home");
+        }
 
-
-        /*
-         * ADMIN
-         */
-        public IActionResult LoginAdmin()
+            /*
+             * ADMIN
+             */
+            public IActionResult LoginAdmin()
         {
             return View();
         }

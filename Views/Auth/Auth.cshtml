@@ -3,68 +3,143 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+<style>
+    .border-bg {
+        background: linear-gradient(#fafcfb,#fafcfb) padding-box, /*this is your grey background*/
+        linear-gradient(to right, #c2f6df, #7aefba) border-box !important;
+        background: #fafcfb;
+        box-shadow: rgb(235 235 235 / 0.65) 10px 10px 20px 0px;
+        min-height: 100px;
+        height: auto;
+        margin: 10vh auto;
+        border: 2px solid transparent;
+        border-image-slice: 1;
+        border-radius: 20px !important;
+        padding-bottom: 10vh;
+    }
+
+    .inputType {
+        padding: 10px 0.85vw;
+        border: 2px solid #c6dccf;
+        border-radius: 5px;
+        color: #154b33
+    }
+
+        .inputType:focus, :active {
+            outline: none;
+            border-color: #eef4f0;
+        }
+
+    .btnSignup {
+        background: #35b86a;
+        border: 2px solid #35b86a;
+        color: white;
+        padding: 10px 12px;
+        margin-bottom: 2vh;
+        margin-top: 1vh
+    }
+
+        .btnSignup:hover, :focus {
+            background: none;
+            border: 2px solid #35b86a;
+            font-weight: 700;
+            color: #35b86a;
+            outline: none
+        }
+
+    .btn-outline-light {
+        background: #db4b3c !important;
+    }
+
+        .btn-outline-light:hover {
+            background: white !important;
+            border: 2px solid #156837;
+        }
+</style>
 @{
-    string user="", pass = "";
+    string user = "", pass = "";
     if (TempData["user"] != null)
     {
         user = TempData["user"].ToString();
         pass = TempData["pass"].ToString();
     }
-    
+
     if (TempData["type-auth"].ToString() == "login")
     {
         ViewBag.Title = "Login";
 
+        <div class="text-center col-7 container border-bg" style="">
 
-    <div class="text-center" style="background:yellow;min-height:100px;">
-        <form action="@Url.Action("ClientLogin","Auth")" method="post" class="container form-signup" style=" margin-top:5vh;min-height:350px;">
+            <form action="@Url.Action("ClientLogin","Auth")" method="post" class="container form-signup col-8" style=" margin-top:5vh;min-height:300px; text-align:left">
 
-            <i class="fa fa-lock container" style="color: #dd5b36; text-align: center; font-size: 30px; margin-top: 5vh; "></i>
+                <i class="fa fa-lock container" style="color: #ec5d44; text-align: center; font-size: 30px; margin-top: 5vh; "></i>
 
-            <h3 class="container" style="color:#993829;text-align:center; margin-bottom:5vh;">Sign In</h3>
-            @if (TempData["Message"] != null)
-            {
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                <h3 class="container" style="color:#993829;text-align:center; margin-bottom:3vh;">Sign In</h3>
+                @if (TempData["Message"] != null)
+                {
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-                <label class="alert alert-success container mb-2 col-lg-12" id="msg">
-                    @TempData["Message"]
-                </label>
-                TempData["Message"] = null;
-                <script type="text/javascript">
-                    $("#msg").delay(2000).fadeOut(300);
-                </script>
+                    <label class="alert alert-success container mb-2 col-lg-12" id="msg">
+                        @TempData["Message"]
+                    </label>
+                    TempData["Message"] = null;
+                    <script type="text/javascript">
+                        $("#msg").delay(2000).fadeOut(300);
+                    </script>
 
-            }
-            <input class="inputType col-lg-12  contaiter" placeholder="email / phone" name="username" type="text" value="@user" />
-            <input class="inputType col-lg-12  contaiter" placeholder="password" name="psw" type="password" value="@pass" />
-            <button type="submit" class="btnSignup col-lg-12" style="padding:10px 12px">Login</button>
+                }
+                <input class="inputType col-lg-12  contaiter" style="margin-bottom: 8px;" placeholder="email / phone" name="username" type="text" value="@user" />
+                <input class="inputType col-lg-12  contaiter" placeholder="password" name="psw" type="password" value="@pass" />
+                <a href="#" style="color: #993829; font-size: 13px; ">Forgot password?</a>
+
+                <button type="submit" class="btnSignup col-lg-12" >Login</button>
+
+                @if (TempData["ErrorLogin"] != null)
+                {
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                    <label class="alert alert-danger container mt-2" id="msgerror">
+                        @TempData["ErrorLogin"]
+                    </label>
+                    TempData["ErrorLogin"] = null;
+                    <script type="text/javascript">
+                        $("#msgerror").delay(2000).fadeOut(300);
+                    </script>
+
+                }
+
+
+
+            </form>
+            <span>Or</span>
+            <section class="mb-3" style="margin-top:1vh">
+                <!-- Facebook -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fa fa-facebook-f" style="padding:0 3px"></i>
+                </a>
+
+                <!-- Twitter -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fa fa-twitter"></i>
+                </a>
+
+                <!-- Google -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fa fa-google"></i>
+                </a>
+
+
+            </section>
             <a href="@Url.Action("Auth", "Auth",new  {type="sign-up" })" style="color:#993829;text-decoration:underline;font-size:13px;" class="container col-lg-12">Do not have an account?</a>
-            @if (TempData["ErrorLogin"] != null)
-            {
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-                <label class="alert alert-danger container mt-2" id="msgerror">
-                    @TempData["ErrorLogin"]
-                </label>
-                TempData["ErrorLogin"] = null;
-                <script type="text/javascript">
-                    $("#msgerror").delay(2000).fadeOut(300);
-                </script>
 
-            }
-
-
-
-        </form>
-
-       
-    </div>
+        </div>
     }
     if (TempData["type-auth"].ToString() == "sign-up")
     {
         ViewBag.Title = "Sign Up";
+        <div class="text-center col-7 container border-bg" style="">
 
-        using (Html.BeginForm("SignUpAction", "Auth", FormMethod.Post))
-        {
+            @using (Html.BeginForm("SignUpAction", "Auth", FormMethod.Post))
+            {
 
             @Html.AntiForgeryToken()
             <div class="container form-signup" style=" margin-top:1vh">
@@ -88,6 +163,8 @@
                 </div>
 
             </div>
-        }
+            }
+        </div>
+
     }
 }
