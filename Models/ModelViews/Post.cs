@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,16 +22,16 @@ namespace demoWebCore_1.Models
         [Column("content", TypeName = "text")]
 
         public string content { get; set; }
-        [Column("img", TypeName = "nvarchar")]
+        [Column("img", TypeName = "varbinary")]
 
-        public string img { get; set; }
+        public byte[] img { get; set; }
         [Column("url", TypeName = "nvarchar")]
 
         public string url { get; set; }
         [Column("created_at", TypeName = "datetime")]
 
         public DateTime created_at { get; set; }
-        [Column("status", TypeName = "bit")]
+        [Column("status", TypeName = "int")]
 
         public bool status { get; set; }
 

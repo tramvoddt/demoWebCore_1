@@ -1,1 +1,1 @@
-select*from roles
+select*from posts

@@ -3,43 +3,74 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<table class="table table-striped table-class col-lg-12" id="table-id">
-    <tr>
-        <th>#</th>
-        <th>Subject</th>
-        <th>Content</th>
-        <th>Img</th>
-        <th>Url</th>
-        <th>Collection id</th>
-        <th>Created At</th>
-        <th>Status</th>
-        <th>Action</th>
+<div class="text-center container col-5" style="min-height:300px;height:auto">
+    <div data-test-id="media-empty-view" style="height: 100%;">
+        <div class="Jea gjz jzS mQ8 xcv L4E zI7 iyn Hsu" style="border: 2px dashed rgb(218, 218, 218); border-radius: 6px; min-height: 500px;height:inherit;padding-top:50px;">
 
-    </tr>
-    @{int i = 1;
-        foreach (var item in Model)
-        {
-            <tr>
 
-                <td>@i @{i++;}</td>
-                <td>@item.subject</td>
-                <td>@item.content</td>
-                <td>@item.img</td>
-                <td>@item.url</td>
-                <td>@item.colection_id</td>
-                <td>@item.created_at.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@(item.status == true ? "Activated" : "Deactivated")</td>
-                <td>
-                    <a href="#" class="action-icon" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 5px 5px 5px 10px; ">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <br />
-                    <a href="#" class="action-icon" style="background: linear-gradient(to left,#ed3021,#f66d63); padding: 4.5px 9px ">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                </td>
-            </tr>
+            <div class="tBJ dyH iFc sAJ pBj tg7 swG">Click to upload</div>
+
+            <img id="imgViewer" style="border:none; width:400px;height:auto;margin-bottom:5vh;border-radius:20px;" />
+        </div>
+
+    </div>
+
+    <input type="file" id="file-upload"
+           accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
+position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
+</div>
+<input type="text" id="txtSubject" />
+<button id="btnSave">Save</button>
+<button id="btnRead">Read</button>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+    $("#file-upload").change(function (e) {
+        var files = e.target.files;
+        $("#imgViewer").attr("src", window.URL.createObjectURL(files[0]));
+    })
+    $("#btnSave").click(function () {
+        var files = $("#file-upload").prop("files");
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            formData.append("file", files[i]);
+
+        }
+        var pPost = {
+            subject: $("#txtSubject").val(),
+            content: $("#txtSubject").val()
         }
 
-    }
-</table>
+        formData.append("Post", JSON.stringify(pPost));
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SavePost","Post")",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                console.log("ok");
+                //ResetInput();
+            },
+            error: function () {
+
+            }
+        });
+
+    });
+    $("#btnRead").click(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetPost","Post",new {id=5 })",
+
+            success: function (data) {
+                $("#txtSubject").val(data.subject),
+                    $("#imgViewer").attr("src", "data:image/ipg;base64," + data.img + "")
+            },
+            error: function () {
+                console.log("error")
+            }
+        });
+    });
+</script>
