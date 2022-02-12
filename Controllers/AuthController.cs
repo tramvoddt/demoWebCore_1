@@ -83,8 +83,22 @@ namespace demoWebCore_1.Controllers
             return RedirectToAction("Index", "Home");
 
         }
-        //LOGOUT
-        public IActionResult ClientLogout()
+        //CHECK DUP
+        public JsonResult PhoneExists(Users model)
+        {
+            bool phoneExists = !dt.Users.Any(x => x.phone == model.phone);
+            return Json(phoneExists);
+
+        }
+        public JsonResult EmailExists(Users model)
+        {
+            bool emailExists = !dt.Users.Any(x => x.email == model.email);
+            return Json(emailExists);
+        }
+
+    
+    //LOGOUT
+    public IActionResult ClientLogout()
         {
             HttpContext.Session.SetString("auth", ""); 
             AuthRequest.ClearSession();

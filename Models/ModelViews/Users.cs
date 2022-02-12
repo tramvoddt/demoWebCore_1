@@ -30,14 +30,14 @@ namespace demoWebCore_1.Models.ModelViews
         [Column("phone", TypeName = "varchar")]
         [Required(ErrorMessage = "* required")]
         [RegularExpression(@"^(0[3|5|7|8|9])+([0-9]{8})$", ErrorMessage = "Invalid phone number")]
-       // [Remote("PhoneExists", "Login", ErrorMessage = "This phone number already exist.")]
+        [Remote("PhoneExists", "Auth", ErrorMessage = "This phone number already exist.")]
         public string phone { get; set; }
 
         //email
         [Column("email", TypeName = "nvarchar")]
         [Required(ErrorMessage = "* required")]
         [RegularExpression("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9-]+([.][a-zA-Z]+)+", ErrorMessage = "Invalid email address")]
-        //[Remote("EmailExists", "Login", ErrorMessage = "This email already exist.")]
+        [Remote("EmailExists", "Auth", ErrorMessage = "This email already exist.")]
         public string email { get; set; }
 
         //password

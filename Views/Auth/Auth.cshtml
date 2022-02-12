@@ -39,14 +39,20 @@
         margin-top: 1vh
     }
 
-        .btnSignup:hover, :focus {
+        .btnSignup:hover, .btnSignup:focus {
             background: none;
             border: 2px solid #35b86a;
             font-weight: 700;
             color: #35b86a;
             outline: none
         }
-
+    .inputType:focus {
+        background: none;
+        border: 2px solid #ee8d6a;
+        font-weight: 500;
+        color: #b93210;
+        outline: none
+    }
     .btn-outline-light {
         background: #db4b3c !important;
     }
@@ -54,6 +60,14 @@
         .btn-outline-light:hover {
             background: white !important;
             border: 2px solid #156837;
+        }
+        .ipSU{
+            margin-top:5px;
+        }
+        ._error{
+            font-size:13.5px;
+            font-style:italic;
+            color:#e82121;
         }
 </style>
 @{
@@ -142,22 +156,22 @@
             {
 
             @Html.AntiForgeryToken()
-            <div class="container form-signup" style=" margin-top:1vh">
-                <h3 class="container" style="color:#993829;text-align:center; padding-top:2vh">Sign Up</h3>
+            <div class=" form-signup col-9 container" style=" margin-top:1vh;text-align:left;padding-top:40px;">
+                <h3 class="container" style="color:#993829;text-align:center; padding-top:2vh;margin-bottom:20px;">Sign Up</h3>
 
-                @Html.TextBoxFor(d => d.name, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "name" })
-                @Html.ValidationMessageFor(d => d.name, "", new { @class = "_error  col-lg-12  contaiter" })
+                @Html.TextBoxFor(d => d.name, new { @class = "inputType col-lg-12  contaiter ipSU", @type = "text", @placeholder = "name" })
+                @Html.ValidationMessageFor(d => d.name, "", new { @class = "_error  col-lg-12 " })
 
-                @Html.TextBoxFor(d => d.email, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "email" })
-                @Html.ValidationMessageFor(d => d.email, "", new { @class = "_error  col-lg-12  contaiter" })
+                @Html.TextBoxFor(d => d.email, new { @class = "inputType col-lg-12  contaiter ipSU ", @type = "text", @placeholder = "email" })
+                @Html.ValidationMessageFor(d => d.email, "", new { @class = "_error  col-lg-12 " })
 
-                @Html.TextBoxFor(d => d.phone, new { @class = "inputType col-lg-12  contaiter ", @type = "text", @placeholder = "phone" })
-                @Html.ValidationMessageFor(d => d.phone, "", new { @class = "_error  col-lg-12  contaiter" })
+                @Html.TextBoxFor(d => d.phone, new { @class = "inputType col-lg-12  contaiter ipSU ", @type = "text", @placeholder = "phone" })
+                @Html.ValidationMessageFor(d => d.phone, "", new { @class = "_error  col-lg-12 " })
 
-                @Html.TextBoxFor(d => d.password, new { @class = "inputType col-lg-12  contaiter ", @type = "password", @placeholder = "password" })
-                @Html.ValidationMessageFor(d => d.password, "", new { @class = "_error  col-lg-12  contaiter" })
-                <div class="container  col-lg-12">
-                    <button type="submit" class="btnSignup col-lg-12">Sign Up</button>
+                @Html.TextBoxFor(d => d.password, new { @class = "inputType col-lg-12  contaiter ipSU ", @type = "password", @placeholder = "password" })
+                @Html.ValidationMessageFor(d => d.password, "", new { @class = "_error  col-lg-12 " })
+                <div class="container  col-12" style="padding:0;margin-top:10px">
+                    <button type="submit" class="btnSignup col-12" >Sign Up</button>
                     <a href="@Url.Action("Auth","Auth",new { type = "login" })" style="color:#993829;text-decoration:underline;font-size:13px;" class="container col-lg-12">Already have an account? Log in now.</a>
 
                 </div>
