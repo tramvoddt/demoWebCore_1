@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,9 +55,14 @@ namespace demoWebCore_1.Models
             roleId = 0;
             name = null;
             roleName = null;
-
-
+        }
+        public static void SetCurrent(int Id, int roleID, string _name)
+        {
+            id = Id;
+            roleId = roleID;
+            name = _name;
 
         }
+      
     }
 }

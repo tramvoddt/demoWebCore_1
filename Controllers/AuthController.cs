@@ -1,6 +1,8 @@
-﻿using demoWebCore_1.Models;
+﻿using demoWebCore_1.IService;
+using demoWebCore_1.Models;
 using demoWebCore_1.Models.BusinessPattern;
 using demoWebCore_1.Models.ModelViews;
+using demoWebCore_1.Service;
 using demoWebCore_1.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +21,13 @@ namespace demoWebCore_1.Controllers
         /* 
          * CLIENT
          */
-        public readonly DataContext dt;
-        public AuthController(DataContext db)
+        IUserService userService = null;
+        public AuthController(IUserService db)
         {
-            
-            dt = db;
+
+            userService = db;
         }
-       
+
         public IActionResult Auth(string type) //login and sign-up
         {
             TempData["type-auth"] = type;
@@ -45,15 +47,15 @@ namespace demoWebCore_1.Controllers
                 u.code = Helpers.RandomCode();
                 u.created_at = DateTime.Now;
                 u.password = BCrypt.Net.BCrypt.HashPassword(u.password);
-                Repositories.NewUser(new Models.ModelViews.Users() { name = u.name, code = u.code, phone = u.phone, created_at = u.created_at, status = true, password = u.password, email = u.email, role_id = 2 },dt) ;
-               
+               userService.Save(new Models.ModelViews.Users() { name = u.name, code = u.code, phone = u.phone, created_at = u.created_at, status = true, password = u.password, email = u.email, role_id = 2 });
+
                 TempData["Message"] = "Successfully registered. Login now!";
             }
 
             ModelState.Clear();
 
 
-            return RedirectToAction("Auth", "Auth", new { type="login" });
+            return RedirectToAction("Auth", "Auth", new { type = "login" });
         }
         //LOGIN
         [HttpPost]
@@ -63,52 +65,54 @@ namespace demoWebCore_1.Controllers
             {
                 string uName = Request.Form["username"];
                 string psw = Request.Form["psw"];
-                var str = JsonConvert.SerializeObject(UserSingle.LoginAction(uName, psw, dt));
-                HttpContext.Session.SetString("auth", str);  
-                if (UserSingle.LoginAction(uName, psw, dt) is null)
+                Users u = userService.LoginAction(uName, psw);
+                if (u is null)
                 {
                     TempData["ErrorLogin"] = "Invalid login, please try again";
                     TempData["user"] = uName;
-                   TempData["pass"] = psw;
-                    return RedirectToAction("Auth","Auth",new { type="login"});
+                    TempData["pass"] = psw;
+                    return RedirectToAction("Auth", "Auth", new { type = "login" });
                 }
-                var str1 = HttpContext.Session.GetString("auth");
-                var obj = JsonConvert.DeserializeObject<Users>(str1);
-                AuthRequest.id = obj.id;
-                AuthRequest.name = obj.name;
-                AuthRequest.roleId = (int)obj.role_id;
+                else
+                {
+                    var str = JsonConvert.SerializeObject(u);
+                    HttpContext.Session.SetString("auth", str);
+                    var str1 = HttpContext.Session.GetString("auth");
+                    var obj = JsonConvert.DeserializeObject<Users>(str1);
+                    AuthRequest.SetCurrent(obj.id, (int)obj.role_id, obj.name);
 
+                }
+              
             }
             ModelState.Clear();
             return RedirectToAction("Index", "Home");
-
         }
         //CHECK DUP
         public JsonResult PhoneExists(Users model)
         {
-            bool phoneExists = !dt.Users.Any(x => x.phone == model.phone);
+            bool phoneExists = !userService.GetDataContext().Users.Any(x => x.phone == model.phone);
             return Json(phoneExists);
 
         }
         public JsonResult EmailExists(Users model)
         {
-            bool emailExists = !dt.Users.Any(x => x.email == model.email);
+            bool emailExists = !userService.GetDataContext().Users.Any(x => x.email == model.email);
             return Json(emailExists);
         }
 
-    
-    //LOGOUT
-    public IActionResult ClientLogout()
+
+        //LOGOUT
+        public IActionResult ClientLogout()
         {
-            HttpContext.Session.SetString("auth", ""); 
+            HttpContext.Session.SetString("auth", "");
             AuthRequest.ClearSession();
             return RedirectToAction("Index", "Home");
         }
 
-            /*
-             * ADMIN
-             */
-            public IActionResult LoginAdmin()
+        /*
+         * ADMIN
+         */
+        public IActionResult LoginAdmin()
         {
             return View();
         }

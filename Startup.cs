@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using demoWebCore_1.Service;
+using demoWebCore_1.IService;
 
 namespace demoWebCore_1
 {
@@ -25,7 +27,12 @@ namespace demoWebCore_1
         {
             services.AddControllersWithViews();
             services.AddMvc();
-            services.AddControllersWithViews();
+            services.AddScoped<IUserService,UserService>();
+            services.AddControllersWithViews().AddJsonOptions(o=>
+            {
+                o.JsonSerializerOptions.PropertyNamingPolicy = null;
+                o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
             services.AddDistributedMemoryCache();
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(60); 

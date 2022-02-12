@@ -35,7 +35,7 @@ namespace demoWebCore_1.Utils
             return result;
 
         }
-     
+    
 
     }
 }
