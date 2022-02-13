@@ -2,61 +2,102 @@
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+<style>
+   #trashimg:focus{
+       outline:none
+   }
+</style>
+<div class="text-center container col-9" style="display:table;min-height: 600px;height:auto; background: #fafafa; padding: 50px 30px; border-radius: 10px; margin: 5vh auto 10vh auto;box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="display:table-row; height: auto; min-height: 500px; background: none; float: left; " class="col-5">
+        <div id="viewer" style="border: 2px dashed #9cc0b3;border-radius: 6px; min-height: 500px;height:inherit;padding-top:10px;">
 
-<div class="text-center container col-5" style="min-height:300px;height:auto">
-    <div data-test-id="media-empty-view" style="height: 100%;">
-        <div class="Jea gjz jzS mQ8 xcv L4E zI7 iyn Hsu" style="border: 2px dashed rgb(218, 218, 218); border-radius: 6px; min-height: 500px;height:inherit;padding-top:50px;">
 
+            <div style="margin-bottom:10px" id="content">Click to upload</div>
 
-            <div class="tBJ dyH iFc sAJ pBj tg7 swG">Click to upload</div>
-
-            <img id="imgViewer" style="border:none; width:400px;height:auto;margin-bottom:5vh;border-radius:20px;" />
+            <img id="imgViewer" style="border:none; width:380px;height:auto;margin-bottom:5vh;border-radius:20px;" />
         </div>
+        <input type="file" id="file-upload"
+               accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
+position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
+
+
 
     </div>
 
-    <input type="file" id="file-upload"
-           accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
-position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
-</div>
-<input type="text" id="txtSubject" />
-<button id="btnSave">Save</button>
-<button id="btnRead">Read</button>
-<script type="text/javascript">
-    $(document).ready(function () {
 
+    <div class="col-7" style="text-align: left; height: auto; min-height: 500px; float: left;">
+        <input type="text" id="txtSubject" />
+        <button id="btnSave">Save</button>
+        <button id="btnRead">Read</button>
+    </div>
+    <div class="col-12 container" style=" text-align:left;height: auto;float: left;margin-top:-30px;display:table-row">
+
+        <button id="trashimg" style="margin-left:170px;padding:15px 22px;background:#e12c2c;border-radius:50%;border:0;font-size:20px"><i style="color:white;pointer-events:none" class="fa fa-trash"></i></button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#trashimg").css("display", "none");
+    
     });
+        $("#trashimg").click(function () {
+            $("#imgViewer").attr("src", null);
+            $("#trashimg").css("display", "none");
+            document.getElementById("content").innerHTML = "Click to upload";
+            $("#content").css("color", "#17bb7e");
+
+        });
+
     $("#file-upload").change(function (e) {
         var files = e.target.files;
+        document.getElementById("content").innerHTML = "Click to change";
+        $("#content").css("color", "#5a6964");
+        $("#viewer").css("background", "transparent");
+
+        $("#viewer").css("border-color", "rgb(218, 218, 218)");
         $("#imgViewer").attr("src", window.URL.createObjectURL(files[0]));
+        $("#trashimg").css("display", "block");
+
     })
+      
+
     $("#btnSave").click(function () {
-        var files = $("#file-upload").prop("files");
-        var formData = new FormData();
-        for (var i = 0; i < files.length; i++) {
-            formData.append("file", files[i]);
+        if ($("#imgViewer").attr("src") == null) {
+            $("#viewer").css("border-color", "#db3e32");
+            $("#viewer").css("background", "rgb(227 78 61 / 0.14)");
+            document.getElementById("content").innerHTML = "please choose 1 picture";
+            $("#content").css("color", "#db3e32");
 
-        }
-        var pPost = {
-            subject: $("#txtSubject").val(),
-            content: $("#txtSubject").val()
-        }
 
-        formData.append("Post", JSON.stringify(pPost));
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("SavePost","Post")",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function () {
-                console.log("ok");
-                //ResetInput();
-            },
-            error: function () {
+        } else {
+            var files = $("#file-upload").prop("files");
+            var formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append("file", files[i]);
 
             }
-        });
+            var pPost = {
+                subject: $("#txtSubject").val(),
+                content: $("#txtSubject").val()
+            }
+
+            formData.append("Post", JSON.stringify(pPost));
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePost","Post")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    console.log("ok");
+                    //ResetInput();
+                },
+                error: function () {
+
+                }
+            });
+        }
 
     });
     $("#btnRead").click(function () {
@@ -73,4 +114,4 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             }
         });
     });
-</script>
+    </script>

@@ -18,8 +18,10 @@ namespace demoWebCore_1.Models
         [Column("collection_id", TypeName = "int")]
         public int colection_id { get; set; }
         [Column("subject", TypeName = "nvarchar")]
+        [Required(ErrorMessage = "* required")]
         public string subject { get; set; }
         [Column("content", TypeName = "text")]
+        [Required(ErrorMessage = "* required")]
 
         public string content { get; set; }
         [Column("img", TypeName = "varbinary")]

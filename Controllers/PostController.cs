@@ -24,7 +24,7 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult Index()
         {
-
+            @TempData["bgc"] = "#17bb7e";
             return View();
         }
         [HttpPost]
