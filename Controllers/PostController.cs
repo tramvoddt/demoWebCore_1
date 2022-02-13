@@ -12,21 +12,27 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
 using demoWebCore_1.IService;
+using demoWebCore_1.Models.ModelViews;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace demoWebCore_1.Controllers
 {
     public class PostController : Controller
     {
         IPostService _postService =null;
-        public PostController(IPostService p)
+        ICollectService _collectService =null;
+        public PostController(IPostService p,ICollectService c)
         {
             _postService = p;
+            _collectService = c;
         }
         public IActionResult Index()
         {
-            @TempData["bgc"] = "#17bb7e";
+            TempData["bgc"] = "#17bb7e";
+              TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
             return View();
         }
+      
         [HttpPost]
         public void SavePost(FileUpload f)
         {
@@ -39,6 +45,7 @@ namespace demoWebCore_1.Controllers
                     var fileBytes = ms.ToArray();
                     obj.img = fileBytes;
                     obj.created_at = DateTime.Now;
+                    obj.user_id = AuthRequest.id;
                     obj = _postService.Save(obj);
 
 
@@ -60,6 +67,10 @@ namespace demoWebCore_1.Controllers
                 bytes = Convert.FromBase64String(base64);
             }
             return bytes;
+        }
+       public List<Collect> GetCollectionByUserID()
+        {
+            return _collectService.GetCollectionByUserID(AuthRequest.id); 
         }
     }
 }

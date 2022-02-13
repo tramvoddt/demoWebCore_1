@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace demoWebCore_1.Models.ModelViews
 {
+    [Table("users")]
+
     public class Users
     {
         //id

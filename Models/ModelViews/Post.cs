@@ -15,6 +15,9 @@ namespace demoWebCore_1.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id", TypeName = "int")]
         public int id { get; set; }
+
+        [Column("user_id", TypeName = "int")]
+        public int user_id { get; set; }
         [Column("collection_id", TypeName = "int")]
         public int colection_id { get; set; }
         [Column("subject", TypeName = "nvarchar")]

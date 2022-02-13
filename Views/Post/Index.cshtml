@@ -1,13 +1,117 @@
-﻿@model List<demoWebCore_1.Models.Post>
+﻿@model demoWebCore_1.Models.ModelViews.Collect
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@{
+}
 <style>
-   #trashimg:focus{
-       outline:none
-   }
+    #trashimg:focus {
+        outline: none
+    }
+
+    #txtSubject:focus, .p-content:focus {
+        outline: none;
+        border: none;
+        background: #eff7f4;
+    }
+
+    #txtName:focus, #close-create:focus, #btnSave:focus {
+        outline: none;
+    }
+
+    #txtSubject {
+        padding: 2px 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 3px solid #5ba58b;
+        font-size: 25px;
+        color: #2b8364;
+        font-weight: 700;
+        background: none;
+        height: 43px;
+    }
+
+    .scroll-none {
+        overflow: hidden;
+    }
+
+    .p-content {
+        padding: 5px 10px;
+        width: 100%;
+        border: 1px solid #5ba58b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #2b8364;
+        background: none;
+        float: left
+    }
+
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+
+    #txtNameCollect::placeholder {
+        color: #e1e8e6;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
+
+    .show-create {
+        display: block !important;
+    }
+
+    .form-control {
+        border: 1px solid #5ba58b;
+        border-radius: 8px;
+    }
+
+    #btnSave {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid #17a55b;
+        background: #17a55b;
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnSave:hover {
+            background: none;
+            color: #17a55b;
+        }
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
 </style>
-<div class="text-center container col-9" style="display:table;min-height: 600px;height:auto; background: #fafafa; padding: 50px 30px; border-radius: 10px; margin: 5vh auto 10vh auto;box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+<div class="text-center container col-9" style="display:table;min-height: 600px;height:auto; background: #fafafa; padding: 50px 30px; border-radius: 10px; margin: 5vh auto 15vh auto;box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <div style="display:table-row; height: auto; min-height: 500px; background: none; float: left; " class="col-5">
         <div id="viewer" style="border: 2px dashed #9cc0b3;border-radius: 6px; min-height: 500px;height:inherit;padding-top:10px;">
 
@@ -16,7 +120,7 @@
 
             <img id="imgViewer" style="border:none; width:380px;height:auto;margin-bottom:5vh;border-radius:20px;" />
         </div>
-        <input type="file" id="file-upload"
+        <input type="file" id="file-upload" class="main-post"
                accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
 position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
 
@@ -26,21 +130,65 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
 
 
     <div class="col-7" style="text-align: left; height: auto; min-height: 500px; float: left;">
-        <input type="text" id="txtSubject" />
+        <textarea class=" scroll-none  main-post" type="text" id="txtSubject" placeholder="Title"></textarea>
+        <label class="col-12 error_ " id="title_error"></label>
+        <textarea class=" p-content col-12  main-post" type="text" id="txtContent" placeholder="Content" style="height:120px;"></textarea>
+        <label class="col-12 error_" id="content_error"></label>
+
+        <textarea class=" p-content col-12 scroll-none  main-post mb-2" id="txtUrl" type="text" placeholder="Url" style="height:34px;"></textarea>
+        <select id="drop" class="form-control  main-post">
+            <option value="-1">Choose collection</option>
+            <option value="0">Create</option>
+
+            @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+            {
+                <option value="@item.id">@(item.name)  - @(item.status == false ? "Private" : "Public")</option>
+            }
+
+        </select>
+        <label class="col-12 error_" id="collection_error"></label>
+
+        <label class="container  mb-5">
+            <input type="checkbox" style="margin-top:15px;margin-right:5px" id="status-post">
+            <span class="checkmark" style="color:#a95347;">Make it secret</span>
+        </label>
+
+
         <button id="btnSave">Save</button>
-        <button id="btnRead">Read</button>
+
     </div>
     <div class="col-12 container" style=" text-align:left;height: auto;float: left;margin-top:-30px;display:table-row">
 
         <button id="trashimg" style="margin-left:170px;padding:15px 22px;background:#e12c2c;border-radius:50%;border:0;font-size:20px"><i style="color:white;pointer-events:none" class="fa fa-trash"></i></button>
-        </div>
     </div>
+</div>
+<!--CREATE-->
+<div class="text-center container col-5" id="create-collect" style="display:none; margin: -85vh auto 200px auto!important; min-height: 320px; position: relative; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px;">
+        <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
 
-    <script type="text/javascript">
-    $(document).ready(function () {
-        $("#trashimg").css("display", "none");
+    </div>
+  
+
+        @Html.AntiForgeryToken()
+        @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
+        @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
+
+<label class="  mb-5 col-12" style="float:left;text-align:left">
+    @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
+
+    <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+
+</label>
+        <button id="btnCreate">Create</button>
     
-    });
+</div>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#trashimg").css("display", "none");
+
+        });
         $("#trashimg").click(function () {
             $("#imgViewer").attr("src", null);
             $("#trashimg").css("display", "none");
@@ -48,21 +196,67 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             $("#content").css("color", "#17bb7e");
 
         });
+        $("#drop").change(function () {
 
-    $("#file-upload").change(function (e) {
-        var files = e.target.files;
-        document.getElementById("content").innerHTML = "Click to change";
-        $("#content").css("color", "#5a6964");
-        $("#viewer").css("background", "transparent");
+            if ($(this).val() == 0) {
+                document.getElementById("create-collect").classList.toggle("show-create");
+                $(".main-post").css("pointer-events","none");
+             @*   $.ajax({
+                    url: "@Url.Action("Post","GetCollectionByUserID")",
+                      dataType: "json",
+                      success: function(data) {
+                        var name, select, option;
 
-        $("#viewer").css("border-color", "rgb(218, 218, 218)");
-        $("#imgViewer").attr("src", window.URL.createObjectURL(files[0]));
-        $("#trashimg").css("display", "block");
+                        // Get the raw DOM object for the select box
+                          select = document.getElementById('drpEmpList');
 
-    })
-      
+                        // Clear the old options
+                        select.options.length = 0;
 
-    $("#btnSave").click(function () {
+                        // Load the new options
+                        for (name in data) {
+                            select.options.add(new Option(data[name], "ahaha"));
+
+                        }
+                      }
+                    });*@
+            }
+        });
+    $("#close-create").click(function () {
+        ResetFormCreate();
+
+
+        });
+    function ResetFormCreate() {
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".main-post").css("pointer-events", "inherit");
+        $("#txtNameCollect").val()="";
+      $('#status-collect').prop('checked',false);
+
+
+    }
+        $("#file-upload").change(function (e) {
+            var files = e.target.files;
+            document.getElementById("content").innerHTML = "Click to change";
+            $("#content").css("color", "#5a6964");
+            $("#viewer").css("background", "transparent");
+            $("#viewer").css("border-color", "rgb(218, 218, 218)");
+            $("#trashimg").css("display", "block");
+
+            $("#imgViewer").attr("src", window.URL.createObjectURL(files[0]));
+
+        });
+
+        $("#btnSave").click(function () {
+            document.getElementById("title_error").innerHTML = "";
+            document.getElementById("content_error").innerHTML = "";
+            document.getElementById("collection_error").innerHTML = "";
+
+            var sts = $('#status-post:checked').val()=="on"?false:true;
+            var title = $("#txtSubject").val();
+            var content = $("#txtContent").val();
+            var url = $("#txtUrl").val();
+            var collect = $("#drop").val();
         if ($("#imgViewer").attr("src") == null) {
             $("#viewer").css("border-color", "#db3e32");
             $("#viewer").css("background", "rgb(227 78 61 / 0.14)");
@@ -70,7 +264,20 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             $("#content").css("color", "#db3e32");
 
 
-        } else {
+            }
+            if (title.length == 0) {
+                document.getElementById("title_error").innerHTML = "* Title is required";
+
+            }
+            if (content.length == 0) {
+                document.getElementById("content_error").innerHTML = "* Content is required";
+
+            }
+            if (collect == -1) {
+                document.getElementById("collection_error").innerHTML = "Please choose";
+
+            }
+            if ($("#imgViewer").attr("src") != null && title.length > 0 && content.length>0) {
             var files = $("#file-upload").prop("files");
             var formData = new FormData();
             for (var i = 0; i < files.length; i++) {
@@ -78,20 +285,22 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
 
             }
             var pPost = {
-                subject: $("#txtSubject").val(),
-                content: $("#txtSubject").val()
+                subject: title,
+                content: content,
+                url: url,
+                collection_id:collect,
+                status:sts
             }
 
             formData.append("Post", JSON.stringify(pPost));
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("SavePost","Post")",
+                url: "@Url.Action("SavePost", "Post")",
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function () {
-                    console.log("ok");
-                    //ResetInput();
+                    window.location.href = "@Url.Action("Index", "Home")";
                 },
                 error: function () {
 
@@ -99,7 +308,63 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             });
         }
 
+        });
+    $("#btnCreate").click(function () {
+            document.getElementById("name_error").innerHTML = "";
+            var _name = $("#txtNameCollect").val();
+            var sts = $('#status-collect:checked').val() == "on" ? false : true;
+            var _sts = (sts == true ? "Public" : "Private");
+        
+            if (_name.length == 0) {
+                document.getElementById("name_error").innerHTML = "* Name is required";
+
+            }
+
+            if (_name.length>0) {
+                var formData = new FormData();
+
+                formData.append("name", _name);
+                formData.append("status", sts);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NameExists", "Collect")"+"?name="+_name,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == true) {
+                        document.getElementById("name_error").innerHTML = "This name already exists";
+
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveCollect", "Collect")",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                var select = document.getElementById('drop');
+
+                                    $(select).append('<option value=' + data + '>' + _name+" - "+_sts+ '</option>');
+                                $(select).val(data);
+                                ResetFormCreate();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+
+
+                }
+
+            });
+        }
+
     });
+    function CreateCollect(){
+
+    }
     $("#btnRead").click(function () {
         $.ajax({
             type: "GET",
@@ -114,4 +379,4 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             }
         });
     });
-    </script>
+</script>
