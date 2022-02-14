@@ -1,4 +1,5 @@
 ﻿using demoWebCore_1.Models;
+using demoWebCore_1.Models.ModelViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace demoWebCore_1.IService
         DataContext GetDataContext();
 
         Post GetPostByID(int ID);
+        List<Post> GetPosts();
+
     }
 }

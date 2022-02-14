@@ -1,8 +1,10 @@
 ﻿@model demoWebCore_1.Models.ModelViews.Collect
 @*
+   
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = "New Post";
 }
 <style>
     #trashimg:focus {
@@ -116,7 +118,7 @@
         <div id="viewer" style="border: 2px dashed #9cc0b3;border-radius: 6px; min-height: 500px;height:inherit;padding-top:10px;">
 
 
-            <div style="margin-bottom:10px" id="content">Click to upload</div>
+            <div style="margin-bottom:10px" id="content">Click or drag to upload</div>
 
             <img id="imgViewer" style="border:none; width:380px;height:auto;margin-bottom:5vh;border-radius:20px;" />
         </div>
@@ -136,22 +138,19 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         <label class="col-12 error_" id="content_error"></label>
 
         <textarea class=" p-content col-12 scroll-none  main-post mb-2" id="txtUrl" type="text" placeholder="Url" style="height:34px;"></textarea>
-        <select id="drop" class="form-control  main-post">
+        <select id="drop" class="form-control  main-post" >
             <option value="-1">Choose collection</option>
             <option value="0">Create</option>
 
             @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
             {
-                <option value="@item.id">@(item.name)  - @(item.status == false ? "Private" : "Public")</option>
+                <option value="@item.id">@(item.name)  - @(item.status == true ? "Private" : "Public")</option>
             }
 
         </select>
         <label class="col-12 error_" id="collection_error"></label>
 
-        <label class="container  mb-5">
-            <input type="checkbox" style="margin-top:15px;margin-right:5px" id="status-post">
-            <span class="checkmark" style="color:#a95347;">Make it secret</span>
-        </label>
+      
 
 
         <button id="btnSave">Save</button>
@@ -192,7 +191,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         $("#trashimg").click(function () {
             $("#imgViewer").attr("src", null);
             $("#trashimg").css("display", "none");
-            document.getElementById("content").innerHTML = "Click to upload";
+            document.getElementById("content").innerHTML = "Click or drag to upload";
             $("#content").css("color", "#17bb7e");
 
         });
@@ -224,20 +223,23 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         });
     $("#close-create").click(function () {
         ResetFormCreate();
-
+        var select = document.getElementById('drop');
+        $(select).val(-1);
 
         });
     function ResetFormCreate() {
+
+        document.getElementById("txtNameCollect").value = "";
+
+        $('#status-collect').prop('checked', false);
         document.getElementById("create-collect").classList.toggle("show-create");
         $(".main-post").css("pointer-events", "inherit");
-        $("#txtNameCollect").val()="";
-      $('#status-collect').prop('checked',false);
 
 
     }
         $("#file-upload").change(function (e) {
             var files = e.target.files;
-            document.getElementById("content").innerHTML = "Click to change";
+            document.getElementById("content").innerHTML = "Click or drag to change";
             $("#content").css("color", "#5a6964");
             $("#viewer").css("background", "transparent");
             $("#viewer").css("border-color", "rgb(218, 218, 218)");
@@ -252,7 +254,6 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             document.getElementById("content_error").innerHTML = "";
             document.getElementById("collection_error").innerHTML = "";
 
-            var sts = $('#status-post:checked').val()=="on"?false:true;
             var title = $("#txtSubject").val();
             var content = $("#txtContent").val();
             var url = $("#txtUrl").val();
@@ -277,7 +278,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
                 document.getElementById("collection_error").innerHTML = "Please choose";
 
             }
-            if ($("#imgViewer").attr("src") != null && title.length > 0 && content.length>0) {
+            if ($("#imgViewer").attr("src") != null && title.length > 0 && content.length > 0 && collect>0) {
             var files = $("#file-upload").prop("files");
             var formData = new FormData();
             for (var i = 0; i < files.length; i++) {
@@ -288,8 +289,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
                 subject: title,
                 content: content,
                 url: url,
-                collection_id:collect,
-                status:sts
+                collection_id:collect
             }
 
             formData.append("Post", JSON.stringify(pPost));
@@ -312,8 +312,9 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
     $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
-            var sts = $('#status-collect:checked').val() == "on" ? false : true;
-            var _sts = (sts == true ? "Public" : "Private");
+        var sts = $('#status-collect:checked').val()=="true"?true:false;
+        
+            var _sts = (sts == false ? "Public" : "Private");
         
             if (_name.length == 0) {
                 document.getElementById("name_error").innerHTML = "* Name is required";
@@ -368,7 +369,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
     $("#btnRead").click(function () {
         $.ajax({
             type: "GET",
-            url: "@Url.Action("GetPost","Post",new {id=5 })",
+            url: "@Url.Action("GetPost","Post",new {id=18 })",
 
             success: function (data) {
                 $("#txtSubject").val(data.subject),

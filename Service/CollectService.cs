@@ -44,5 +44,11 @@ namespace demoWebCore_1.Service
             }
             return false;
         }
+        public List<Collect> GetCollects()
+        {
+            var q = ct.Collect.OrderByDescending(x=>x.id).ToList();
+
+            return q ?? null;
+        }
     }
 }

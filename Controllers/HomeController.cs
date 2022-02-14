@@ -1,4 +1,5 @@
-﻿using demoWebCore_1.Models;
+﻿using demoWebCore_1.IService;
+using demoWebCore_1.Models;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,11 @@ namespace demoWebCore_1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        IPostService _postService = null;
+        public HomeController(IPostService c)
         {
-            _logger = logger;
-        }
+            _postService = c;
+      }
 
         public IActionResult Index()
 
@@ -25,7 +26,7 @@ namespace demoWebCore_1.Controllers
 
             TempData["type"] = "nav1";
 
-            return View();
+            return View(_postService.GetPosts());
         }
 
         public IActionResult Contact()

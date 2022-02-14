@@ -1,1 +1,1 @@
-select*from collection
+update collection set status=0

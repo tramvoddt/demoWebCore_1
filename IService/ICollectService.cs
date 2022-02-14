@@ -13,5 +13,6 @@ namespace demoWebCore_1.IService
          DataContext GetDataContext();
         Collect Save(Collect c);
         bool NameExists(string value);
+        List<Collect> GetCollects();
     }
 }

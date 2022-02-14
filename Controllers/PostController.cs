@@ -14,6 +14,7 @@ using System.IO;
 using demoWebCore_1.IService;
 using demoWebCore_1.Models.ModelViews;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 
 namespace demoWebCore_1.Controllers
 {
@@ -28,8 +29,12 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult Index()
         {
+            if (AuthRequest.id == 0)
+            {
+                return RedirectToAction("Auth", "Auth",new {type="login",page="post" });
+            }
             TempData["bgc"] = "#17bb7e";
-              TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
+            TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
             return View();
         }
       
@@ -47,17 +52,28 @@ namespace demoWebCore_1.Controllers
                     obj.created_at = DateTime.Now;
                     obj.user_id = AuthRequest.id;
                     obj = _postService.Save(obj);
+                    
 
 
                 }
             }
         }
+
         [HttpGet]
         public JsonResult GetPost(int id)
         {
             var p = _postService.GetPostByID(id);
             p.img = GetImage(Convert.ToBase64String(p.img));
+           
             return Json(p);
+
+        }
+        public FileContentResult GetImageFile(int id)
+        {
+            var p = _postService.GetPostByID(id);
+            p.img = GetImage(Convert.ToBase64String(p.img));
+            return new FileContentResult(p.img, "image/jpg");
+
         }
         public byte[] GetImage(string base64)
         {

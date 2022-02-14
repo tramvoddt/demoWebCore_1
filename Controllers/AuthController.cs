@@ -22,14 +22,22 @@ namespace demoWebCore_1.Controllers
          * CLIENT
          */
         IUserService userService = null;
+        public static string pages ="index";
         public AuthController(IUserService db)
         {
 
             userService = db;
         }
 
-        public IActionResult Auth(string type) //login and sign-up
+        public IActionResult Auth(string type, string page="index") //login and sign-up
         {
+            pages = page;
+            if (AuthRequest.id != 0)
+            {
+
+                return RedirectToAction("Index", "Home");
+
+            }
             TempData["type-auth"] = type;
             if (type == "sign-up")
             {
@@ -85,6 +93,13 @@ namespace demoWebCore_1.Controllers
               
             }
             ModelState.Clear();
+
+            if (pages == "post")
+            {
+                pages = "index";
+                return RedirectToAction("Index", "Post");
+            }
+
             return RedirectToAction("Index", "Home");
         }
         //CHECK DUP

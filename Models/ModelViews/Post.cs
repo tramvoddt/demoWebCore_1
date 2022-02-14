@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace demoWebCore_1.Models
+namespace demoWebCore_1.Models.ModelViews
 {
     [Table("posts")]
     public class Post
@@ -19,7 +19,7 @@ namespace demoWebCore_1.Models
         [Column("user_id", TypeName = "int")]
         public int user_id { get; set; }
         [Column("collection_id", TypeName = "int")]
-        public int colection_id { get; set; }
+        public int collection_id { get; set; }
         [Column("subject", TypeName = "nvarchar")]
         [Required(ErrorMessage = "* required")]
         public string subject { get; set; }

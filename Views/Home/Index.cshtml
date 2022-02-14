@@ -1,5 +1,76 @@
-﻿@{
+﻿@model List<demoWebCore_1.Models.ModelViews.Post>
+@{
     ViewData["Title"] = "Samee";
+    string tmp = "";
 }
+<style>
+    #container {
+        width: 100%;
+        margin: 2em auto;
+        margin: 0 auto;
+        padding-bottom: 20vh;
+    }
 
- 
+    .cols {
+        -moz-column-count: 6;
+        -moz-column-gap: 1%;
+        -moz-column-width: 20%;
+        -webkit-column-count: 6;
+        -webkit-column-gap: 1%;
+        -webkit-column-width: 20%;
+        column-count: 6;
+        column-gap: 1%;
+        column-width: 20%;
+    }
+
+    .box-img img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+    }
+
+    .box-img {
+        height: auto;
+        margin-bottom: 2.5vh;
+    }
+
+        .box-img:hover {
+            cursor: pointer
+        }
+</style>
+<div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
+    <button onclick="window.location.href='Post/Index'" style="border-radius:50%;border:none;background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+</div>
+<div id="container" class="cols">
+    @foreach (var item in Model)
+    {
+        <div class="box-img">
+
+            <img src='@Url.ActionLink("GetImageFile", "Post", new { id = item.id })' />
+            <span>okekekek</span>
+        </div>
+           }
+
+
+</div>
+<script type="text/javascript">
+   
+</script>
+@*<div class="col-12" style="height: auto; background: yellow; min-height: 200px; padding: 0; display: table-row" >
+        <div style="height: auto; background: red; min-height: 100px; height: auto; position: relative; float: left; top: 0; width: 20%; left: 0px; transform: translateX(252px) translateY(0px)">
+            <img src="~/lib/a.png" style=" width:100%;height:auto" />
+            <div style="height:100px;width:100%;background:pink"></div>
+        </div>
+        <div style="height: auto; background: red; min-height: 100px; height: auto; position: relative; float: left; top: 0; width: 20%; left: 0px; transform: translateX(252px) translateY(0px)">
+            <img src="~/lib/c.jpg" style=" width:100%;height:auto" />
+            <div style="height:100px;width:100%;background:pink"></div>
+        </div>
+
+        <div style="height: auto; background: red; min-height: 100px; height: auto; position: relative; float: left; top: 0; width: 20%; left: 0px; transform: translateX(252px) translateY(0px)">
+            <img src="~/lib/b.png" style=" width:100%;height:auto" />
+            <div style="height:100px;width:100%;background:pink"></div>
+        </div>
+
+
+
+    </div>*@
