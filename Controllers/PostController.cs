@@ -75,6 +75,8 @@ namespace demoWebCore_1.Controllers
             return new FileContentResult(p.img, "image/jpg");
 
         }
+      
+
         public byte[] GetImage(string base64)
         {
             byte[] bytes = null;

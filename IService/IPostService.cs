@@ -10,9 +10,7 @@ namespace demoWebCore_1.IService
     public interface IPostService
     {
         Post Save(Post u);
-        
         DataContext GetDataContext();
-
         Post GetPostByID(int ID);
         List<Post> GetPosts();
 

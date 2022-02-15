@@ -21,9 +21,7 @@ namespace demoWebCore_1.Controllers
       }
 
         public IActionResult Index()
-
         {
-
             TempData["type"] = "nav1";
 
             return View(_postService.GetPosts());
@@ -33,9 +31,7 @@ namespace demoWebCore_1.Controllers
         {
             TempData["type"] = "nav2";
              BCrypt.Net.BCrypt.HashPassword("123456");
-
-            TempData["aaa"] = BCrypt.Net.BCrypt.Verify("Pa$$w0rd", "$2a$11$GOXvcuJUAhq0rcN.5dzhauG0pOqIgd3OlYgKGKmjRq68Kw1Wq/1AG");
-
+            TempData["aaa"] = BCrypt.Net.BCrypt.Verify("123456", "$2a$11$GOXvcuJUAhq0rcN.5dzhauG0pOqIgd3OlYgKGKmjRq68Kw1Wq/1AG");
             return View();
         }
 

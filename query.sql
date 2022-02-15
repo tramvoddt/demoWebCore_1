@@ -1,1 +1,1 @@
-update collection set status=0
+delete from posts where id=38

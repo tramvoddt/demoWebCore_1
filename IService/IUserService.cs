@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace demoWebCore_1.IService
 {
-    public interface IUserService
+    public  interface IUserService
     {
         bool Save(Users u);
         Users LoginAction(string user, string pass);
         DataContext GetDataContext();
+        string GetUserName(int id);
     }
 }

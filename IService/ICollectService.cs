@@ -9,8 +9,8 @@ namespace demoWebCore_1.IService
 {
     public interface ICollectService
     {
-         List<Collect> GetCollectionByUserID(int user_id);
-         DataContext GetDataContext();
+        List<Collect> GetCollectionByUserID(int user_id);
+        DataContext GetDataContext();
         Collect Save(Collect c);
         bool NameExists(string value);
         List<Collect> GetCollects();

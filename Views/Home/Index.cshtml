@@ -13,14 +13,11 @@
 
     .cols {
         -moz-column-count: 6;
-        -moz-column-gap: 1%;
-        -moz-column-width: 20%;
+        -moz-column-gap: 1vw;
         -webkit-column-count: 6;
-        -webkit-column-gap: 1%;
-        -webkit-column-width: 20%;
+        -webkit-column-gap: 1vw;
         column-count: 6;
-        column-gap: 1%;
-        column-width: 20%;
+        column-gap: 1vw;
     }
 
     .box-img img {
@@ -46,10 +43,13 @@
     {
         <div class="box-img">
 
-            <img src='@Url.ActionLink("GetImageFile", "Post", new { id = item.id })' />
-            <span>okekekek</span>
+            <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' style="margin-bottom:15px" />
+            <a style="color:#1f6231;letter-spacing:2px;">
+                <img src="~/lib/imgs/user.png" style="width:35px;height:35px;border-radius:50%"/>
+            username
+            </a>
         </div>
-           }
+                }
 
 
 </div>

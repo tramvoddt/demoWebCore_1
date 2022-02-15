@@ -122,12 +122,8 @@
 
             <img id="imgViewer" style="border:none; width:380px;height:auto;margin-bottom:5vh;border-radius:20px;" />
         </div>
-        <input type="file" id="file-upload" class="main-post"
-               accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
+        <input type="file" id="file-upload" class="main-post" accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
 position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
-
-
-
     </div>
 
 
@@ -137,11 +133,12 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         <textarea class=" p-content col-12  main-post" type="text" id="txtContent" placeholder="Content" style="height:120px;"></textarea>
         <label class="col-12 error_" id="content_error"></label>
 
-        <textarea class=" p-content col-12 scroll-none  main-post mb-2" id="txtUrl" type="text" placeholder="Url" style="height:34px;"></textarea>
-        <select id="drop" class="form-control  main-post" >
+        <textarea class=" p-content col-12 scroll-none  main-post mb-2" id="txtUrl" type="text" placeholder="Url" style="height:50px;"></textarea>
+        <label class="col-12 error_" id="url_error"></label>
+
+        <select id="drop" class="form-control  main-post">
             <option value="-1">Choose collection</option>
             <option value="0">Create</option>
-
             @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
             {
                 <option value="@item.id">@(item.name)  - @(item.status == true ? "Private" : "Public")</option>
@@ -150,7 +147,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         </select>
         <label class="col-12 error_" id="collection_error"></label>
 
-      
+
 
 
         <button id="btnSave">Save</button>
@@ -162,7 +159,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
     </div>
 </div>
 <!--CREATE-->
-<div class="text-center container col-5" id="create-collect" style="display:none; margin: -85vh auto 200px auto!important; min-height: 320px; position: relative; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+<div class="text-center container col-5" id="create-collect" style="display:none; margin: -95vh auto 300px auto!important; min-height: 320px; position: relative; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <div style="width:100%;text-align:left; padding-bottom:20px;">
         <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
         <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
@@ -190,9 +187,12 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         });
         $("#trashimg").click(function () {
             $("#imgViewer").attr("src", null);
+            $("#file-upload").val(null);
+
             $("#trashimg").css("display", "none");
             document.getElementById("content").innerHTML = "Click or drag to upload";
             $("#content").css("color", "#17bb7e");
+
 
         });
         $("#drop").change(function () {
@@ -200,25 +200,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             if ($(this).val() == 0) {
                 document.getElementById("create-collect").classList.toggle("show-create");
                 $(".main-post").css("pointer-events","none");
-             @*   $.ajax({
-                    url: "@Url.Action("Post","GetCollectionByUserID")",
-                      dataType: "json",
-                      success: function(data) {
-                        var name, select, option;
 
-                        // Get the raw DOM object for the select box
-                          select = document.getElementById('drpEmpList');
-
-                        // Clear the old options
-                        select.options.length = 0;
-
-                        // Load the new options
-                        for (name in data) {
-                            select.options.add(new Option(data[name], "ahaha"));
-
-                        }
-                      }
-                    });*@
             }
         });
     $("#close-create").click(function () {
@@ -258,6 +240,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             var content = $("#txtContent").val();
             var url = $("#txtUrl").val();
             var collect = $("#drop").val();
+            
         if ($("#imgViewer").attr("src") == null) {
             $("#viewer").css("border-color", "#db3e32");
             $("#viewer").css("background", "rgb(227 78 61 / 0.14)");
@@ -313,9 +296,9 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
         var sts = $('#status-collect:checked').val()=="true"?true:false;
-        
+
             var _sts = (sts == false ? "Public" : "Private");
-        
+
             if (_name.length == 0) {
                 document.getElementById("name_error").innerHTML = "* Name is required";
 

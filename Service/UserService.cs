@@ -30,6 +30,10 @@ namespace demoWebCore_1.Service
 
             return null;
         }
+        public string GetUserName(int id)
+        {
+            return ct.Users.FirstOrDefault(x => x.id == id).name;
+        }
         public bool Save(Users u)
         {
             ct.Users.Add(u);

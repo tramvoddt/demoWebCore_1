@@ -123,6 +123,10 @@ namespace demoWebCore_1.Controllers
             AuthRequest.ClearSession();
             return RedirectToAction("Index", "Home");
         }
+        public string GetUserName(int id)
+        {
+            return userService.GetUserName(id);
+        }
 
         /*
          * ADMIN
