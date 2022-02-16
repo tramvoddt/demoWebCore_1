@@ -15,16 +15,19 @@ namespace demoWebCore_1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         IPostService _postService = null;
-        public HomeController(IPostService c)
+        ICollectService _collectService = null;
+        public HomeController(IPostService c,ICollectService co)
         {
             _postService = c;
+            _collectService = co;
       }
 
         public IActionResult Index()
         {
             TempData["type"] = "nav1";
-
-            return View(_postService.GetPosts());
+            TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
+            ViewBag.data = _postService.GetPosts();
+            return View();
         }
 
         public IActionResult Contact()
