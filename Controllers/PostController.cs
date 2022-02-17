@@ -22,9 +22,11 @@ namespace demoWebCore_1.Controllers
     {
         IPostService _postService =null;
         ICollectService _collectService =null;
-        public PostController(IPostService p,ICollectService c)
+        IPostOtherService _postOtherService =null;
+        public PostController(IPostService p,ICollectService c,IPostOtherService po)
         {
             _postService = p;
+            _postOtherService = po;
             _collectService = c;
         }
         public IActionResult Index()
@@ -58,7 +60,33 @@ namespace demoWebCore_1.Controllers
                 }
             }
         }
+        public bool SavePostOther(int post_id, int collect_id)
+        {
+            var q = _postService.GetDataContext().Post.FirstOrDefault(x => x.id == post_id && x.user_id == AuthRequest.id);
+            if (q != null)
+            {
+                if (q.collection_id != collect_id)
+                {
+                    q.collection_id = collect_id;
+                    _postService.GetDataContext().SaveChanges();
+                    return true;
 
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+             _postOtherService.SavePost(new PostOther() { user_id = AuthRequest.id, post_id = post_id, collection_id = collect_id, created_at=DateTime.Now });
+            return true;
+
+        }
+        [HttpPost]
+        public string GetUrl(int id)
+        {
+            return _postService.GetPostByID(id).url;
+        }
         [HttpGet]
         public JsonResult GetPost(int id)
         {

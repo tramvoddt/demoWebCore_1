@@ -11,6 +11,11 @@ namespace demoWebCore_1.Utils
 {
     public class Helpers
     {
+        public static DataContext dt;
+        public Helpers(DataContext db)
+        {
+            dt = db;
+        }
         public static string RandomCode()
         {
             return DateTime.Now.Ticks.ToString();
@@ -34,6 +39,10 @@ namespace demoWebCore_1.Utils
             }
             return result;
 
+        }
+        public static string GetUserName(int id)
+        {
+            return dt.Users.FirstOrDefault(x => x.id == id).name;
         }
     
 

@@ -60,7 +60,16 @@ namespace demoWebCore_1.Service
             
             return post==null ?true:false;
         }
-        
 
+       public List<int> GetPostByCollection(int collectID)
+        {
+            var post= ct.Post.Where(x => x.collection_id == collectID).Select(x=>x.id).ToList();
+            var postOther = ct.PostOther.Where(x => x.collection_id == collectID).Select(x=>x.post_id).ToList();
+            List<int> resutl = new List<int>();
+            resutl.AddRange(post);
+            resutl.AddRange(postOther);
+            return resutl;
+          
+        }
     }
 }

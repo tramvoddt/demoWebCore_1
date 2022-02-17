@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Samee";
+    demoWebCore_1.IService.IUserService u = ViewBag.user;
+    demoWebCore_1.IService.ICollectService c = ViewBag.collect;
 }
 <style>
     #container {
@@ -42,7 +44,7 @@
     .action {
         position: absolute;
         top: 0;
-        height: calc( 100% - 50px );
+        height: calc( 100% - 26px );
         width: 100%;
         transition: 1s all ease-out;
         background: rgb(108 130 125 / 0.5);
@@ -124,42 +126,59 @@
         }
 </style>
 <div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
-    <button onclick="window.location.href='Post/Index'" style="border-radius:50%;border:none;background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+    <button onclick="window.location.href='Post/Index'" style="border-radius: 50%; border: 5px solid rgb(125 175 152 / 0.43); background: #fff; padding: 18px 25px; font-size: 20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
 </div>
 <div id="container" class="cols">
     @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
     {
-        <div class="box-img">
+    <div class="box-img">
 
-            <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' style="margin-bottom:15px" />
-            <div class="action">
-                <div class="content" style="height:70%">
-                    <select class="drop form-control  col-7 select-@item.id" style="; float:left;border:none;background:transparent;
+        <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })'  />
+        <div class="action">
+            <div class="content" style="height:70%">
+                <select class="drop form-control  col-7 select-@item.id" style=" float:left;border:none;background:transparent;
         color:white;">
-                        <option style="color:black" value="-1">Choose</option>
-                        <option style="color:black" value="0">Create</option>
-                        @foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+                    <option style="color:black" value="-1">Choose</option>
+                    <option style="color:black" value="0">Create</option>
+                    @foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+                    {
+                        if (item.user_id == demoWebCore_1.Models.AuthRequest.id && item.collection_id == item1.id)
+                        {
+                            <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
+                        }
+                        else
                         {
                             <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
                         }
-                    </select>
-                    <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
+                    }
+                </select>
+                <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
 
-                </div>
-
-                @if (item.url != "")
-                {
-                    <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
-
-                        <button style="padding:0 10px;float:left" class="btn-redirect"><i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>@(item.url.Substring(8, 16))...</button>
-                    </div>
-                }
             </div>
-            <a style="color:#1f6231;letter-spacing:2px;">
-                <img src="~/lib/imgs/user.png" style="width:35px;height:35px;border-radius:50%" />
-                username
-            </a>
+
+            @if (item.url != "")
+            {
+        <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
+            <button id="redirect-@item.id" style="padding:0 10px;float:left" class="btn-redirect">
+                <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
+                @(item.url.Substring(8, 16))...
+            </button>
         </div>
+            }
+        </div>
+
+        <a style="color:#1f6231;">
+            <span style="float:left;width:100%;font-weight:600;padding-left:5px ;">@item.subject</span>
+           @* <span style="float:left;width:100%">
+                <img src="~/lib/imgs/user.png" style="width:30px;height:30px;border-radius:50%" />
+
+                <span style="font-size:15px" >@(u.GetUserName(item.user_id))</span> 
+            </span>*@
+          
+        </a>
+    </div>
     }
 
 
@@ -195,12 +214,26 @@
         } else if (ele == -1) {
             alert("Please select Collection");
         } else {
-            document.getElementById(value).innerHTML="Saved!"
-            $("#" + value).css("background", "#4f0707");
-            $("#" + value).css("color", "#ffffff");
-            $("#" + value).css("pointer-events", "none");
+
+            var formData = new FormData();
+            formData.append("post_id",value);
+            formData.append("collect_id", ele);
+             $.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePostOther", "Post")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     if (data == true) {
+                         document.getElementById(value).innerHTML = "Saved!"
+                         $("#" + value).css("background", "#4f0707");
+                         $("#" + value).css("pointer-events", "none");
+                     } 
+                }
+            });
         }
-        
+
 
 
     }
@@ -215,6 +248,24 @@
         }
 
 
+    });
+    $(".btn-redirect").click(function () {
+        var id = $(this).attr("id").replace("redirect-", "");
+        var data = new FormData();
+        data.append("id", id);
+        
+         $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUrl", "Post")",
+                data: data,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     window.open(data, '_blank');
+                }
+            });
+        
+        
     });
      $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";

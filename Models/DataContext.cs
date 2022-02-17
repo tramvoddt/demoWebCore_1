@@ -39,5 +39,6 @@ namespace demoWebCore_1.Models
         public DbSet<Post> Post { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<Collect> Collect { get; set; }
+        public DbSet<PostOther> PostOther { get; set; }
     }
 }

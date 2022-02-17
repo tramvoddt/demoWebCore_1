@@ -1,0 +1,105 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<demoWebCore_1.Models.ModelViews.Collect>
+@{
+    demoWebCore_1.IService.IPostService p = ViewBag.post;
+
+}
+<style>
+    *{
+        color:black;
+    }
+
+    
+    #container {
+        width: 100%;
+        margin: 2em auto;
+        margin: 0 auto;
+        padding-bottom: 20vh;
+    }
+    .collect{
+        border-radius:15px;
+        height:260px;
+        width:300px;
+        float:left;
+        margin-left:1vw;
+        margin-top:2vh;
+    }
+
+</style>
+<div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
+    <button onclick="window.location.href='Post/Index'" style="border-radius:50%;border:5px solid rgb(125 175 152 / 0.43);background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+</div>
+<div class="text-center col-12" style="display:table; height:auto;margin-bottom:100px;">
+    <div style=" display: table-row;min-height:300px;height:auto" id="profile">
+      
+        <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px"/>
+        <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+
+    </div>
+    <div style="min-height:300px;height:auto;text-align:left" id="collection" class="col-11 container" >
+        <h4>
+           Your collections
+        </h4>
+        <div id="container" class="cols">
+            @foreach (var item in Model)
+            {
+             List<int> value = new List<int>();
+             value = p.GetPostByCollection(item.id); 
+
+            <a href="@Url.Action("Index","Home")"class="collect">
+                @if (value.Count == 0)
+                {
+                <div style="width:100%;height:88%;float:left;border-radius:15px;">
+                    No photos yet
+                </div>
+                    <div style="width: 100%; height: 12%;float: left">
+                        @item.name
+                    </div>
+                }
+                @if (value.Count == 1)
+                {
+                    <div style="width:100%;height:88%;float:left;border-radius:15px;">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px;" />
+                    </div>
+                    <div style="width: 100%; height: 12%; float: left">
+                        @item.name
+                    </div>
+
+                }
+                @if (value.Count == 2)
+                {
+                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px 0 0 15px;" />
+                    </div>
+                    <div style="width: 50%; height: 88%; float: left; border-radius: 0 15px 15px 0">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[1] })' style="width: 100%; height: 100%; border-radius: 0 15px 15px 0; " />
+
+                    </div>
+                    <div style="width: 100%; height: 12%; float: left">
+                        @item.name
+                    </div>
+                }
+                @if (value.Count > 2)
+                {
+                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px 0 0 15px;" />
+                    </div>
+                    <div style="width: 50%; height: 44%;  float: left; border-radius: 0 15px 0 0">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[1] })' style="width: 100%; height: 100%; border-radius: 0 15px 0 0; " />
+
+                    </div>
+                    <div style="width: 50%; height: 44%;float: left; border-radius: 0 0 15px 0;">
+                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[2] })' style="width: 100%; height: 100%; border-radius: 0 0 15px 0" />
+
+                    </div>
+                    <div style="width: 100%; height: 12%;  float: left">
+                        @item.name
+                    </div>
+                }
+            </a>
+            }
+        </div>
+    </div>
+</div>

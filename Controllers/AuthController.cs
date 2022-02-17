@@ -22,11 +22,17 @@ namespace demoWebCore_1.Controllers
          * CLIENT
          */
         IUserService userService = null;
+        ICollectService _collectService = null;
+        IPostService _postService = null;
+        IPostOtherService _postOtherService = null;
         public static string pages ="index";
-        public AuthController(IUserService db)
+        public AuthController(IUserService db, ICollectService c,IPostService p, IPostOtherService po)
         {
 
             userService = db;
+            _collectService = c;
+            _postOtherService = po;
+            _postService = p;
         }
 
         public IActionResult Auth(string type, string page="index") //login and sign-up
@@ -65,6 +71,18 @@ namespace demoWebCore_1.Controllers
 
             return RedirectToAction("Auth", "Auth", new { type = "login" });
         }
+        //MANAGER ACCOUNT
+        public IActionResult MyAccount()
+        {
+            if (AuthRequest.id == 0)
+            {
+                return RedirectToAction("Index", "Home");
+
+            }
+            ViewBag.post = _postService;
+            return View(_collectService.GetCollectionByUserID(AuthRequest.id));
+        }
+        
         //LOGIN
         [HttpPost]
         public IActionResult ClientLogin()
@@ -114,7 +132,7 @@ namespace demoWebCore_1.Controllers
             bool emailExists = !userService.GetDataContext().Users.Any(x => x.email == model.email);
             return Json(emailExists);
         }
-
+      
 
         //LOGOUT
         public IActionResult ClientLogout()

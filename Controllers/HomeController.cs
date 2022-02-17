@@ -16,10 +16,12 @@ namespace demoWebCore_1.Controllers
         private readonly ILogger<HomeController> _logger;
         IPostService _postService = null;
         ICollectService _collectService = null;
-        public HomeController(IPostService c,ICollectService co)
+        IUserService _userService = null;
+        public HomeController(IPostService c,ICollectService co,IUserService u)
         {
             _postService = c;
             _collectService = co;
+            _userService = u;
       }
 
         public IActionResult Index()
@@ -27,6 +29,8 @@ namespace demoWebCore_1.Controllers
             TempData["type"] = "nav1";
             TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
             ViewBag.data = _postService.GetPosts();
+            ViewBag.user = _userService;
+            ViewBag.collect = _collectService;
             return View();
         }
 

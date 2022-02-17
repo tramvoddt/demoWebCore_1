@@ -50,5 +50,9 @@ namespace demoWebCore_1.Service
 
             return q ?? null;
         }
+        public string GetCollectionName(int id)
+        {
+            return ct.Collect.FirstOrDefault(x => x.id == id).name;
+        }
     }
 }

@@ -1,1 +1,1 @@
-delete from posts where id=38
+select* from posts

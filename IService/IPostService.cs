@@ -13,6 +13,6 @@ namespace demoWebCore_1.IService
         DataContext GetDataContext();
         Post GetPostByID(int ID);
         List<Post> GetPosts();
-
+        List<int> GetPostByCollection(int collectID);
     }
 }

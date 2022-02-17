@@ -30,6 +30,7 @@ namespace demoWebCore_1
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IPostService,PostService>();
             services.AddScoped<ICollectService,CollectService>();
+            services.AddScoped<IPostOtherService,PostOtherService>();
             services.AddControllersWithViews().AddJsonOptions(o=>
             {
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
