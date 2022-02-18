@@ -13,10 +13,14 @@ namespace demoWebCore_1.Controllers
     public class CollectController : Controller
     {
         ICollectService collectService = null;
-        public CollectController(ICollectService db)
+        IPostService postService = null;
+        IPostOtherService postOtherService = null;
+        public CollectController(ICollectService db, IPostService p, IPostOtherService po)
         {
 
             collectService = db;
+            postService = p;
+            postOtherService = po;
         }
         [HttpPost]
         public int SaveCollect(Collect f)
@@ -29,6 +33,13 @@ namespace demoWebCore_1.Controllers
          
             return  w.id;
 
+        }
+        public IActionResult CollectionDetail(int cID)
+        {
+            TempData["listCollect"] = collectService.GetCollectionByUserID(AuthRequest.id);
+            ViewBag.collectName = collectService.GetCollectionName(cID);
+            ViewBag.postData = postService.GetListPostByListID(postService.GetPostByCollection(cID));
+            return View();
         }
         //CHECKDUP
         public bool NameExists(string name)

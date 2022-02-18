@@ -14,5 +14,6 @@ namespace demoWebCore_1.IService
         Post GetPostByID(int ID);
         List<Post> GetPosts();
         List<int> GetPostByCollection(int collectID);
+        List<Post> GetListPostByListID(List<int> ls);
     }
 }

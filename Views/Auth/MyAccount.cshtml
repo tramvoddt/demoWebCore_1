@@ -29,14 +29,14 @@
 
 </style>
 <div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
-    <button onclick="window.location.href='Post/Index'" style="border-radius:50%;border:5px solid rgb(125 175 152 / 0.43);background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+    <button onclick="window.location.href='@Url.Action("Index","Post")'" style="border-radius:50%;border:5px solid rgb(125 175 152 / 0.43);background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
 </div>
 <div class="text-center col-12" style="display:table; height:auto;margin-bottom:100px;">
-    <div style=" display: table-row;min-height:300px;height:auto" id="profile">
-      
-        <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px"/>
-        <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+    <div style="min-height:300px;height:auto;margin-bottom:8vh" id="profile">
 
+        <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px" />
+        <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+       
     </div>
     <div style="min-height:300px;height:auto;text-align:left" id="collection" class="col-11 container" >
         <h4>
@@ -46,55 +46,48 @@
             @foreach (var item in Model)
             {
              List<int> value = new List<int>();
-             value = p.GetPostByCollection(item.id); 
+             value = p.GetPostByCollection(item.id).Take(3).ToList(); 
 
-            <a href="@Url.Action("Index","Home")"class="collect">
+            <a href="@Url.Action("CollectionDetail","Collect",new {cID=item.id })" class="collect">
                 @if (value.Count == 0)
                 {
-                <div style="width:100%;height:88%;float:left;border-radius:15px;">
-                    No photos yet
-                </div>
-                    <div style="width: 100%; height: 12%;float: left">
+                    <div style="width:100%;height:88%;float:left;border-radius:15px;background-image:url(/lib/imgs/collect-default.jpg);background-size:cover;background-position:center">
+                       
+                    </div>
+                    <div style="width: 100%; height: 12%;float: left;font-size:20px;font-weight:500; ">
                         @item.name
                     </div>
                 }
                 @if (value.Count == 1)
                 {
-                    <div style="width:100%;height:88%;float:left;border-radius:15px;">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px;" />
+                    <div style="width:100%;height:88%;float:left;border-radius:15px;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[0] }));background-size:cover;background-position:center">
                     </div>
-                    <div style="width: 100%; height: 12%; float: left">
+                    <div style="width: 100%; height: 12%; float: left; font-size: 20px; font-weight: 500;">
                         @item.name
                     </div>
 
                 }
                 @if (value.Count == 2)
                 {
-                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px 0 0 15px;" />
+                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[0] }));background-size:cover;background-position:center">
                     </div>
-                    <div style="width: 50%; height: 88%; float: left; border-radius: 0 15px 15px 0">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[1] })' style="width: 100%; height: 100%; border-radius: 0 15px 15px 0; " />
-
+                    <div style="width: 50%; height: 88%; float: left; border-radius: 0 15px 15px 0;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[1] }));background-size:cover;background-position:center">
                     </div>
-                    <div style="width: 100%; height: 12%; float: left">
+                    <div style="width: 100%; height: 12%; float: left; font-size: 20px; font-weight: 500;">
                         @item.name
                     </div>
                 }
                 @if (value.Count > 2)
                 {
-                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[0] })' style="width: 100%; height: 100%; border-radius: 15px 0 0 15px;" />
+                    <div style="width:50%;height:88%;float:left;border-radius:15px 0 0 15px;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[0] }));background-size:cover;background-position:center">
                     </div>
-                    <div style="width: 50%; height: 44%;  float: left; border-radius: 0 15px 0 0">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[1] })' style="width: 100%; height: 100%; border-radius: 0 15px 0 0; " />
+                    <div style="width: 50%; height: 44%;  float: left; border-radius: 0 15px 0 0;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[1] }));background-size:cover;background-position:center">
 
                     </div>
-                    <div style="width: 50%; height: 44%;float: left; border-radius: 0 0 15px 0;">
-                        <img src='@Url.Action("GetImageFile", "Post", new { id = value[2] })' style="width: 100%; height: 100%; border-radius: 0 0 15px 0" />
+                    <div style="width: 50%; height: 44%;float: left; border-radius: 0 0 15px 0;background-image:url(@Url.Action("GetImageFile", "Post", new { id = value[2] }));background-size:cover;background-position:center">
 
                     </div>
-                    <div style="width: 100%; height: 12%;  float: left">
+                    <div style="width: 100%; height: 12%; float: left; font-size: 20px; font-weight: 500;">
                         @item.name
                     </div>
                 }

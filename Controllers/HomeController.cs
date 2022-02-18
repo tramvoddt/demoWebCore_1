@@ -13,7 +13,6 @@ namespace demoWebCore_1.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         IPostService _postService = null;
         ICollectService _collectService = null;
         IUserService _userService = null;

@@ -71,5 +71,15 @@ namespace demoWebCore_1.Service
             return resutl;
           
         }
+        public List<Post> GetListPostByListID(List<int> ls)
+        {
+            List<Post> p = new List<Post>();
+            foreach (var item in ls)
+            {
+                var post = ct.Post.FirstOrDefault(x => x.id == item);
+                p.Add(post);
+            }
+            return p;
+        }
     }
 }

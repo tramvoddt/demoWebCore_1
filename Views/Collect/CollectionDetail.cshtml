@@ -1,0 +1,342 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model demoWebCore_1.Models.ModelViews.Collect
+
+@{
+}
+
+
+<style>
+    #container {
+        width: 100%;
+        margin: 2em auto;
+        margin: 0 auto;
+        padding-bottom: 20vh;
+        min-height:600px;
+    }
+
+    .cols {
+        -moz-column-count: 6;
+        -moz-column-gap: 1vw;
+        -webkit-column-count: 6;
+        -webkit-column-gap: 1vw;
+        column-count: 6;
+        column-gap: 1vw;
+    }
+
+    .box-img img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        transition: 1s;
+        clear: both;
+    }
+
+    .box-img {
+        height: auto;
+        margin-bottom: 2.5vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .box-img:hover {
+            cursor: pointer
+        }
+
+    .action {
+        position: absolute;
+        top: 0;
+        height: calc( 100% - 26px );
+        width: 100%;
+        transition: 1s all ease-out;
+        background: rgb(108 130 125 / 0.5);
+        padding: 10px 10px 10px 0;
+        border-radius: 15px;
+        display: none;
+    }
+
+    .drop:hover {
+        cursor: pointer;
+    }
+
+    .drop > option {
+        color: black !important;
+    }
+
+    .box-img:hover .action {
+        display: block;
+    }
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
+
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+    .btnSavePost {
+        background: #eb6a46;
+        font-weight: 700;
+        color: white;
+        transition: 0.4s all ease-out;
+        float: right;
+        height: 38px;
+        border: none;
+        border-radius: 20px
+    }
+
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+
+    #txtNameCollect::placeholder {
+        color: #e1e8e6;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
+
+    .show-create {
+        display: block !important;
+    }
+</style>
+<div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
+    <button onclick="window.location.href='@Url.Action("Index","Post")'" style="border-radius:50%;border:5px solid rgb(125 175 152 / 0.43);background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+</div>
+<div class="text-center col-12" style="display:table; height:auto;margin-bottom:100px;">
+    <div style="min-height:300px;height:auto;margin-bottom:8vh" id="profile">
+
+        <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px" />
+        <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+
+    </div>
+    <div style="min-height:300px;height:auto;text-align:left" id="collection" class="col-11 container">
+        <h4 style="color:black;">
+            <a href="@Url.Action("MyAccount","Auth")"> Your collections</a>
+            <span>&gt;</span>
+            <a href="@Url.Action("CollectionDetail","Collection")">@ViewBag.collectName</a>
+
+        </h4>
+        <div id="container" class="cols">
+            @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.postData)
+            {
+                <div class="box-img">
+
+                    <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
+                    <div class="action">
+                        <div class="content" style="height:70%">
+                            <select class="drop form-control  col-7 select-@item.id" style=" float:left;border:none;background:transparent;
+        color:white;">
+                                <option style="color:black" value="-1">Choose</option>
+                                <option style="color:black" value="0">Create</option>
+                                @foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+                                    {
+                                        if (item.collection_id == item1.id)
+                                    {
+                                        <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
+                                    }
+                                }
+                            </select>
+                            <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
+
+                        </div>
+
+                        @if (item.url != "")
+                        {
+                            <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
+                                <button id="redirect-@item.id" style="padding:0 10px;float:left" class="btn-redirect">
+                                    <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
+                                    @(item.url.Substring(8, 16))...
+                                </button>
+                            </div>
+                        }
+                    </div>
+
+                    
+                </div>
+            }
+
+
+        </div>
+    </div>
+</div>
+<div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px;">
+        <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
+
+    </div>
+
+
+    @Html.AntiForgeryToken()
+    @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
+    @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
+
+    <label class="  mb-5 col-12" style="float:left;text-align:left;">
+        @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
+
+        <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+
+    </label>
+    <button id="btnCreate">Create</button>
+
+</div>
+<script type="text/javascript">
+
+    function SavePost(value) {
+        var ele = $(".select-" + value).val();
+
+        if (@demoWebCore_1.Models.AuthRequest.id== 0) {
+            window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+        } else if (ele == -1) {
+            alert("Please select Collection");
+        } else {
+
+            var formData = new FormData();
+            formData.append("post_id",value);
+            formData.append("collect_id", ele);
+             $.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePostOther", "Post")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     if (data == true) {
+                         document.getElementById(value).innerHTML = "Saved!"
+                         $("#" + value).css("background", "#4f0707");
+                         $("#" + value).css("pointer-events", "none");
+                     }
+                }
+            });
+        }
+
+
+
+    }
+    $(".drop").change(function () {
+        if ($(this).val() == 0) {
+            if (@demoWebCore_1.Models.AuthRequest.id== 0) {
+                window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+            } else {
+                $(this).css("pointer-events", "none");
+                document.getElementById("create-collect").classList.toggle("show-create");
+            }
+        }
+
+
+    });
+    $(".btn-redirect").click(function () {
+        var id = $(this).attr("id").replace("redirect-", "");
+        var data = new FormData();
+        data.append("id", id);
+
+         $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUrl", "Post")",
+                data: data,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     window.open(data, '_blank');
+                }
+            });
+
+
+    });
+     $("#btnCreate").click(function () {
+            document.getElementById("name_error").innerHTML = "";
+            var _name = $("#txtNameCollect").val();
+         var sts = $('#status-collect:checked').val()=="true"?true:false;
+
+            var _sts = (sts == false ? "Public" : "Private");
+
+            if (_name.length == 0) {
+                document.getElementById("name_error").innerHTML = "* Name is required";
+
+            }
+
+            if (_name.length>0) {
+                var formData = new FormData();
+
+                formData.append("name", _name);
+                formData.append("status", sts);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NameExists", "Collect")"+"?name="+_name,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == true) {
+                        document.getElementById("name_error").innerHTML = "This name already exists";
+
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveCollect", "Collect")",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                var select = document.getElementsByClassName('drop');
+
+                                $(select).append('<option value=' + data + '>' + _name+" - "+_sts+ '</option>');
+                                $(select).val(data);
+                                ResetFormCreate();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+
+
+                }
+
+            });
+        }
+
+     });
+    $("#close-create").click(function () {
+        var select = document.getElementsByClassName('drop');
+
+        $(select).val(-1);
+        $(select).css("pointer-events", "inherit");
+        ResetFormCreate();
+
+
+    });
+    function ResetFormCreate() {
+        document.getElementById("txtNameCollect").value = "";
+        $('#status-collect').prop('checked', false);
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".main-post").css("pointer-events", "inherit");
+
+
+    }
+</script>

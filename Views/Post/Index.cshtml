@@ -159,26 +159,26 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
     </div>
 </div>
 <!--CREATE-->
-<div class="text-center container col-5" id="create-collect" style="display:none; margin: -95vh auto 300px auto!important; min-height: 320px; position: relative; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+<div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <div style="width:100%;text-align:left; padding-bottom:20px;">
         <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
         <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
 
     </div>
-  
 
-        @Html.AntiForgeryToken()
-        @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
-        @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
 
-<label class="  mb-5 col-12" style="float:left;text-align:left">
-    @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
+    @Html.AntiForgeryToken()
+    @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
+    @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
 
-    <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+    <label class="  mb-5 col-12" style="float:left;text-align:left;">
+        @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
 
-</label>
-        <button id="btnCreate">Create</button>
-    
+        <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+
+    </label>
+    <button id="btnCreate">Create</button>
+
 </div>
 <script type="text/javascript">
         $(document).ready(function () {
@@ -283,7 +283,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
                 processData: false,
                 contentType: false,
                 success: function () {
-                    window.location.href = "@Url.Action("Index", "Home")";
+                    window.location.href = "@Url.Action("MyAccount", "Auth")";
                 },
                 error: function () {
 
