@@ -15,5 +15,6 @@ namespace demoWebCore_1.IService
         List<Post> GetPosts();
         List<int> GetPostByCollection(int collectID);
         List<Post> GetListPostByListID(List<int> ls);
+        bool CheckChooseCollection(int postID, int collectID);
     }
 }

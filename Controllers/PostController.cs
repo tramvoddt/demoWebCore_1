@@ -53,9 +53,9 @@ namespace demoWebCore_1.Controllers
                     obj.img = fileBytes;
                     obj.created_at = DateTime.Now;
                     obj.user_id = AuthRequest.id;
+                    Debug.WriteLine(obj.url);
                     obj = _postService.Save(obj);
-                    
-
+                    _postOtherService.SavePost(new PostOther() { post_id = obj.id, user_id = obj.user_id, collection_id = obj.collection_id, created_at = obj.created_at });
 
                 }
             }
@@ -63,11 +63,14 @@ namespace demoWebCore_1.Controllers
         public bool SavePostOther(int post_id, int collect_id)
         {
             var q = _postService.GetDataContext().Post.FirstOrDefault(x => x.id == post_id && x.user_id == AuthRequest.id);
+            var r = _postService.GetDataContext().PostOther.FirstOrDefault(x => x.post_id == post_id && x.user_id == AuthRequest.id);
             if (q != null)
             {
                 if (q.collection_id != collect_id)
                 {
                     q.collection_id = collect_id;
+                    r.collection_id = collect_id;
+
                     _postService.GetDataContext().SaveChanges();
                     return true;
 

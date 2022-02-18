@@ -31,9 +31,9 @@ namespace demoWebCore_1.Service
             }
             else return false;
         }
-        public List<PostOther> GetListPostOther(int post)
+        public List<PostOther> GetListPostOther(int collection)
         {
-            return ct.PostOther.Where(x => x.post_id == post && x.user_id == AuthRequest.id).ToList();
+            return ct.PostOther.Where(x => x.collection_id == collection && x.user_id == AuthRequest.id).ToList();
         }
     }
 }

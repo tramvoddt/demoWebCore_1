@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,7 +39,8 @@ namespace demoWebCore_1.Controllers
         {
             TempData["listCollect"] = collectService.GetCollectionByUserID(AuthRequest.id);
             ViewBag.collectName = collectService.GetCollectionName(cID);
-            ViewBag.postData = postService.GetListPostByListID(postService.GetPostByCollection(cID));
+            ViewBag.post = postService.GetListPostByListID(postService.GetPostByCollection(cID));
+            ViewBag.postService =postService;
             return View();
         }
         //CHECKDUP

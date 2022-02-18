@@ -9,6 +9,6 @@ namespace demoWebCore_1.IService
     public interface IPostOtherService
     {
         bool SavePost(PostOther p);
-        List<PostOther> GetListPostOther(int postID);
+        List<PostOther> GetListPostOther(int collection);
     }
 }

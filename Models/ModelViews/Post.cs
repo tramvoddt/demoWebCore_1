@@ -30,7 +30,7 @@ namespace demoWebCore_1.Models.ModelViews
         [Column("img", TypeName = "varbinary")]
 
         public byte[] img { get; set; }
-        [Column("url", TypeName = "nvarchar")]
+        [Column("url", TypeName = "text")]
 
         public string url { get; set; }
         [Column("created_at", TypeName = "datetime")]

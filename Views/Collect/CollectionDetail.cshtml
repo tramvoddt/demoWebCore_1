@@ -4,6 +4,8 @@
 @model demoWebCore_1.Models.ModelViews.Collect
 
 @{
+    demoWebCore_1.IService.IPostService p = ViewBag.postService;
+
 }
 
 
@@ -17,11 +19,11 @@
     }
 
     .cols {
-        -moz-column-count: 6;
+        -moz-column-count: 5;
         -moz-column-gap: 1vw;
-        -webkit-column-count: 6;
+        -webkit-column-count: 5;
         -webkit-column-gap: 1vw;
-        column-count: 6;
+        column-count: 5;
         column-gap: 1vw;
     }
 
@@ -47,7 +49,7 @@
     .action {
         position: absolute;
         top: 0;
-        height: calc( 100% - 26px );
+        height: 100%;
         width: 100%;
         transition: 1s all ease-out;
         background: rgb(108 130 125 / 0.5);
@@ -104,7 +106,16 @@
         color: #e1e8e6;
         background: none;
     }
-
+    .btn-redirect {
+        background: white;
+        font-weight: 700;
+        color: #1d5735;
+        transition: 0.4s all ease-out;
+        float: right;
+        height: 38px;
+        border: none;
+        border-radius: 20px
+    }
     #txtNameCollect::placeholder {
         color: #e1e8e6;
     }
@@ -136,7 +147,7 @@
 
         </h4>
         <div id="container" class="cols">
-            @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.postData)
+            @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.post)
             {
                 <div class="box-img">
 
@@ -148,8 +159,8 @@
                                 <option style="color:black" value="-1">Choose</option>
                                 <option style="color:black" value="0">Create</option>
                                 @foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
-                                    {
-                                        if (item.collection_id == item1.id)
+                                {
+                                    if ((item.collection_id == item1.id && item.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(item.id, item1.id))
                                     {
                                         <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
 
@@ -170,18 +181,18 @@
                             <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
                                 <button id="redirect-@item.id" style="padding:0 10px;float:left" class="btn-redirect">
                                     <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
-                                    @(item.url.Substring(8, 16))...
+                                    @item.url.Substring(8, 16)...
                                 </button>
                             </div>
                         }
                     </div>
-
                     
                 </div>
             }
 
 
         </div>
+
     </div>
 </div>
 <div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">

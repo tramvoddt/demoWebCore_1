@@ -63,12 +63,9 @@ namespace demoWebCore_1.Service
 
        public List<int> GetPostByCollection(int collectID)
         {
-            var post= ct.Post.Where(x => x.collection_id == collectID).Select(x=>x.id).ToList();
-            var postOther = ct.PostOther.Where(x => x.collection_id == collectID).Select(x=>x.post_id).ToList();
-            List<int> resutl = new List<int>();
-            resutl.AddRange(post);
-            resutl.AddRange(postOther);
-            return resutl;
+            
+            return ct.PostOther.OrderByDescending(x=>x.id).Where(x => x.collection_id == collectID).Select(x=>x.post_id).ToList();
+          
           
         }
         public List<Post> GetListPostByListID(List<int> ls)
@@ -80,6 +77,12 @@ namespace demoWebCore_1.Service
                 p.Add(post);
             }
             return p;
+        }
+        public bool CheckChooseCollection(int postID, int collectionID)
+        {
+            var q = ct.PostOther.FirstOrDefault(x => x.post_id == postID && x.user_id == AuthRequest.id&&x.collection_id==collectionID);
+            return q == null ? false : true;
+
         }
     }
 }

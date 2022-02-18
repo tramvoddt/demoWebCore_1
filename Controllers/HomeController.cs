@@ -30,6 +30,8 @@ namespace demoWebCore_1.Controllers
             ViewBag.data = _postService.GetPosts();
             ViewBag.user = _userService;
             ViewBag.collect = _collectService;
+            ViewBag.post = _postService;
+            
             return View();
         }
 
