@@ -1,0 +1,271 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model demoWebCore_1.Models.ModelViews.Collect
+
+@{
+    List<demoWebCore_1.Models.ModelViews.Collect> lsCollect = ViewBag.data;
+    int id=0;
+}
+<style>
+
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+
+    #txtNameCollect::placeholder {
+        color: #e1e8e6;
+    }
+
+
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
+
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
+
+    .show-create {
+        display: block !important;
+    }
+    .action-icon{
+        padding:8px 13px;
+        color:white;
+
+        border:none;
+        border-radius:5px;
+    }
+    .action-icon:focus{
+        outline:none;
+    }
+    #btn-create:focus {
+        outline: none;
+    }
+
+    #btn-create {
+        background: #55dab1;
+        padding: 10px 15px;
+        font-weight: 500;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        float:left;
+        margin-right:2vw;
+    }
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
+</style>
+<div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
+    <button onclick="window.location.href='@Url.Action("Index","Post")'" style="border-radius:50%;border:5px solid rgb(125 175 152 / 0.43);background:#fff;padding:18px 25px;font-size:20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+</div>
+<div class="text-center col-12" style="display:table; height:auto;margin-bottom:50px;">
+    <div style="min-height:300px;height:auto;margin-bottom:2vh" id="profile">
+
+        <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px" />
+        <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+
+    </div>
+    <div style="min-height:300px;height:auto;text-align:left;color:black" id="collection" class="col-11 container">
+        <h4>Edit collections </h4>
+        <div style="width:70%" class="container">
+            <div style="margin-bottom:2vh;height:50px">
+                <button id="btn-create">Create </button>
+                <span style="float:left;padding: 3px;margin-top:5px;">Show: </span>
+                <input class="form-control" name="state" id="maxRows" style="float:left;width:60px; height:35px;" />
+                <span style="float: left; padding: 3px;">  rows </span>
+            </div>
+            <table class="table table-striped table-class" id="table-id">
+                <tr>
+                    <th width="50%">Name</th>
+                    <th width="25%">Status</th>
+                    <th>Action</th>
+                </tr>
+                @foreach (var item in lsCollect)
+                {
+                    <tr>
+
+                        <td id="name-@item.id">@item.name</td>
+                        <td id="status-@item.id">@(item.status==true?"Private":"Public")</td>
+
+                        <td>
+                            <button class="action-icon btn-edit" c-id="@item.id" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 7px 11px 7px 12px ">
+                                <i style="pointer-events:none" class="fa fa-edit"></i>
+                            </button>
+                            <button class="action-icon btn-delete" c-id="@item.id" style="background: linear-gradient(to left,#ed3021,#f66d63); margin-left:0.4vw">
+                                <i style="pointer-events:none" class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div class="pagination-container" style="cursor:pointer">
+
+                <nav aria-label="Page navigation example" style="position:unset;box-shadow:none; background:none;">
+                    <ul class="pagination">
+                        <li class="page-item " data-page="prev"><span class="page-link" href="#">&lt;</span></li>
+                        <li class="page-item" data-page="next" id="prev"><a class="page-link" href="#">&gt;</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px;">
+        <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0" id="title"></label>
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
+
+    </div>
+    @Html.HiddenFor(x => x.id)
+    @Html.AntiForgeryToken()
+    @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
+    @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
+
+    <label class="  mb-5 col-12" style="float:left;text-align:left;">
+        @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
+
+        <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+
+    </label>
+    <button id="btnUpdate">Save</button>
+
+</div>
+<script src="~/js/pagination-js.js"></script>
+<script type="text/javascript">
+
+
+    $(".btn-edit").click(function () {
+        var ele = $(this).attr("c-id");
+        var data = new FormData();
+        data.append("id", ele);
+        document.getElementById("title").innerHTML = "Edit collection";
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".action-icon").css("pointer-events", "none");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCollection", "Collect")",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var e = document.getElementById("txtNameCollect");
+                e.value = data.name;
+                $('#status-collect').prop('checked', data.status);
+
+            },
+
+            });
+
+
+
+    });
+     $("#btn-create").click(function () {
+         document.getElementById("title").innerHTML = "Create collection";
+
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".action-icon").css("pointer-events", "none");
+
+    });
+     $("#btnUpdate").click(function () {
+            document.getElementById("name_error").innerHTML = "";
+            var _name = $("#txtNameCollect").val();
+         var sts = $('#status-collect:checked').val()=="true"?true:false;
+
+            var _sts = (sts == false ? "Public" : "Private");
+
+            if (_name.length == 0) {
+                document.getElementById("name_error").innerHTML = "* Name is required";
+
+            }
+
+            if (_name.length>0) {
+                var formData = new FormData();
+                formData.append("name", _name);
+                formData.append("status", sts);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NameExistsUpdate", "Collect")"+"?name="+_name,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == true) {
+                        document.getElementById("name_error").innerHTML = "This name already exists";
+
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveCollectUpdate", "Collect")",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (data == true) {
+                                    document.getElementById("name-" +data).innerHTML = _name;
+                                    $('#status-collect:checked').val() == sts;
+                                    ResetFormCreate();
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function () {
+
+
+                }
+
+            });
+        }
+
+     });
+    $("#close-create").click(function () {
+
+        ResetFormCreate();
+
+
+    });
+    function ResetFormCreate() {
+        document.getElementById("txtNameCollect").value = "";
+        $('#status-collect').prop('checked', false);
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".action-icon").css("pointer-events", "inherit");
+
+
+    }
+</script>

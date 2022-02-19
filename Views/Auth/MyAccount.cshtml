@@ -26,6 +26,18 @@
         margin-left:1vw;
         margin-top:2vh;
     }
+    .btn-edit:focus{
+        outline:none;
+
+    }
+    .btn-edit{
+        background:#55dab1;
+        padding:15px 20px;
+        font-weight:500;
+        color:#fff;
+        border:none;
+        border-radius:20px;
+    }
 
 </style>
 <div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
@@ -36,6 +48,8 @@
 
         <img src="~/lib/imgs/user.png" style="width:140px;height:140px; margin-bottom:10px" />
         <h4>@demoWebCore_1.Models.AuthRequest.name</h4>
+        <button class="btn-edit" onclick="window.location.href='@Url.Action("EditCollection","Auth")'">Edit collection</button>
+
        
     </div>
     <div style="min-height:300px;height:auto;text-align:left" id="collection" class="col-11 container" >

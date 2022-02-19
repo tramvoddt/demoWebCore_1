@@ -16,6 +16,7 @@ namespace demoWebCore_1.Controllers
         ICollectService collectService = null;
         IPostService postService = null;
         IPostOtherService postOtherService = null;
+        public static int cid = 0;
         public CollectController(ICollectService db, IPostService p, IPostOtherService po)
         {
 
@@ -26,7 +27,7 @@ namespace demoWebCore_1.Controllers
         [HttpPost]
         public int SaveCollect(Collect f)
         {
-        
+            
                 f.created_at = DateTime.Now;
                 f.user_id = AuthRequest.id;
                 collectService.Save(f);
@@ -34,6 +35,29 @@ namespace demoWebCore_1.Controllers
          
             return  w.id;
 
+        }
+        public Collect GetCollection(int id)
+        {
+            cid = id;
+            var q = collectService.GetCollect(id);
+            return q;
+        }
+        public int SaveCollectUpdate(Collect f)
+        {
+            f.id = cid;
+            var q = collectService.GetCollect(f.id);
+            if (q != null)
+            {
+                if (q.name == f.name && q.status == f.status)
+                {
+                    return 0;
+                }
+                q.name = f.name;
+                q.status = f.status;
+                collectService.GetDataContext().SaveChanges();
+                return q.id;
+            }
+            return 0;
         }
         public IActionResult CollectionDetail(int cID)
         {
@@ -47,6 +71,12 @@ namespace demoWebCore_1.Controllers
         public bool NameExists(string name)
         {
             return collectService.NameExists(name);
+
+        }
+        public bool NameExistsUpdate(string name, int id)
+        {
+            id = cid;
+            return collectService.NameExists(name,id);
 
         }
 

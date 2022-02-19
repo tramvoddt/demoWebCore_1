@@ -44,6 +44,15 @@ namespace demoWebCore_1.Service
             }
             return false;
         }
+        public bool NameExists(string name, int val)
+        {
+            var q = ct.Collect.FirstOrDefault(x => x.name == name && x.user_id == AuthRequest.id&&x.id!=val);
+            if (q != null)
+            {
+                return true;
+            }
+            return false;
+        }
         public List<Collect> GetCollects()
         {
             var q = ct.Collect.OrderByDescending(x=>x.id).ToList();
@@ -53,6 +62,10 @@ namespace demoWebCore_1.Service
         public string GetCollectionName(int id)
         {
             return ct.Collect.FirstOrDefault(x => x.id == id).name;
+        }
+        public Collect GetCollect(int id)
+        {
+            return ct.Collect.FirstOrDefault(x => x.id == id) ?? null;
         }
     }
 }

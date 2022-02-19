@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -82,7 +83,12 @@ namespace demoWebCore_1.Controllers
             ViewBag.post = _postService;
             return View(_collectService.GetCollectionByUserID(AuthRequest.id));
         }
-        
+        public IActionResult EditCollection()
+        {
+            ViewBag.data = _collectService.GetCollectionByUserID(AuthRequest.id);
+            return View();
+        }
+      
         //LOGIN
         [HttpPost]
         public IActionResult ClientLogin()
