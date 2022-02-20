@@ -32,8 +32,9 @@ namespace demoWebCore_1.Controllers
                 f.user_id = AuthRequest.id;
                 collectService.Save(f);
             var w = collectService.GetDataContext().Collect.OrderByDescending(x=>x.id).FirstOrDefault(x => x.user_id == AuthRequest.id);
-         
-            return  w.id;
+            TempData["MessageCollect"] = "Create successfully!";
+
+            return w.id;
 
         }
         public Collect GetCollection(int id)
@@ -41,6 +42,12 @@ namespace demoWebCore_1.Controllers
             cid = id;
             var q = collectService.GetCollect(id);
             return q;
+        }
+        public void DeleteCollection(int id)
+        {
+            collectService.DeleteCollect(id);
+            TempData["MessageCollect"] = "Delete successfully!";
+          
         }
         public int SaveCollectUpdate(Collect f)
         {

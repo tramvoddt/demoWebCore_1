@@ -17,5 +17,7 @@ namespace demoWebCore_1.IService
         List<Collect> GetCollects();
         string GetCollectionName(int id);
         Collect GetCollect(int id);
+
+        void DeleteCollect(int id);
     }
 }

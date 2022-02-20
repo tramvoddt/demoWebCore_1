@@ -74,7 +74,7 @@
         float:left;
         margin-right:2vw;
     }
-    #btnCreate {
+    .btn-action {
         transition: 0.4s all ease-out;
         padding: 8px 33px;
         border: 1px solid white;
@@ -85,7 +85,7 @@
         border-radius: 2px;
     }
 
-        #btnCreate:hover {
+        .btn-action:hover {
             background: none;
             color: white;
         }
@@ -102,7 +102,20 @@
     </div>
     <div style="min-height:300px;height:auto;text-align:left;color:black" id="collection" class="col-11 container">
         <h4>Edit collections </h4>
+     
         <div style="width:70%" class="container">
+          @if(@TempData["MessageCollect"]!=null)
+          { 
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+                <label class="alert alert-success container mb-2 col-lg-12" id="msg">
+                    @TempData["MessageCollect"]
+                </label>
+                <script type="text/javascript">
+                $("#msg").delay(2000).fadeOut(300);
+                </script>
+                TempData["MessageCollect"] = null;
+              }
             <div style="margin-bottom:2vh;height:50px">
                 <button id="btn-create">Create </button>
                 <span style="float:left;padding: 3px;margin-top:5px;">Show: </span>
@@ -162,14 +175,67 @@
         <span class="checkmark" style="color:#ffffff;">Make it secret</span>
 
     </label>
-    <button id="btnUpdate">Save</button>
+    <button id="btnUpdate" class="btn-action"></button>
+
+</div>
+<div class="text-center container col-4" id="confirm-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:32vw; min-height: 300px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px; ">
+        <label class="col-5" style="font-size:17px;font-weight:200;color:white;padding:5px 0;">Confirm</label>
+
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-confirm">X</button>
+
+    </div>
+    <label class="col-12" style="font-size:25px;font-weight:700;color:white;padding-top:20px;margin-bottom:30px">Are you sure to make this change?</label>
+
+    <button class="btn-action" id="btn-confirm" style="margin-right:20px" c-id="0">OK</button>
+    <button class="btn-action" id="btn-cancel">Cancel</button>
 
 </div>
 <script src="~/js/pagination-js.js"></script>
 <script type="text/javascript">
 
+    $(".btn-delete").click(function () {
+        var ele = $(this).attr("c-id");
+        document.getElementById("confirm-collect").classList.toggle("show-create");
+        $("#btn-confirm").attr("c-id",ele);
+
+    });
+    $("#btn-confirm").click(function () {
+        var ele = $(this).attr("c-id");
+        var data = new FormData();
+        data.append("id", ele);
+          $.ajax({
+            type: "POST",
+            url: "@Url.Action("DeleteCollection", "Collect")",
+            data: data,
+            processData: false,
+            contentType: false,
+              success: function () {
+                  ResetConfirm();
+
+                  window.location.href = "@Url.Action("EditCollection","Auth")";
+            },
+
+            });
+
+
+    });
+    function ResetConfirm() {
+        document.getElementById("confirm-collect").classList.toggle("show-create");
+        $("#btn-confirm").attr("c-id",0);
+    };
+    $("#close-confirm").click(function () {
+        ResetConfirm();
+    });
+    $("#btn-cancel").click(function () {
+       
+        ResetConfirm();
+    });
 
     $(".btn-edit").click(function () {
+        var ele = document.getElementById("btnUpdate");
+        ele.innerHTML = "Save";
+
         var ele = $(this).attr("c-id");
         var data = new FormData();
         data.append("id", ele);
@@ -196,12 +262,17 @@
     });
      $("#btn-create").click(function () {
          document.getElementById("title").innerHTML = "Create collection";
+         var ele = document.getElementById("btnUpdate");
+         ele.innerHTML = "Create";
 
         document.getElementById("create-collect").classList.toggle("show-create");
         $(".action-icon").css("pointer-events", "none");
 
-    });
-     $("#btnUpdate").click(function () {
+     });
+
+    $("#btnUpdate").click(function () {
+        var ele = document.getElementById("btnUpdate");
+
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
          var sts = $('#status-collect:checked').val()=="true"?true:false;
@@ -217,10 +288,48 @@
                 var formData = new FormData();
                 formData.append("name", _name);
                 formData.append("status", sts);
+                if (ele.innerHTML == "Save") {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("NameExistsUpdate", "Collect")" + "?name=" + _name,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            if (data == true) {
+                                document.getElementById("name_error").innerHTML = "This name already exists";
 
-            $.ajax({
+                            } else {
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("SaveCollectUpdate", "Collect")",
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (data) {
+                                        if (data != 0) {
+                                            document.getElementById("name-" + data).innerHTML = _name;
+                                            document.getElementById("status-" + data).innerHTML = _sts;
+
+                                        }
+                                        ResetFormCreate();
+
+                                    },
+
+
+                                });
+                            }
+                        },
+                        error: function () {
+
+
+                        }
+
+                    });
+                } else {
+                      $.ajax({
                 type: "POST",
-                url: "@Url.Action("NameExistsUpdate", "Collect")"+"?name="+_name,
+                url: "@Url.Action("NameExists", "Collect")"+"?name="+_name,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -231,16 +340,15 @@
 
                         $.ajax({
                             type: "POST",
-                            url: "@Url.Action("SaveCollectUpdate", "Collect")",
+                            url: "@Url.Action("SaveCollect", "Collect")",
                             data: formData,
                             processData: false,
                             contentType: false,
                             success: function (data) {
-                                if (data == true) {
-                                    document.getElementById("name-" +data).innerHTML = _name;
-                                    $('#status-collect:checked').val() == sts;
-                                    ResetFormCreate();
-                                }
+
+                                ResetFormCreate();
+                               window.location.href = "@Url.Action("EditCollection","Auth")";
+
                             }
                         });
                     }
@@ -251,6 +359,7 @@
                 }
 
             });
+                }
         }
 
      });

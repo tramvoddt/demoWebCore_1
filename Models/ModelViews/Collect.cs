@@ -30,5 +30,6 @@ namespace demoWebCore_1.Models.ModelViews
 
         [Column("status", TypeName = "bit")]
         public bool status { get; set; }
+
     }
 }

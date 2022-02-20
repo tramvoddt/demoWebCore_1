@@ -67,5 +67,14 @@ namespace demoWebCore_1.Service
         {
             return ct.Collect.FirstOrDefault(x => x.id == id) ?? null;
         }
+        public void DeleteCollect(int id)
+        {
+            var w = ct.Collect.FirstOrDefault(x => x.id == id);
+            if (w != null)
+            {
+                ct.Remove(w);
+                ct.SaveChanges();
+            }
+        }
     }
 }

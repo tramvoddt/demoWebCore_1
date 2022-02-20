@@ -36,6 +36,7 @@
         margin-bottom: 2.5vh;
         overflow: hidden;
         position: relative;
+
     }
 
         .box-img:hover {
@@ -132,7 +133,7 @@
 <div id="container" class="cols">
     @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
             {
-    <div class="box-img">
+    <div class="box-img" >
 
         <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
         <div class="action">
@@ -180,6 +181,7 @@
             </span>*@
 
             </a>
+          
 
         </div>
             }
@@ -231,6 +233,7 @@
                          document.getElementById(value).innerHTML = "Saved!"
                          $("#" + value).css("background", "#4f0707");
                          $("#" + value).css("pointer-events", "none");
+
                      } 
                 }
             });
