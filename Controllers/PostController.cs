@@ -60,6 +60,21 @@ namespace demoWebCore_1.Controllers
                 }
             }
         }
+        public IActionResult PostDetail(int id)
+        {
+            ViewBag.postService = _postService;
+            if (AuthRequest.id == 0)
+            {
+                TempData["listCollect"] = null;
+            }
+            else
+            {
+                TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
+
+            }
+            TempData["bgc"] = "#d3e3dc";
+            return View(_postService.GetPostByID(id));
+        }
         public bool SavePostOther(int post_id, int collect_id)
         {
             var q = _postService.GetDataContext().Post.FirstOrDefault(x => x.id == post_id && x.user_id == AuthRequest.id);

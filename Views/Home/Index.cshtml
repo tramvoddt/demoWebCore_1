@@ -133,7 +133,7 @@
 <div id="container" class="cols">
     @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
             {
-    <div class="box-img" >
+    <div class="box-img" pid="item-@item.id" >
 
         <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
         <div class="action">
@@ -242,6 +242,11 @@
 
 
     }
+    $(".box-img").click(function () {
+        var ele = $(this).attr("pid");
+
+        window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");
+    });
     $(".drop").change(function () {
         if ($(this).val() == 0) {
             if (@demoWebCore_1.Models.AuthRequest.id== 0) {
