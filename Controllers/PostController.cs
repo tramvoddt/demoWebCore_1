@@ -15,6 +15,7 @@ using demoWebCore_1.IService;
 using demoWebCore_1.Models.ModelViews;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
+using System.Text;
 
 namespace demoWebCore_1.Controllers
 {
@@ -70,10 +71,13 @@ namespace demoWebCore_1.Controllers
             else
             {
                 TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
-
             }
+            var w = _postService.GetPostByID(id);
+            ViewBag.data =_postService.GetPostByUserID(w.user_id, id);
             TempData["bgc"] = "#d3e3dc";
-            return View(_postService.GetPostByID(id));
+            ViewBag.model = w;
+
+            return View();
         }
         public bool SavePostOther(int post_id, int collect_id)
         {
@@ -113,6 +117,10 @@ namespace demoWebCore_1.Controllers
            
             return Json(p);
 
+        }
+        public FileResult DownloadFile(int filename)
+        {
+            return File("/Files/File Result.pdf", "text/plain", "File Result.pdf");
         }
         public FileContentResult GetImageFile(int id)
         {

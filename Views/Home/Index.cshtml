@@ -46,7 +46,7 @@
     .action {
         position: absolute;
         top: 0;
-        height: calc( 100% - 26px );
+        height: calc( 100% - 23px );
         width: 100%;
         transition: 1s all ease-out;
         background: rgb(108 130 125 / 0.5);
@@ -133,12 +133,12 @@
 <div id="container" class="cols">
     @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
             {
-    <div class="box-img" pid="item-@item.id" >
+    <div class="box-img" >
 
-        <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
+        <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })'  />
         <div class="action">
-            <div class="content" style="height:70%">
-                <select class="drop form-control  col-7 select-@item.id" style=" float:left;border:none;background:transparent;
+            <div class="content" style="height:15%;">
+                <select class="drop form-control  col-7 select-@item.id" style="float:left;border:none;background:transparent;
         color:white;">
                     <option style="color:black" value="-1">Choose</option>
                     <option style="color:black" value="0">Create</option>
@@ -159,7 +159,7 @@
                 <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
 
             </div>
-
+            <div class="redirect-detail" style="height:72%"   pid="item-@item.id"></div>
             @if (item.url.Length>=16&&item.url!="")
             {
                 <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
@@ -179,10 +179,7 @@
 
                 <span style="font-size:15px" >@(u.GetUserName(item.user_id))</span>
             </span>*@
-
             </a>
-          
-
         </div>
             }
 
@@ -242,7 +239,7 @@
 
 
     }
-    $(".box-img").click(function () {
+    $(".redirect-detail").click(function () {
         var ele = $(this).attr("pid");
 
         window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");

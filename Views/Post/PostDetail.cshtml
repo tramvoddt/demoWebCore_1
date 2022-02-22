@@ -1,14 +1,77 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model demoWebCore_1.Models.ModelViews.Post
+@model demoWebCore_1.Models.ModelViews.Collect
 @{
     demoWebCore_1.IService.IPostService p = ViewBag.postService;
+    demoWebCore_1.Models.ModelViews.Post mdl = ViewBag.model;
 
 }
 <style>
     * {
         color: #14352c
+    }
+
+    #container {
+        width: 100%;
+        margin: 2em auto;
+        margin: 0 auto;
+        padding-bottom: 20vh;
+    }
+
+    .cols {
+        -moz-column-count: 4;
+        -moz-column-gap: 1vw;
+        -webkit-column-count: 4;
+        -webkit-column-gap: 1vw;
+        column-count: 4;
+        column-gap: 1vw;
+    }
+
+    .btnSavePost {
+        background: #eb6a46;
+        font-weight: 700;
+        color: white;
+        transition: 0.4s all ease-out;
+        float: right;
+        height: 38px;
+        border: none;
+        border-radius: 20px
+    }
+
+    .box-img img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        transition: 1s;
+        clear: both;
+    }
+
+    .box-img {
+        height: auto;
+        margin-bottom: 2.5vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .box-img:hover {
+            cursor: pointer
+        }
+
+            .box-img:hover .action {
+                display: block;
+            }
+
+    .action {
+        position: absolute;
+        top: 0;
+        height: calc( 100% - 23px );
+        width: 100%;
+        transition: 1s all ease-out;
+        background: rgb(108 130 125 / 0.5);
+        padding: 10px 10px 10px 0;
+        border-radius: 15px;
+        display: none;
     }
 
     #comments::-webkit-scrollbar {
@@ -30,6 +93,7 @@
         /* Handle on hover */
         #comments::-webkit-scrollbar-thumb:hover {
             background: #5c9a75;
+            cursor: grab;
         }
 
         #comments::-webkit-scrollbar-thumb:focus, :active {
@@ -58,6 +122,7 @@
     img:hover {
         cursor: pointer
     }
+
     #btnSavePost {
         background: #eb6a46;
         font-weight: 700;
@@ -68,73 +133,368 @@
         border: none;
         border-radius: 0 15px 15px 0
     }
+
+    .show-create {
+        display: block !important;
+    }
+
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+
+    #txtNameCollect::placeholder {
+        color: #e1e8e6;
+    }
+
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
+
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
+    .input-cmt{
+        width:87%;
+        border:1.5px solid #a8c6b7;
+        border-radius:5px;
+        padding:14px ;
+        
+    }
+    .input-cmt:focus{
+        outline:none;
+        color:#348460;
+        font-weight:600;
+    }
+    .utilities:focus{
+        outline:none;
+    }
 </style>
 <div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
     <button onclick="window.location.href='Post/Index'" style="border-radius: 50%; border: 5px solid rgb(125 175 152 / 0.43); background: #fff; padding: 18px 25px; font-size: 20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
 </div>
-<div class="container col-9" style="display:table;background: white; height: auto; min-height: 500px; margin: 7vh auto; border-radius: 20px; box-shadow: 0 0 40px 0 rgb(136 169 161 / 0.41); padding: 0">
-    <div id="img" style="display:table-row;float:left; width:450px;height:100%;position:relative">
-        <img src="@Url.Action("GetImageFile","Post",new {id=Model.id })" style="width:100%;height:100%;border-radius:20px 0 0 20px" />
+<!--POST DETAIL -->
+<div class="container col-9" style="display:table;background: white; height: auto; min-height: 650px; margin: 7vh auto; border-radius: 20px; box-shadow: 0 0 40px 0 rgb(136 169 161 / 0.41); padding: 0">
+    <div id="img" style="display:table-row;float:left; width:450px;height:100%;position:relative; padding:10px">
+        <img src="@Url.Action("GetImageFile","Post",new {id=mdl.id })" style="width:100%;height:100%;border-radius:20px" />
     </div>
-    @if (Model.url != "") { 
-    <div class="action-url" style="display:none;width:450px;height:100%;position:absolute">
-        <div style="bottom:20px;left:15px;position:absolute; float:right">
-            <button id="redirect-@*@item.id*@" style="padding:0 10px;float:left" class="btn-redirect">
-                <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
-                @Model.url.Substring(8, 16)
-            </button>
+    @if (mdl.url != "")
+    {
+        <div class="action-url" style="display:none;width:450px;height:100%;position:absolute">
+            <div style="bottom:20px;left:15px;position:absolute; float:right">
+                <button id="redirect-@mdl.id" style="padding:0 10px;float:left" class="btn-redirect">
+                    <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
+                    @mdl.url.Substring(8, 16)
+                </button>
+            </div>
         </div>
-    </div>
     }
-    <div class="content" style="display:table-row;float:left; width:calc(100% - 450px);height:100%;padding:10px 20px">
-        <div class="content" style="height:40px;margin:2vh 0">
+<div class="content" style="display:table-row;float:left; width:calc(100% - 450px);height:100%;padding:10px 20px">
+    <div class="content" style="height:40px;margin:1vh 0">
 
-            <button class="utilities" style="padding:12px 18px; background:#fff; border:none">
-                <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
+        <button class="utilities" id="down-img" style="padding:10px; background:#fff; border:none; " path="path-@mdl.id">
+            <i class="fa fa-download" style="font-size:18px;pointer-events:none"></i>
+        </button>
+        <button class="utilities" style="padding: 10px; background: #fff; border: none">
+            <i class="fa fa-bell" style="font-size:18px;pointer-events:none"></i>
+        </button>
+        <button class="utilities" style="padding: 10px; background: #fff; border: none">
+            <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
 
-            </button>
-            <button class="utilities" style="padding: 12px 18px; background: #fff; border: none">
-                <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
-            </button>
-            <button class="utilities" style="padding: 12px 18px; background: #fff; border: none">
-                <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
+        </button>
 
-            </button>
+        <button class="btnSavePost col-2" style="float: right; height: 100%; border-radius: 0 20px 20px 0" id="@mdl.id" onclick="SavePost(this.id)">Save</button>
 
-            <button  id="btnSavePost" class=" col-2" style="float:right;height:100%" onclick="SavePost(this.id)">Save</button>
-
-            <select class="drop form-control  col-5 select" style=" float:right;color:black;height:100%;border-radius:15px 0 0 15px">
-                <option style="color:black" value="-1">Choose</option>
-                <option style="color:black" value="0">Create</option>
-                @if (TempData["listCollect"] != null)
+        <select class="drop form-control  col-5 select-@mdl.id" style=" float:right;color:black;height:100%;border-radius:15px 0 0 15px">
+            <option style="color:black" value="-1">Choose</option>
+            <option style="color:black" value="0">Create</option>
+            @if (TempData["listCollect"] != null)
+            {
+                foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
                 {
-                   foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+                    if ((mdl.collection_id == item1.id && mdl.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(mdl.id, item1.id))
                     {
-                        if ((Model.collection_id == item1.id && Model.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(Model.id, item1.id))
-                        {
-                            <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+                        <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
 
-                       }
-                       else
-                       {
-                            <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+                    }
+                    else
+                    {
+                        <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
 
-                       }
-                   }
+                    }
                 }
-            </select>
+            }
+        </select>
 
-        </div>
-
-        <div>
-            <h2>@Model.subject</h2>
-            <h6>@Model.content</h6>
-        </div>
-        <h4 style="margin-top: 4vh">Comments:</h4>
-        <div style="height:300px;overflow-y:scroll;cursor:grab;" id="comments">
-           
-
-        </div>
-        <input type="text" />
     </div>
+
+    <div>
+        <h1>@mdl.subject</h1>
+        <h6 style="color:#666f6c">@mdl.content</h6>
+    </div>
+    <h4 style="margin-top: 5vh">Comments:</h4>
+    @if (true)
+    {
+        <div style="height: 100px; overflow-y: hidden;text-align:center; padding:16% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px " id="comments">
+            <h6 style="color:#97baa9">No comment yet</h6>
+            
+        </div>
+    }
+
+<div style="width:100%">
+    <input type="text" class="input-cmt" />
+   @* <button id="cancel" style="border:none; padding:16px;color:#6f9b89;position:absolute;margin-left:-3vw; font-weight:700">X</button>*@
+    <button id="done" style="border:none; padding:16px 20px;margin-left:0.2vw;color:#6f9b89;position:absolute;font-weight:700">Done</button>
 </div>
+</div>
+</div>
+<!--END POST DETAIL-->
+<!--OTHER POST OF USER-->
+<div id="container" class="cols col-9">
+    @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
+    {
+        <div class="box-img">
+
+            <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
+            <div class="action">
+                <div class="content" style="height:15%;">
+                    <select class="drop form-control  col-7 select-@item.id" style="float:left;border:none;background:transparent;
+        color:white;">
+                        <option style="color:black" value="-1">Choose</option>
+                        <option style="color:black" value="0">Create</option>
+                        @if (TempData["listCollect"] != null)
+                        {
+                            @foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+                            {
+                                if ((item.collection_id == item1.id && item.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(item.id, item1.id))
+                                {
+                                    <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
+                                }
+                                else
+                                {
+                                    <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+
+                                }
+                            }
+                        }
+                    </select>
+                    <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
+
+
+                </div>
+                <div class="redirect-detail" style="height:72%" pid="item-@item.id"></div>
+                @if (item.url.Length >= 16 && item.url != "")
+                {
+                    <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
+                        <button id="redirect-@item.id" style="padding:0 10px;float:left" class="btn-redirect">
+                            <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i>
+                            @item.url.Substring(8, 16)
+                        </button>
+
+                    </div>
+                }
+
+            </div>
+            <a style="color:#1f6231;">
+                <span style="float:left;width:100%;font-weight:600;padding-left:5px ;">@item.subject</span>
+                @* <span style="float:left;width:100%">
+                        <img src="~/lib/imgs/user.png" style="width:30px;height:30px;border-radius:50%" />
+
+                        <span style="font-size:15px" >@(u.GetUserName(item.user_id))</span>
+                    </span>*@
+            </a>
+        </div>
+    }
+</div>
+<!--END OTHER POST OF USER-->  
+
+
+<!--CREATE COLLECTION-->
+<div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px;">
+        <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-create">X</button>
+    </div>
+
+
+    @Html.AntiForgeryToken()
+    @Html.TextAreaFor(m => m.name, new { @class = "p-content-light col-12", @type = "text", @id = "txtNameCollect", @placeholder = "collection name", @style = "height:50px;float:left" })
+    @Html.ValidationMessageFor(d => d.name, "", new { @class = "col-12 error_ ", @style = "float:left;text-align:left", @id = "name_error" })
+
+    <label class="  mb-5 col-12" style="float:left;text-align:left;">
+        @Html.CheckBoxFor(m => m.status, new { @style = "margin-top:15px;margin-right:5px", @id = "status-collect" })
+
+        <span class="checkmark" style="color:#ffffff;">Make it secret</span>
+
+    </label>
+    <button id="btnCreate">Create</button>
+
+</div>
+<!--END CREATE COLLECTION-->
+
+<script type="text/javascript">
+  function SavePost(value) {
+      var ele = $(".select-" + value).val();
+
+        if (@demoWebCore_1.Models.AuthRequest.id== 0) {
+            window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+        } else if (ele == -1) {
+            alert("Please select Collection");
+        } else {
+
+            var formData = new FormData();
+            formData.append("post_id",value);
+            formData.append("collect_id", ele);
+             $.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePostOther", "Post")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     if (data == true) {
+                         document.getElementById(value).innerHTML = "Saved!"
+                         $("#" + value).css("background", "#4f0707");
+                         $("#" + value).css("pointer-events", "none");
+
+                     }
+                }
+            });
+        }
+
+
+
+    }
+     $(".drop").change(function () {
+        if ($(this).val() == 0) {
+            if (@demoWebCore_1.Models.AuthRequest.id== 0) {
+                window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+            } else {
+                $(this).css("pointer-events", "none");
+                document.getElementById("create-collect").classList.add("show-create");
+            }
+        }
+
+
+     });
+    $(".redirect-detail").click(function () {
+        var ele = $(this).attr("pid");
+
+        window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");
+    });
+
+    $("#down-img").click(function () {
+        var ele = $(this).attr("path").replace("path-","");
+        alert(ele)
+    });
+    $("#btnCreate").click(function () {
+            document.getElementById("name_error").innerHTML = "";
+            var _name = $("#txtNameCollect").val();
+         var sts = $('#status-collect:checked').val()=="true"?true:false;
+
+            var _sts = (sts == false ? "Public" : "Private");
+
+            if (_name.length == 0) {
+                document.getElementById("name_error").innerHTML = "* Name is required";
+
+            }
+
+            if (_name.length>0) {
+                var formData = new FormData();
+
+                formData.append("name", _name);
+                formData.append("status", sts);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NameExists", "Collect")"+"?name="+_name,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == true) {
+                        document.getElementById("name_error").innerHTML = "This name already exists";
+
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveCollect", "Collect")",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                var select = document.getElementsByClassName('drop');
+
+                                $(select).append('<option value=' + data + '>' + _name+" - "+_sts+ '</option>');
+                                $(select).val(data);
+                                ResetFormCreate();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+
+
+                }
+
+            });
+        }
+
+     });
+    $("#close-create").click(function () {
+        var select = document.getElementsByClassName('drop');
+
+        $(select).val(-1);
+        $(select).css("pointer-events", "inherit");
+        ResetFormCreate();
+
+
+    });
+    function ResetFormCreate() {
+        document.getElementById("txtNameCollect").value = "";
+        $('#status-collect').prop('checked', false);
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".main-post").css("pointer-events", "inherit");
+
+
+    }
+     $(".btn-redirect").click(function () {
+        var id = $(this).attr("id").replace("redirect-", "");
+        var data = new FormData();
+        data.append("id", id);
+
+         $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUrl", "Post")",
+                data: data,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     window.open(data, '_blank');
+                }
+            });
+
+
+    });
+</script>

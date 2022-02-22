@@ -84,5 +84,10 @@ namespace demoWebCore_1.Service
             return q == null ? false : true;
 
         }
+        public List<Post> GetPostByUserID(int id,int postID)
+        {
+            var q = ct.Post.Where(x => x.user_id == id&&x.id!=postID).ToList();
+            return q ?? null;
+        }
     }
 }

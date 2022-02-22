@@ -153,7 +153,7 @@
 
                     <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
                     <div class="action">
-                        <div class="content" style="height:70%">
+                        <div class="content" style="height:10%">
                             <select class="drop form-control  col-7 select-@item.id" style=" float:left;border:none;background:transparent;
         color:white;">
                                 <option style="color:black" value="-1">Choose</option>
@@ -175,7 +175,7 @@
                             <button class="btnSavePost col-4" id="@item.id" onclick="SavePost(this.id)">Save</button>
 
                         </div>
-
+                        <div style="height:80%;" pid="item-@item.id" class="redirect-detail"></div>
                         @if (item.url != "")
                         {
                             <div class="url_" style="bottom:10px;position:absolute;margin-left:10px">
@@ -250,6 +250,10 @@
 
 
     }
+    $(".redirect-detail").click(function () {
+        var ele = $(this).attr("pid");
+        window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");
+    });
     $(".drop").change(function () {
         if ($(this).val() == 0) {
             if (@demoWebCore_1.Models.AuthRequest.id== 0) {
