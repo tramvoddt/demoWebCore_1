@@ -189,6 +189,21 @@
     .utilities:focus{
         outline:none;
     }
+    .btn-cmt{
+        background:none;
+        border:none;
+    }
+    .btn-cmt:focus{
+        outline:none;
+    }
+        .btn-cmt > i {
+            color: #dcd3d3;
+            font-size: 20px ;
+            pointer-events:none;
+        }
+        button:focus{
+            outline:none;
+        }
 </style>
 <div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
     <button onclick="window.location.href='Post/Index'" style="border-radius: 50%; border: 5px solid rgb(125 175 152 / 0.43); background: #fff; padding: 18px 25px; font-size: 20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
@@ -256,43 +271,52 @@
     <h4 style="margin-top: 5vh">Comments:</h4>
     @if (true)
     {
-<div style="height: 200px; overflow-y: scroll;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
-    <div style="width:100%; height:auto;padding:5px 0">
-        <span style="float:left; width:50px;margin-right:0.5vw">
-            <img src="~/lib/imgs/user.png" width="40" height="40" style="border-radius:50%" />
-        </span>
-        <div style="height:auto;padding:3px 15px;width:85%;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
-            <div style="height: 100%; width: 85%; float: left;margin-right:3%; overflow:hidden">
-                <h6 style="margin-bottom:0">username</h6>
-                @if (true)
-                {
-                    <span>commentcohhhahahahhahahhhhhhhhhhhhhhhhhhhhhhhh</span>
-                    <span>commentcohhhahahahhahahhhhhhhhhhhhhhhhhhhhhhhh</span>
-                }
+        <div style="height: 250px; overflow-y: scroll;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
+            <div style="width:100%; height:auto;padding:5px 0">
+                <span style="float:left; width:50px;margin-right:0.5vw">
+                    <img src="~/lib/imgs/user.png" width="40" height="40" style="border-radius:50%" />
+                </span>
+                <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
+                    <div style="height: 100%; width: 85%; float: left;margin-right:1%">
+                        <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">username</a>
+                        <p style=" word-wrap: break-word;">hahahahahhahahhahahhahah</p>
+
+                    </div>
+                    <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
+                        <button id="favorite" style="width:70%;float:left; margin-right:10%;" class="btn-cmt">
+                            <i class="fa fa-heart" ></i>
+                            <span>44k</span>
+                        </button>
+                        <div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">
+                            <button class="btn-cmt">
+                                @if(true){
+                                <i class="fa fa-exclamation" style="color: #b08585; "></i>
+
+                                }else{
+                                <i class="fa fa-trash" style="color: #b08585; "></i>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-            <div style="height:100%; width:10%;float:left;padding:8% 0; text-align:center">
-                <i class="fa fa-heart" style="color:#dcd3d3;font-size:20px"></i>
-                <span>1522</span>
-            </div>
+
+
+
+
         </div>
-    </div>
-
-
-
-  
-</div>
         @*<div style="height: 100px; overflow-y: hidden;text-align:center; padding:16% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px " id="comments">
-            <h6 style="color:#97baa9">No comment yet</h6>
+                <h6 style="color:#97baa9">No comment yet</h6>
 
-        </div>*@
+            </div>*@
     }
 
-    <div style="width:100%">
-        <input type="text" class="input-cmt" />
-        @* <button id="cancel" style="border:none; padding:16px;color:#6f9b89;position:absolute;margin-left:-3vw; font-weight:700">X</button>*@
-        <button id="done" style="border:none; padding:16px 20px;margin-left:0.2vw;color:#6f9b89;position:absolute;font-weight:700">Done</button>
-    </div>
+<div style="width:100%">
+    <input type="text" class="input-cmt" id="content-cmt" style="float: left; word-wrap: break-word;">
+    <button id="cancel" style="border: none; background:none; padding: 16px; color: rgb(111, 155, 137);float:left; margin-left: -3vw; font-weight: 700; display: none;">X</button>
+    <button id="done" style="border:none;padding:16px 20px;margin-left: 0.2%;color:white;float:left;font-weight:700; background:#e1e8e6">Done</button>
+</div>
 </div>
 </div>
 <!--END POST DETAIL-->
@@ -427,13 +451,19 @@
      });
     $(".redirect-detail").click(function () {
         var ele = $(this).attr("pid");
-
         window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");
     });
 
     $("#down-img").click(function () {
-        var ele = $(this).attr("path").replace("path-","");
-        alert(ele)
+        var ele = $(this).attr("path").replace("path-", "");
+        $.ajax({
+            type: "POST",
+            url: "DownloadImage" + "?id=" + ele,
+            processData: false,
+            contentType: false,
+            success: function () {
+            }
+        });
     });
     $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";
@@ -488,7 +518,46 @@
             });
         }
 
-     });
+    });
+    $("#done").click(function () {
+        var cont = $("#content-cmt").val();
+        if (cont.length > 0) {
+            var e = document.getElementById("comments");
+            $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw"> <img src="/lib/imgs/user.png" width="40" height="40" style="border-radius:50%" /> </span> <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%"> <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">username</a>'
+                +'<p style=" word-wrap: break-word;">'+cont+'</p></div>'
+                + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
+                + '<button id="favorite" style="width:70%;float:left; margin-right:10%;" class="btn-cmt">'
+                + '<i class="fa fa-heart" ></i>'
+                + '<span>44k</span>'
+                + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
+                + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+            ResetComment();
+
+        } else {
+            alert("please enter comment")
+        }
+        });
+
+    $("#content-cmt").on('input', function (e) {
+        var cont = $(this).val();
+        if (cont.length > 0) {
+            $("#cancel").css("display", "block");
+            $("#done").css("background","#eb6a46")
+        } else {
+            $("#cancel").css("display", "none");
+            $("#done").css("background", "#e1e8e6")
+
+
+        }
+    });
+    $("#cancel").click(function () {
+        ResetComment();
+    });
+    function ResetComment() {
+        document.getElementById("content-cmt").value = "";
+        $("#cancel").css("display", "none");
+        $("#done").css("background", "#e1e8e6")
+    }
     $("#close-create").click(function () {
         var select = document.getElementsByClassName('drop');
 
