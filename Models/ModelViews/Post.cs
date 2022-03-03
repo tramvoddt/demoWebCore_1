@@ -36,7 +36,7 @@ namespace demoWebCore_1.Models.ModelViews
         [Column("created_at", TypeName = "datetime")]
 
         public DateTime created_at { get; set; }
-        [Column("status", TypeName = "int")]
+        [Column("status", TypeName = "bool")]
 
         public bool status { get; set; }
 

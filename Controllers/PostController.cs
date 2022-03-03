@@ -132,11 +132,7 @@ namespace demoWebCore_1.Controllers
                 {
                     using (var yourImage = Image.FromStream(mem))
                     {
-                        // If you want it as Png
-                        yourImage.Save("path_to_your_file.png", ImageFormat.Png);
-
-                        // If you want it as Jpeg
-                        yourImage.Save("path_to_your_file.jpg", ImageFormat.Jpeg);
+                        yourImage.Save(@"\..\.. \Downloads\hahahha.jpg", ImageFormat.Jpeg);
                     }
                 }
             }
