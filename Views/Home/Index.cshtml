@@ -127,8 +127,8 @@
             display:block!important;
         }
 </style>
-<div style="position: fixed; bottom: 65px; width: 95%; text-align: right;z-index:1">
-    <button onclick="window.location.href='Post/Index'" style="border-radius: 50%; border: 5px solid rgb(125 175 152 / 0.43); background: #fff; padding: 18px 25px; font-size: 20px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
+<div style="position: fixed;bottom: 65px;width: 95%;text-align: right;z-index:1;pointer-events: none;">
+    <button onclick="window.location.href='Post/Index'" style="pointer-events: all!important;border-radius: 50%;border: 5px solid rgb(125 175 152 / 0.43);background: #fff;padding: 18px 25px;font-size: 23px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
 </div>
 <div id="container" class="cols">
     @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)

@@ -8,7 +8,7 @@
       "System.Collections.Generic.List`1"
     ],
     "namespaceMappings": [
-      "*, ServiceReference1"
+      "*, Services"
     ],
     "references": [
       "BCrypt.Net-Next, {BCrypt.Net-Next, 4.0.2}",

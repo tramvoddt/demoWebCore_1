@@ -19,6 +19,7 @@ using System.Text;
 using System.Net;
 using System.Drawing;
 using System.Drawing.Imaging;
+using demoWebCore_1.Utils;
 
 namespace demoWebCore_1.Controllers
 {
@@ -27,11 +28,13 @@ namespace demoWebCore_1.Controllers
         IPostService _postService =null;
         ICollectService _collectService =null;
         IPostOtherService _postOtherService =null;
-        public PostController(IPostService p,ICollectService c,IPostOtherService po)
+        ICommentService _commentService =null;
+        public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt)
         {
             _postService = p;
             _postOtherService = po;
             _collectService = c;
+            _commentService = cmt;
         }
         public IActionResult Index()
         {
@@ -78,6 +81,7 @@ namespace demoWebCore_1.Controllers
             var w = _postService.GetPostByID(id);
             ViewBag.data =_postService.GetPostByUserID(w.user_id, id);
             TempData["bgc"] = "#d3e3dc";
+            ViewBag.listComment = _commentService.GetListComment(id);
             ViewBag.model = w;
 
             return View();
@@ -107,6 +111,11 @@ namespace demoWebCore_1.Controllers
             return true;
 
         }
+        public void CommentAction(int postID,string content)
+        {
+            _commentService.SaveComment(new Comment() { post_id=postID,user_id=AuthRequest.id,content=content,created_at=DateTime.Now });
+            
+        }
         [HttpPost]
         public string GetUrl(int id)
         {
@@ -132,7 +141,8 @@ namespace demoWebCore_1.Controllers
                 {
                     using (var yourImage = Image.FromStream(mem))
                     {
-                        yourImage.Save(@"\..\.. \Downloads\hahahha.jpg", ImageFormat.Jpeg);
+                        string download = Environment.GetEnvironmentVariable("USERPROFILE") + @"\" + "Downloads" + @"\" + Helpers.RandomCode() + ".jpg";
+                        yourImage.Save(download, ImageFormat.Jpeg);
                     }
                 }
             }

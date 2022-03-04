@@ -20,7 +20,7 @@ namespace demoWebCore_1.Controllers
             _postService = c;
             _collectService = co;
             _userService = u;
-            ServiceReference1.ServiceClient cli = new ServiceReference1.ServiceClient();
+            Services.ServiceClient cli = new Services.ServiceClient();
             var val = cli.GetListCollectAsync();
             var res = val.Result;
             List<CollectContract> list = new List<CollectContract>();

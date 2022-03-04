@@ -7,12 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ServiceReference1
+namespace Services
 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IService")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Services.IService")]
     public interface IService
     {
         
@@ -24,13 +24,13 @@ namespace ServiceReference1
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
-    public interface IServiceChannel : ServiceReference1.IService, System.ServiceModel.IClientChannel
+    public interface IServiceChannel : Services.IService, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
-    public partial class ServiceClient : System.ServiceModel.ClientBase<ServiceReference1.IService>, ServiceReference1.IService
+    public partial class ServiceClient : System.ServiceModel.ClientBase<Services.IService>, Services.IService
     {
         
         /// <summary>
