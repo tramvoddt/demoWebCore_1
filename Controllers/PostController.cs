@@ -116,6 +116,10 @@ namespace demoWebCore_1.Controllers
             _commentService.SaveComment(new Comment() { post_id=postID,user_id=AuthRequest.id,content=content,created_at=DateTime.Now });
             
         }
+        public void ReactAction(int cmtID, int value)
+        {
+
+        }
         [HttpPost]
         public string GetUrl(int id)
         {

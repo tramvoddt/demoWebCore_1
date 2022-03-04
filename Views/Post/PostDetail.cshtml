@@ -486,13 +486,27 @@
             $("#heart-" + thisID).css("color", "#c73228");
             var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
             document.getElementById("heart-count-" + thisID).innerHTML = q + 1;
+            ReactAction(1, thisID);
 
         } else {
             $("#heart-" + thisID).css("color", "rgb(220, 211, 211)");
             var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
             document.getElementById("heart-count-" + thisID).innerHTML = q - 1;
+            ReactAction(0, thisID);
+
         }
     });
+    function ReactAction(value, cmtID) {
+        $.ajax({
+            type: "POST",
+            url: "ReactAction" + "?cmtID=" + cmtID+"&&value="+value,
+            processData: false,
+            contentType: false,
+            success: function () {
+                
+            }
+        });
+    }
     $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
