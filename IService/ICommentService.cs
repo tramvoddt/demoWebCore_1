@@ -9,7 +9,7 @@ namespace demoWebCore_1.IService
 {
     public interface ICommentService
     {
-        bool SaveComment(Comment c);
+        Comment SaveComment(Comment c);
         DataContext GetDataContext();
         List<Comment> GetListComment(int postID);
     }

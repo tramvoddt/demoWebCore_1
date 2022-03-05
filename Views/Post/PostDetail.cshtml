@@ -4,8 +4,9 @@
 @model demoWebCore_1.Models.ModelViews.Collect
 @{
     demoWebCore_1.IService.IPostService p = ViewBag.postService;
+    demoWebCore_1.IService.IReactService r = ViewBag.reactService;
     demoWebCore_1.Models.ModelViews.Post mdl = ViewBag.model;
-   List<demoWebCore_1.Models.ModelViews.Comment> listComment = ViewBag.listComment;
+    List<demoWebCore_1.Models.ModelViews.Comment> listComment = ViewBag.listComment;
 
 }
 <style>
@@ -175,36 +176,42 @@
         font-style: italic;
         float: left
     }
-    .input-cmt{
-        width:87%;
-        border:1.5px solid #a8c6b7;
-        border-radius:5px;
-        padding:14px ;
-        
+
+    .input-cmt {
+        width: 87%;
+        border: 1.5px solid #a8c6b7;
+        border-radius: 5px;
+        padding: 14px;
     }
-    .input-cmt:focus{
-        outline:none;
-        color:#348460;
-        font-weight:600;
+
+        .input-cmt:focus {
+            outline: none;
+            color: #348460;
+            font-weight: 600;
+        }
+
+    .utilities:focus {
+        outline: none;
     }
-    .utilities:focus{
-        outline:none;
+
+    .btn-cmt {
+        background: none;
+        border: none;
     }
-    .btn-cmt{
-        background:none;
-        border:none;
-    }
-    .btn-cmt:focus{
-        outline:none;
-    }
+
+        .btn-cmt:focus {
+            outline: none;
+        }
+
         .btn-cmt > i {
             color: #dcd3d3;
-            font-size: 20px ;
-            pointer-events:none;
+            font-size: 20px;
+            pointer-events: none;
         }
-        button:focus{
-            outline:none;
-        }
+
+    button:focus {
+        outline: none;
+    }
 </style>
 <div style="position: fixed;bottom: 65px;width: 95%;text-align: right;z-index:1;pointer-events: none;">
     <button onclick="window.location.href='Post/Index'" style="pointer-events: all!important;border-radius: 50%;border: 5px solid rgb(125 175 152 / 0.43);background: #fff;padding: 18px 25px;font-size: 23px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
@@ -212,7 +219,7 @@
 <!--POST DETAIL -->
 <div class="container col-9" style="display:table;background: white; height: auto; min-height: 650px; margin: 7vh auto; border-radius: 20px; box-shadow: 0 0 40px 0 rgb(136 169 161 / 0.41); padding: 0">
     <div id="img" style="display:table-row;float:left; width:450px;height:100%;position:relative; padding:10px">
-        <img src="@Url.Action("GetImageFile","Post",new {id=mdl.id })" style="width:100%;height:100%;border-radius:20px" />
+        <img src="@Url.Action("GetImageFile", "Post", new { id = mdl.id })" style="width:100%;height:100%;border-radius:20px" />
     </div>
     @if (mdl.url != "")
     {
@@ -225,113 +232,127 @@
             </div>
         </div>
     }
-<div class="content" style="display:table-row;float:left; width:calc(100% - 450px);height:100%;padding:10px 20px">
-    <div class="content" style="height:40px;margin:1vh 0">
+    <div class="content" style="display:table-row;float:left; width:calc(100% - 450px);height:100%;padding:10px 20px">
+        <div class="content" style="height:40px;margin:1vh 0">
 
-        <button class="utilities" id="down-img" style="padding:10px; background:#fff; border:none; " path="path-@mdl.id">
-            <i class="fa fa-download" style="font-size:18px;pointer-events:none"></i>
-        </button>
-        <button class="utilities" style="padding: 10px; background: #fff; border: none">
-            <i class="fa fa-bell" style="font-size:18px;pointer-events:none"></i>
-        </button>
-        <button class="utilities" style="padding: 10px; background: #fff; border: none">
-            <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
+            <button class="utilities" id="down-img" style="padding:10px; background:#fff; border:none; " path="path-@mdl.id">
+                <i class="fa fa-download" style="font-size:18px;pointer-events:none"></i>
+            </button>
+            <button class="utilities" style="padding: 10px; background: #fff; border: none">
+                <i class="fa fa-bell" style="font-size:18px;pointer-events:none"></i>
+            </button>
+            <button class="utilities" style="padding: 10px; background: #fff; border: none">
+                <i class="fa fa-share" style="font-size:18px;pointer-events:none"></i>
 
-        </button>
+            </button>
 
-        <button class="btnSavePost col-2" style="float: right; height: 100%; border-radius: 0 20px 20px 0" id="@mdl.id" onclick="SavePost(this.id)">Save</button>
+            <button class="btnSavePost col-2" style="float: right; height: 100%; border-radius: 0 20px 20px 0" id="@mdl.id" onclick="SavePost(this.id)">Save</button>
 
-        <select class="drop form-control  col-5 select-@mdl.id" style=" float:right;color:black;height:100%;border-radius:15px 0 0 15px">
-            <option style="color:black" value="-1">Choose</option>
-            <option style="color:black" value="0">Create</option>
-            @if (TempData["listCollect"] != null)
-            {
-                foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
+            <select class="drop form-control  col-5 select-@mdl.id" style=" float:right;color:black;height:100%;border-radius:15px 0 0 15px">
+                <option style="color:black" value="-1">Choose</option>
+                <option style="color:black" value="0">Create</option>
+                @if (TempData["listCollect"] != null)
                 {
-                    if ((mdl.collection_id == item1.id && mdl.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(mdl.id, item1.id))
+                    foreach (var item1 in (List<demoWebCore_1.Models.ModelViews.Collect>)TempData["listCollect"])
                     {
-                        <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+                        if ((mdl.collection_id == item1.id && mdl.user_id == demoWebCore_1.Models.AuthRequest.id) || p.CheckChooseCollection(mdl.id, item1.id))
+                        {
+                            <option style="color:black" selected="selected" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
 
-                    }
-                    else
-                    {
-                        <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
+                        }
+                        else
+                        {
+                            <option style="color:black" value="@item1.id">@(item1.name)  - @(item1.status == true ? "Private" : "Public")</option>
 
+                        }
                     }
                 }
-            }
-        </select>
+            </select>
 
-    </div>
+        </div>
 
-    <div>
-        <h1>@mdl.subject</h1>
-        <h6 style="color:#666f6c">@mdl.content</h6>
-    </div>
-    <!--COMMENT-->
-    <h4 style="margin-top: 5vh">Comments:</h4>
-   
-    <div style="height: 250px; overflow-y: scroll;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
-        @if (listComment.Count == 0)
-        {
-            <label id="cmt-sts">No comment here</label>
-        }
-        else
-        {
-            foreach (var item in listComment)
+        <div>
+            <h1>@mdl.subject</h1>
+            <h6 style="color:#666f6c">@mdl.content</h6>
+        </div>
+        <!--COMMENT-->
+        <h4 style="margin-top: 5vh">Comments:</h4>
+
+        <div style="height: 250px; overflow-y: scroll;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
+            @if (listComment.Count == 0)
             {
-                <div style="width:100%; height:auto;padding:5px 0">
-                    <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">
-                        <span style="padding:9px 15px; border-radius:50%;background:#cad3cc; color:white">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name.Substring(0,1)</span>
-                    </span>
-                    <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
-                        <div style="height: 100%; width: 85%; float: left;margin-right:1%">
-                            <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x=>x.id==item.user_id).name</a>
-                            <p style=" word-wrap: break-word;">@item.content</p>
+                <label id="cmt-sts">No comment here</label>
+            }
+            else
+            {
+                if (listComment.Count > 1)
+                {
+                    <span style="cursor:pointer; color:#859c8d;font-size:12px" pid="cmt-@mdl.id" id="load-more">load more</span>
+                }
+                <div id="box-cmt">
+                    @foreach (var item in listComment.Skip(listComment.Count - 1).Take(1))
+                    {
+                        <div style="width:100%; height:auto;padding:5px 0">
+                            <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">
+                                <span style="padding:9px 15px; border-radius:50%;background:#cad3cc; color:white">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name.Substring(0, 1)</span>
+                            </span>
+                            <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
+                                <div style="height: 100%; width: 85%; float: left;margin-right:1%">
+                                    <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name @item.created_at.ToString("HH:mm")</a>
+                                    <p style=" word-wrap: break-word;">@item.content</p>
 
-                        </div>
-                        <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
-                            <button  style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-@item.id">
-                                <i class="fa fa-heart" id="heart-@item.id"></i>
-                                <span id="heart-count-@item.id">1</span>
-                            </button>
-                            <div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">
-                                <button class="btn-cmt">
-                                    @if (true)
-                                    {
-                                        <i class="fa fa-exclamation" style="color: #b08585; "></i>
+                                </div>
+                                <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
+                                    <button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-@item.id">
+                                        @if (r.CheckUserReact(item.id))
+                                        {
+                                            <i class="fa fa-heart" id="heart-@item.id" style="color: rgb(199, 50, 40) "></i>
 
-                                    }
-                                    else
-                                    {
-                                        <i class="fa fa-trash" style="color: #b08585; "></i>
-                                    }
-                                </button>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-heart" id="heart-@item.id"></i>
+
+                                        }
+                                        <span style="color:rgb(138 38 31)" id="heart-count-@item.id">@r.GetReactByCmt(item.id).total</span>
+                                    </button>
+                                    <div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">
+                                        <button class="btn-cmt">
+                                            @if (true)
+                                            {
+                                                <i class="fa fa-exclamation" style="color: #b08585; "></i>
+
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-trash" style="color: #b08585; "></i>
+                                            }
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
+                        </div>
+
+                    }
                 </div>
 
+
             }
 
-
-        }
-
-
-    </div>
+        </div>
         @*<div style="height: 100px; overflow-y: hidden;text-align:center; padding:16% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px " id="comments">
                 <h6 style="color:#97baa9">No comment yet</h6>
 
             </div>*@
-    
 
-<div style="width:100%">
-    <input type="text" class="input-cmt" id="content-cmt" style="float: left; word-wrap: break-word;">
-    <button id="cancel" style="border: none; background:none; padding: 16px; color: rgb(111, 155, 137);float:left; margin-left: -3vw; font-weight: 700; display: none;">X</button>
-    <button id="done" style="border:none;padding:16px 20px;margin-left: 0.2%;color:white;float:left;font-weight:700; background:#e1e8e6">Done</button>
-</div>
-</div>
+
+        <div style="width:100%">
+            <input type="text" class="input-cmt" id="content-cmt" style="float: left; word-wrap: break-word;">
+            <button id="cancel" style="border: none; background:none; padding: 16px; color: rgb(111, 155, 137);float:left; margin-left: -3vw; font-weight: 700; display: none;">X</button>
+            <button id="done" style="border:none;padding:16px 20px;margin-left: 0.2%;color:white;float:left;font-weight:700; background:#e1e8e6">Done</button>
+        </div>
+    </div>
 </div>
 <!--END POST DETAIL-->
 <!--OTHER POST OF USER-->
@@ -392,9 +413,7 @@
         </div>
     }
 </div>
-<!--END OTHER POST OF USER-->  
-
-
+<!--END OTHER POST OF USER-->
 <!--CREATE COLLECTION-->
 <div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <div style="width:100%;text-align:left; padding-bottom:20px;">
@@ -419,11 +438,12 @@
 <!--END CREATE COLLECTION-->
 
 <script type="text/javascript">
-  function SavePost(value) {
+    var count = 1;
+    function SavePost(value) {
       var ele = $(".select-" + value).val();
 
         if (@demoWebCore_1.Models.AuthRequest.id== 0) {
-            window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+            window.location.href = "@Url.Action("Auth", "Auth", new { type = "login" })"
         } else if (ele == -1) {
             alert("Please select Collection");
         } else {
@@ -454,7 +474,7 @@
      $(".drop").change(function () {
         if ($(this).val() == 0) {
             if (@demoWebCore_1.Models.AuthRequest.id== 0) {
-                window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+                window.location.href = "@Url.Action("Auth", "Auth", new { type = "login" })"
             } else {
                 $(this).css("pointer-events", "none");
                 document.getElementById("create-collect").classList.add("show-create");
@@ -480,33 +500,7 @@
             }
         });
     });
-    $(".favorite").click(function () {
-        var thisID = $(this).attr("id").replace("favorite-", "");
-        if ($("#heart-" + thisID).css("color") == "rgb(220, 211, 211)") {
-            $("#heart-" + thisID).css("color", "#c73228");
-            var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
-            document.getElementById("heart-count-" + thisID).innerHTML = q + 1;
-            ReactAction(1, thisID);
 
-        } else {
-            $("#heart-" + thisID).css("color", "rgb(220, 211, 211)");
-            var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
-            document.getElementById("heart-count-" + thisID).innerHTML = q - 1;
-            ReactAction(0, thisID);
-
-        }
-    });
-    function ReactAction(value, cmtID) {
-        $.ajax({
-            type: "POST",
-            url: "ReactAction" + "?cmtID=" + cmtID+"&&value="+value,
-            processData: false,
-            contentType: false,
-            success: function () {
-                
-            }
-        });
-    }
     $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
@@ -565,7 +559,7 @@
         var cont = $("#content-cmt").val();
 
          if (@demoWebCore_1.Models.AuthRequest.id== 0) {
-            window.location.href = "@Url.Action("Auth", "Auth", new {type="login"})"
+            window.location.href = "@Url.Action("Auth", "Auth", new { type = "login" })"
         }
        else if (cont.length > 0) {
 
@@ -579,18 +573,22 @@
                 data: formDT,
                 processData: false,
                 contentType: false,
-                success: function () {
-                      var e = document.getElementById("comments");
-            $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px"><span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id==0?"": demoWebCore_1.Models.AuthRequest.name.Substring(0,1))</span ></span ><div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%"> <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id==0?"": demoWebCore_1.Models.AuthRequest.name)</a>'
+                success: function (data) {
+
+                    var e = document.getElementById("comments");
+                    $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
+                        + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name.Substring(0, 1))</span ></span >' +
+                        ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">'+
+                        ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name) @DateTime.Now.ToString("HH:mm")</a>'
                 +'<p style=" word-wrap: break-word;">'+cont+'</p></div>'
                 + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
-                + '<button id="favorite" style="width:70%;float:left; margin-right:10%;" class="btn-cmt">'
-                + '<i class="fa fa-heart" ></i>'
-                + '<span>44k</span>'
+                        + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data+'">'
+                + '<i class="fa fa-heart" id="heart-'+data+'" ></i>'
+               + '<span style="color:rgb(138 38 31)" id="heart-count-'+data+'">0</span>'
                 + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
-                + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+                + '<button class="btn-cmt"> @if (true) {<i class="fa fa-exclamation" style="color: #b08585; "></i> } else { <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
                     ResetComment();
-
+                    $("#comments").scrollTop($("#comments").height());
                     if (@listComment.Count== 0) { document.getElementById("cmt-sts").remove(); }
                 }
             });
@@ -599,7 +597,41 @@
         } else {
             alert("please enter comment")
         }
-        });
+    });
+    $("#load-more").click(function () {
+        count += 1;
+        var dt = new FormData();
+        dt.append("value", count);
+        dt.append("postID", $(this).attr("pid").replace("cmt-",""));
+           $.ajax({
+                type: "POST",
+                url: "@Url.Action("LoadMoreCmt", "Post")",
+                data: dt,
+                processData: false,
+                contentType: false,
+                 success: function (data) {
+                     var e = document.getElementById("box-cmt");
+                     for (var i = 0; i < data.length; i++) {
+                         
+                         $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
+                             + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@*@(uID!=0?p.GetDataContext().Users.FirstOrDefault(x=>x.id==uID).name.Substring(0,1):"")*@</span ></span >' +
+                       ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
+                       ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@*@(uID!=0?p.GetDataContext().Users.FirstOrDefault(x=>x.id==uID).name:"")*@ '+data[i].created_at@*.format("HH:mm")*@+'</a>'
+                       + '<p style=" word-wrap: break-word;">'+data[i].content+'</p></div>'
+                       + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
+                       + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data[i].id+'">'
+                               + '<i class="fa fa-heart" id="heart-' + data[i].id +'" ></i>'
+                               + '<span style="color:rgb(138 38 31)" id="heart-count-' + data[i].id +'">'+data[i].total+'</span>'
+                       + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
+                       + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+
+                             }
+                     }
+
+           });
+    });
+
+
 
     $("#content-cmt").on('input', function (e) {
         var cont = $(this).val();
@@ -655,5 +687,39 @@
             });
 
 
+     });
+    $('body').delegate('.favorite', 'click', function () {
+        if (@AuthRequest.id== 0) {
+            window.location.href = "@Url.Action("Auth","Auth",new {type="login" })"
+        } else {
+            var thisID = $(this).attr("id").replace("favorite-", "");
+            if ($("#heart-" + thisID).css("color") == "rgb(220, 211, 211)") {
+                $("#heart-" + thisID).css("color", "#c73228");
+                var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
+                document.getElementById("heart-count-" + thisID).innerHTML = q + 1;
+                ReactAction(1, thisID);
+
+            } else {
+                $("#heart-" + thisID).css("color", "rgb(220, 211, 211)");
+                var q = parseInt(document.getElementById("heart-count-" + thisID).innerHTML);
+                document.getElementById("heart-count-" + thisID).innerHTML = q - 1;
+                ReactAction(0, thisID);
+
+            }
+        }
     });
+
+
+    function ReactAction(value, cmtID) {
+
+        $.ajax({
+            type: "POST",
+            url: "ReactAction" + "?cmtID=" + cmtID + "&&value=" + value,
+            processData: false,
+            contentType: false,
+            success: function () {
+
+            }
+        });
+    }
 </script>

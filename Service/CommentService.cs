@@ -19,11 +19,11 @@ namespace demoWebCore_1.Service
         {
             return ct;
         }
-        public bool SaveComment(Comment c)
+        public Comment SaveComment(Comment c)
         {
             ct.Comment.Add(c);
             ct.SaveChanges();
-            return true;
+            return c;
         }
        public  List<Comment> GetListComment(int postID)
         {

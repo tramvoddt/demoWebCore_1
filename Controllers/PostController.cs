@@ -29,12 +29,14 @@ namespace demoWebCore_1.Controllers
         ICollectService _collectService =null;
         IPostOtherService _postOtherService =null;
         ICommentService _commentService =null;
-        public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt)
+        IReactService _reactService =null;
+        public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt, IReactService r)
         {
             _postService = p;
             _postOtherService = po;
             _collectService = c;
             _commentService = cmt;
+            _reactService = r;
         }
         public IActionResult Index()
         {
@@ -70,6 +72,7 @@ namespace demoWebCore_1.Controllers
         public IActionResult PostDetail(int id)
         {
             ViewBag.postService = _postService;
+            ViewBag.reactService = _reactService;
             if (AuthRequest.id == 0)
             {
                 TempData["listCollect"] = null;
@@ -85,6 +88,10 @@ namespace demoWebCore_1.Controllers
             ViewBag.model = w;
 
             return View();
+        }
+        public List<Comment> LoadMoreCmt(int postID, int value)
+        {
+            return _commentService.GetListComment(postID).Skip(value * 1).Take(1).ToList();
         }
         public bool SavePostOther(int post_id, int collect_id)
         {
@@ -111,14 +118,16 @@ namespace demoWebCore_1.Controllers
             return true;
 
         }
-        public void CommentAction(int postID,string content)
+        public int CommentAction(int postID,string content)
         {
-            _commentService.SaveComment(new Comment() { post_id=postID,user_id=AuthRequest.id,content=content,created_at=DateTime.Now });
+            Comment c = _commentService.SaveComment(new Comment() { post_id=postID,user_id=AuthRequest.id,content=content,created_at=DateTime.Now });
             
+            _reactService.CreateReact(new React() { cmt_id = c.id, listUser = "[]", total = 0 });
+            return c.id;
         }
         public void ReactAction(int cmtID, int value)
         {
-
+            _reactService.ReactAction(cmtID, value);
         }
         [HttpPost]
         public string GetUrl(int id)
