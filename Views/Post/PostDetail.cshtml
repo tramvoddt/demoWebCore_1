@@ -363,7 +363,7 @@
 
             <img src='@Url.Action("GetImageFile", "Post", new { id = item.id })' />
             <div class="action">
-                <div class="content" style="height:15%;">
+                <div class="content" style="height: 15%;">
                     <select class="drop form-control  col-7 select-@item.id" style="float:left;border:none;background:transparent;
         color:white;">
                         <option style="color:black" value="-1">Choose</option>
@@ -611,27 +611,92 @@
                 contentType: false,
                  success: function (data) {
                      var e = document.getElementById("box-cmt");
-                     for (var i = 0; i < data.length; i++) {
-                         
-                         $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
-                             + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@*@(uID!=0?p.GetDataContext().Users.FirstOrDefault(x=>x.id==uID).name.Substring(0,1):"")*@</span ></span >' +
-                       ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
-                       ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@*@(uID!=0?p.GetDataContext().Users.FirstOrDefault(x=>x.id==uID).name:"")*@ '+data[i].created_at@*.format("HH:mm")*@+'</a>'
-                       + '<p style=" word-wrap: break-word;">'+data[i].content+'</p></div>'
-                       + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
-                       + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data[i].id+'">'
-                               + '<i class="fa fa-heart" id="heart-' + data[i].id +'" ></i>'
-                               + '<span style="color:rgb(138 38 31)" id="heart-count-' + data[i].id +'">'+data[i].total+'</span>'
-                       + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
-                       + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
-
+                     if (data.length == 0) {
+                         $("#load-more").remove();
+                     } else {
+                         for (var i = 0; i < data.length; i++) {
+                             var cont = "";
+                             var user_name = getUserName(data[i].user_id);
+                             if (CheckUserReact(data[i].id)=="true") {
+                                 cont = '<i class="fa fa-heart" id="heart-' + data[i].id + '" style="color: rgb(199, 50, 40) "></i>';
+                             } else {
+                                 cont = '<i class="fa fa-heart" id="heart-' + data[i].id + '"></i>';
                              }
+                             $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
+                                 + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >' + user_name.slice(0, 1) + '</span ></span >' +
+                                 ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
+                                 ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">' + user_name + " " + data[i].created_at + '</a>'
+                                 + '<p style=" word-wrap: break-word;">' + data[i].content + '</p></div>'
+                                 + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
+                                 + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-' + data[i].id + '">'
+                                 + cont + '<span style="color:rgb(138 38 31)" id="heart-count-' + data[i].id + '">' + GetTotal(data[i].id) + '</span>'
+                                 + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
+                                 + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+
+                         }
+                     }
                      }
 
            });
     });
 
+    function getUserName(userID) {
+        var f = new FormData();
+        f.append("id", userID);
 
+           var q= $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUserName", "Auth")",
+                data: f,
+                async: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    return data;
+
+               }
+           }).responseText;
+
+        return q;
+
+    };
+
+    function CheckUserReact(cmtID) {
+        var f = new FormData();
+        f.append("cID", cmtID);
+       var r= $.ajax({
+            type: "POST",
+            url: "@Url.Action("CheckUserReact", "Post")",
+            data: f,
+            async: false,
+            processData: false,
+            contentType: false,
+           success: function (data) {
+                return data;
+
+            }
+
+       }).responseText;
+        return r;
+    };
+     function GetTotal(cmtID) {
+        var f = new FormData();
+        f.append("cID", cmtID);
+       var r= $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetReactByCmt", "Post")",
+            data: f,
+            async: false,
+            processData: false,
+            contentType: false,
+           success: function (data) {
+                return data;
+
+            }
+
+       }).responseText;
+        return r;
+    };
 
     $("#content-cmt").on('input', function (e) {
         var cont = $(this).val();

@@ -53,6 +53,7 @@ namespace demoWebCore_1.Controllers
             }
             return View();
         }
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SignUpAction(Users u)

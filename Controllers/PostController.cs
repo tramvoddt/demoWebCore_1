@@ -93,6 +93,14 @@ namespace demoWebCore_1.Controllers
         {
             return _commentService.GetListComment(postID).Skip(value * 1).Take(1).ToList();
         }
+        public int GetReactByCmt(int cID)
+        {
+            return _reactService.GetReactByCmt(cID).total;
+        }
+        public bool CheckUserReact(int cID)
+        {
+            return _reactService.CheckUserReact(cID);
+        }
         public bool SavePostOther(int post_id, int collect_id)
         {
             var q = _postService.GetDataContext().Post.FirstOrDefault(x => x.id == post_id && x.user_id == AuthRequest.id);

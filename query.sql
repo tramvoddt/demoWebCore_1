@@ -5,4 +5,6 @@ list_user varchar(max),
 total int
 )
 select* from comments
+select* from react
+delete from comments
 delete from react
