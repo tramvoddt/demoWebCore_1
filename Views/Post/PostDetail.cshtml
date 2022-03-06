@@ -290,7 +290,7 @@
                     <span style="cursor:pointer; color:#859c8d;font-size:12px" pid="cmt-@mdl.id" id="load-more">load more</span>
                 }
                 <div id="box-cmt">
-                    @foreach (var item in listComment.Skip(listComment.Count - 1).Take(1))
+                    @foreach (var item in listComment.Skip(listComment.Count - 2).Take(2))
                     {
                         <div style="width:100%; height:auto;padding:5px 0">
                             <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">
@@ -298,7 +298,8 @@
                             </span>
                             <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
                                 <div style="height: 100%; width: 85%; float: left;margin-right:1%">
-                                    <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name @item.created_at.ToString("HH:mm")</a>
+                                    <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name</a>
+                                    <span>@(item.created_at.ToShortDateString()==DateTime.Now.ToShortDateString()?item.created_at.ToString("HH:mm"):item.created_at.ToString("dd/MM/yyyy HH:mm"))</span>
                                     <p style=" word-wrap: break-word;">@item.content</p>
 
                                 </div>
@@ -438,7 +439,7 @@
 <!--END CREATE COLLECTION-->
 
 <script type="text/javascript">
-    var count = 1;
+    var count = 2;
     function SavePost(value) {
       var ele = $(".select-" + value).val();
 
@@ -574,13 +575,14 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-
                     var e = document.getElementById("comments");
                     $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                         + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name.Substring(0, 1))</span ></span >' +
-                        ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">'+
-                        ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name) @DateTime.Now.ToString("HH:mm")</a>'
-                +'<p style=" word-wrap: break-word;">'+cont+'</p></div>'
+                        ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
+                        ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name)</a>' +
+                        '<span> @DateTime.Now.ToString("HH:mm")</span>'
+                        + '<p style=" word-wrap: break-word;">' + cont + '</p>'
+                        +'</div >'
                 + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
                         + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data+'">'
                 + '<i class="fa fa-heart" id="heart-'+data+'" ></i>'
@@ -611,10 +613,32 @@
                 contentType: false,
                  success: function (data) {
                      var e = document.getElementById("box-cmt");
-                     if (data.length == 0) {
+
+                     if (data == null) {
                          $("#load-more").remove();
                      } else {
                          for (var i = 0; i < data.length; i++) {
+                             var dateTimeAgo = "";
+                             var today = new Date();
+                             var date = new Date();
+                             var dd = date.getDate();
+                             var mm = date.getMonth() + 1;
+                             var yyyy = date.getFullYear();
+                             if (dd < 10) {
+                                 dd = '0' + dd;
+                             }
+
+                             if (mm < 10) {
+                                 mm = '0' + mm;
+                             }
+                             date = dd+'-'+mm+'-'+yyyy;
+
+                             if (moment(data[i].created_at).format('DD-MM-YYYY') == date) {
+                                 dateTimeAgo = moment(data[i].created_at).format('HH:mm');
+                             } else {
+                                 dateTimeAgo = moment(data[i].created_at).format('DD-MM-YYYY HH:mm');
+
+                             }
                              var cont = "";
                              var user_name = getUserName(data[i].user_id);
                              if (CheckUserReact(data[i].id)=="true") {
@@ -625,7 +649,8 @@
                              $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                                  + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >' + user_name.slice(0, 1) + '</span ></span >' +
                                  ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
-                                 ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">' + user_name + " " + data[i].created_at + '</a>'
+                                 ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">' + user_name + '</a>'
+                                  + ' <span> ' + dateTimeAgo + '</span>'
                                  + '<p style=" word-wrap: break-word;">' + data[i].content + '</p></div>'
                                  + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
                                  + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-' + data[i].id + '">'
@@ -677,6 +702,7 @@
             }
 
        }).responseText;
+
         return r;
     };
      function GetTotal(cmtID) {
@@ -788,3 +814,4 @@
         });
     }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

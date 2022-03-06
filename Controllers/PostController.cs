@@ -91,7 +91,13 @@ namespace demoWebCore_1.Controllers
         }
         public List<Comment> LoadMoreCmt(int postID, int value)
         {
-            return _commentService.GetListComment(postID).Skip(value * 1).Take(1).ToList();
+            var skip = _commentService.GetListComment(postID).Count - value-1;
+            if (skip < 0)
+            {
+                return null;
+            }
+           
+            return _commentService.GetListComment(postID).Skip(skip).Take(2).ToList();
         }
         public int GetReactByCmt(int cID)
         {
