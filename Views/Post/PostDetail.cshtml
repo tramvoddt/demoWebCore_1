@@ -212,6 +212,20 @@
     button:focus {
         outline: none;
     }
+
+    .show-action {
+        display: block !important;
+    }
+    .span-action {
+       
+        color:white;
+        font-weight:500;
+        padding:0 25% 0 15%;
+    }
+        .span-action:hover {
+            cursor: pointer;
+            border-bottom:#74f7af 3px solid;
+        }
 </style>
 <div style="position: fixed;bottom: 65px;width: 95%;text-align: right;z-index:1;pointer-events: none;">
     <button onclick="window.location.href='Post/Index'" style="pointer-events: all!important;border-radius: 50%;border: 5px solid rgb(125 175 152 / 0.43);background: #fff;padding: 18px 25px;font-size: 23px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
@@ -290,17 +304,17 @@
                     <span style="cursor:pointer; color:#859c8d;font-size:12px" pid="cmt-@mdl.id" id="load-more">load more</span>
                 }
                 <div id="box-cmt">
-                    @foreach (var item in listComment.Skip(listComment.Count - 2).Take(2))
+                    @foreach (var item in listComment.Skip(listComment.Count - 3).Take(3))
                     {
-                        <div style="width:100%; height:auto;padding:5px 0">
+                        <div style="width:100%; height:auto;bottom:0; padding:5px 0">
                             <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">
                                 <span style="padding:9px 15px; border-radius:50%;background:#cad3cc; color:white">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name.Substring(0, 1)</span>
                             </span>
-                            <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
+                            <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px">
                                 <div style="height: 100%; width: 85%; float: left;margin-right:1%">
                                     <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name</a>
                                     <span>@(item.created_at.ToShortDateString()==DateTime.Now.ToShortDateString()?item.created_at.ToString("HH:mm"):item.created_at.ToString("dd/MM/yyyy HH:mm"))</span>
-                                    <p style=" word-wrap: break-word;">@item.content</p>
+                                    <p style=" word-wrap: break-word;">@item.content </p>
 
                                 </div>
                                 <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
@@ -318,18 +332,20 @@
                                         <span style="color:rgb(138 38 31)" id="heart-count-@item.id">@r.GetReactByCmt(item.id).total</span>
                                     </button>
                                     <div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">
-                                        <button class="btn-cmt">
-                                            @if (true)
-                                            {
-                                                <i class="fa fa-exclamation" style="color: #b08585; "></i>
+                                        <button class="btn-cmt" cid="btn-action-@item.id">
 
-                                            }
-                                            else
-                                            {
-                                                <i class="fa fa-trash" style="color: #b08585; "></i>
-                                            }
+                                            <i class="fa fa-exclamation" style="color: #b08585; "></i>
+
+
                                         </button>
+                                        <div id="action-@item.id" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">
+                                            <span class="span-action">edit</span>
+                                            <span class="span-action">delete</span>
+                                            <span class="span-action">report</span>
+                                        </div>
+
                                     </div>
+
                                 </div>
                             </div>
 
@@ -437,9 +453,10 @@
 
 </div>
 <!--END CREATE COLLECTION-->
-
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript">
-    var count = 2;
+    var count = 1;
     function SavePost(value) {
       var ele = $(".select-" + value).val();
 
@@ -484,6 +501,20 @@
 
 
      });
+    $('body').delegate('.btn-cmt', 'click', function () {
+        var cid = $(this).attr("cid").replace("btn-action-", "");
+        actionicon = document.getElementsByClassName('action-user');
+        for (var i = 0, n = actionicon.length; i < n; i++) {
+            actionicon[i].classList.remove("show-action");
+        }
+       document.getElementById("action-" + cid).classList.toggle("show-action");
+    });
+    $("#comments").scroll(function () {
+       @* actionicon = document.getElementsByClassName('action-user');
+        for (var i = 0, n = actionicon.length; i < n; i++) {
+            actionicon[i].classList.remove("show-action");
+        }*@
+    });
     $(".redirect-detail").click(function () {
         var ele = $(this).attr("pid");
         window.location.href = "/Post/PostDetail?id=" + ele.replace("item-", "");
@@ -559,8 +590,8 @@
     $("#done").click(function () {
         var cont = $("#content-cmt").val();
 
-         if (@demoWebCore_1.Models.AuthRequest.id== 0) {
-            window.location.href = "@Url.Action("Auth", "Auth", new { type = "login" })"
+        if (@demoWebCore_1.Models.AuthRequest.id== 0) {
+             window.location.href = "/Auth/Auth?type=login&&page=post-detail-" + @mdl.id;
         }
        else if (cont.length > 0) {
 
@@ -576,9 +607,10 @@
                 contentType: false,
                 success: function (data) {
                     var e = document.getElementById("comments");
+                    alert(true);
                     $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                         + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name.Substring(0, 1))</span ></span >' +
-                        ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
+                        ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
                         ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name)</a>' +
                         '<span> @DateTime.Now.ToString("HH:mm")</span>'
                         + '<p style=" word-wrap: break-word;">' + cont + '</p>'
@@ -588,7 +620,12 @@
                 + '<i class="fa fa-heart" id="heart-'+data+'" ></i>'
                + '<span style="color:rgb(138 38 31)" id="heart-count-'+data+'">0</span>'
                 + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
-                + '<button class="btn-cmt"> @if (true) {<i class="fa fa-exclamation" style="color: #b08585; "></i> } else { <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+                + '<button class="btn-cmt" cid="btn-action-'+data+'"><i class="fa fa-exclamation" style="color: #b08585; "></i> }</button><div id="action-'+data+'" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">'+
+                        '<span class="span-action">edit</span><br/>' +
+                        '<span class="span-action">delete</span><br/> <span class="span-action">report</span>'+
+                        '</div> </div>  </div>  </div> </div>');
+                    alert(true);
+
                     ResetComment();
                     $("#comments").scrollTop($("#comments").height());
                     if (@listComment.Count== 0) { document.getElementById("cmt-sts").remove(); }
@@ -648,7 +685,7 @@
                              }
                              $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                                  + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >' + user_name.slice(0, 1) + '</span ></span >' +
-                                 ' <div style="height:auto;padding:3px 0 3px 15px;width:530px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
+                                 ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
                                  ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">' + user_name + '</a>'
                                   + ' <span> ' + dateTimeAgo + '</span>'
                                  + '<p style=" word-wrap: break-word;">' + data[i].content + '</p></div>'
@@ -656,7 +693,11 @@
                                  + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-' + data[i].id + '">'
                                  + cont + '<span style="color:rgb(138 38 31)" id="heart-count-' + data[i].id + '">' + GetTotal(data[i].id) + '</span>'
                                  + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
-                                 + '<button class="btn-cmt"> @if(true){<i class="fa fa-exclamation" style="color: #b08585; "></i> }else{ <i class="fa fa-trash" style="color: #b08585; "></i> } </button> </div>  </div>  </div> </div>');
+                                 + '<button class="btn-cmt" cid="btn-action-' + data[i].id + '"><i class="fa fa-exclamation" style="color: #b08585; "></i> </button><div id="action-' + data[i].id + '" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">' +
+                                 '<span class="span-action">edit</span><br/>' +
+                                 '<span class="span-action">delete</span><br/>' +
+                                 '<span class="span-action">report</span>' +
+                                 '</div> </div>  </div>  </div> </div>');
 
                          }
                      }
@@ -781,7 +822,7 @@
      });
     $('body').delegate('.favorite', 'click', function () {
         if (@AuthRequest.id== 0) {
-            window.location.href = "@Url.Action("Auth","Auth",new {type="login" })"
+                window.location.href = "/Auth/Auth?type=login&&page=post-detail-" + @mdl.id;
         } else {
             var thisID = $(this).attr("id").replace("favorite-", "");
             if ($("#heart-" + thisID).css("color") == "rgb(220, 211, 211)") {

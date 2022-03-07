@@ -36,7 +36,7 @@ namespace demoWebCore_1.Controllers
             _postService = p;
         }
 
-        public IActionResult Auth(string type, string page="index") //login and sign-up
+        public IActionResult Auth(string type, string page) //login and sign-up
         {
             pages = page;
             if (AuthRequest.id != 0)
@@ -121,8 +121,11 @@ namespace demoWebCore_1.Controllers
 
             if (pages == "post")
             {
-                pages = "index";
+                pages = "";
                 return RedirectToAction("Index", "Post");
+            }else if (pages.Contains("post-detail-"))
+            {
+                return RedirectToAction("PostDetail", "Post",new { id=int.Parse(pages.Replace("post-detail-",""))});
             }
 
             return RedirectToAction("Index", "Home");

@@ -30,6 +30,7 @@ namespace demoWebCore_1.Controllers
         IPostOtherService _postOtherService =null;
         ICommentService _commentService =null;
         IReactService _reactService =null;
+        public static int k, post;
         public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt, IReactService r)
         {
             _postService = p;
@@ -71,6 +72,7 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult PostDetail(int id)
         {
+            post = id;
             ViewBag.postService = _postService;
             ViewBag.reactService = _reactService;
             if (AuthRequest.id == 0)
@@ -81,23 +83,30 @@ namespace demoWebCore_1.Controllers
             {
                 TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
             }
-            var w = _postService.GetPostByID(id);
-            ViewBag.data =_postService.GetPostByUserID(w.user_id, id);
+            var w = _postService.GetPostByID(id==0?post:id);
+            ViewBag.data =_postService.GetPostByUserID(w.user_id, id==0?post:id);
             TempData["bgc"] = "#d3e3dc";
-            ViewBag.listComment = _commentService.GetListComment(id);
+            ViewBag.listComment = _commentService.GetListComment(id==0?post:id);
             ViewBag.model = w;
 
             return View();
         }
         public List<Comment> LoadMoreCmt(int postID, int value)
         {
-            var skip = _commentService.GetListComment(postID).Count - value-1;
+            var skip = _commentService.GetListComment(postID).Count - value*3;
+            int take = 3;
             if (skip < 0)
             {
-                return null;
+                if (k == 0)
+                {
+                    k++;
+                    take = skip + 3;
+                }
+                else if(k==1) { return null; }
+                
             }
            
-            return _commentService.GetListComment(postID).Skip(skip).Take(2).ToList();
+            return _commentService.GetListComment(postID).Skip(skip).Take(take).ToList();
         }
         public int GetReactByCmt(int cID)
         {
