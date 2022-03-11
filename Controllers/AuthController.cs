@@ -123,9 +123,6 @@ namespace demoWebCore_1.Controllers
             {
                 pages = "";
                 return RedirectToAction("Index", "Post");
-            }else if (pages.Contains("post-detail-"))
-            {
-                return RedirectToAction("PostDetail", "Post",new { id=int.Parse(pages.Replace("post-detail-",""))});
             }
 
             return RedirectToAction("Index", "Home");

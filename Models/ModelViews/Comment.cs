@@ -23,5 +23,9 @@ namespace demoWebCore_1.Models.ModelViews
         public int post_id { get; set; }
         [Column("created_at", TypeName = "datetime")]
         public DateTime created_at { get; set; }
+        [Column("hide", TypeName = "bit")]
+        public bool hide { get; set; }
+
+
     }
 }

@@ -1,10 +1,3 @@
-create table react(
-id int IDENTITY(1,1) primary key,
-cmt_id int, 
-list_user varchar(max),
-total int
-)
-select* from comments
-select* from react
-delete from comments
-delete from react
+select* from save_post where post_id=1050
+select*from save_post 
+select*from comments

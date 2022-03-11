@@ -216,16 +216,47 @@
     .show-action {
         display: block !important;
     }
+
     .span-action {
-       
-        color:white;
-        font-weight:500;
-        padding:0 25% 0 15%;
+        color: white;
+        font-weight: 500;
+        padding: 0 25% 0 15%;
     }
+
         .span-action:hover {
             cursor: pointer;
-            border-bottom:#74f7af 3px solid;
+            border-bottom: #74f7af 3px solid;
         }
+    .btn-action {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        .btn-action:hover {
+            background: none;
+            color: white;
+        }
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
 </style>
 <div style="position: fixed;bottom: 65px;width: 95%;text-align: right;z-index:1;pointer-events: none;">
     <button onclick="window.location.href='Post/Index'" style="pointer-events: all!important;border-radius: 50%;border: 5px solid rgb(125 175 152 / 0.43);background: #fff;padding: 18px 25px;font-size: 23px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
@@ -292,7 +323,7 @@
         <!--COMMENT-->
         <h4 style="margin-top: 5vh">Comments:</h4>
 
-        <div style="height: 250px; overflow-y: scroll;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
+        <div style="height: 250px; overflow-y: scroll;overflow-x:hidden;text-align:center; padding:1% 0; border: 1px solid #a8c6b7;border-radius:3px; margin-bottom:20px" id="comments">
             @if (listComment.Count == 0)
             {
                 <label id="cmt-sts">No comment here</label>
@@ -306,7 +337,7 @@
                 <div id="box-cmt">
                     @foreach (var item in listComment.Skip(listComment.Count - 3).Take(3))
                     {
-                        <div style="width:100%; height:auto;bottom:0; padding:5px 0">
+                        <div style="width:100%; height:auto;bottom:0; padding:5px 0" id="item-cmt-@item.id">
                             <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">
                                 <span style="padding:9px 15px; border-radius:50%;background:#cad3cc; color:white">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name.Substring(0, 1)</span>
                             </span>
@@ -314,7 +345,7 @@
                                 <div style="height: 100%; width: 85%; float: left;margin-right:1%">
                                     <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name</a>
                                     <span>@(item.created_at.ToShortDateString()==DateTime.Now.ToShortDateString()?item.created_at.ToString("HH:mm"):item.created_at.ToString("dd/MM/yyyy HH:mm"))</span>
-                                    <p style=" word-wrap: break-word;">@item.content </p>
+                                    <p style=" word-wrap: break-word;" id="content-@item.id">@item.content </p>
 
                                 </div>
                                 <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
@@ -339,9 +370,33 @@
 
                                         </button>
                                         <div id="action-@item.id" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">
-                                            <span class="span-action">edit</span>
-                                            <span class="span-action">delete</span>
-                                            <span class="span-action">report</span>
+                                            @if (AuthRequest.id == item.user_id)
+                                            {
+                                                <span class="span-action edit-span" cid="edit-@item.id">edit</span>
+                                                <span class="span-action delete-span" cid="delete-@item.id">delete</span>
+
+
+                                            }
+                                            else
+                                            {
+                                                <span class="span-action report-span" cid="report-@item.id">report</span>
+                                            }
+
+                                            @if (mdl.user_id == AuthRequest.id && AuthRequest.id != item.user_id)
+                                            {
+                                                if (item.hide == false)
+                                                {
+                                                    <span class="span-action hide-span" cid="hide-@item.id">hide</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="span-action unhide-span" cid="unhide-@item.id">unhide</span>
+
+                                                }
+                                                <span class="span-action delete-span" cid="delete-@item.id">delete</span>
+
+                                            }
+
                                         </div>
 
                                     </div>
@@ -452,6 +507,32 @@
     <button id="btnCreate">Create</button>
 
 </div>
+<div class="text-center container col-5" id="edit-comment" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px;">
+        <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">edit your comment</label>
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-edit">X</button>
+
+    </div>
+
+    <textarea class="p-content-light col-12" id="txtEdit" style="height: auto;min-height:80px; float: left"></textarea>
+    <label class="col-12 error_" style="float: left; text-align: left" id="content_error"></label>
+  
+    <button id="btnSaveComment" class="btn-action" c-id="0">Save</button>
+
+</div>
+<div class="text-center container col-4" id="confirm-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:32vw; min-height: 300px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <div style="width:100%;text-align:left; padding-bottom:20px; ">
+        <label class="col-5" style="font-size:17px;font-weight:200;color:white;padding:5px 0;">Confirm</label>
+
+        <button style="float:right;color:white; border:none;background:none;font-size:20px" id="close-confirm">X</button>
+
+    </div>
+    <label class="col-12" style="font-size:25px;font-weight:700;color:white;padding-top:20px;margin-bottom:30px">Are you sure to make this change?</label>
+
+    <button class="btn-action" id="btn-confirm" style="margin-right:20px" c-id="0">OK</button>
+    <button class="btn-action" id="btn-cancel">Cancel</button>
+
+</div>
 <!--END CREATE COLLECTION-->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -501,14 +582,7 @@
 
 
      });
-    $('body').delegate('.btn-cmt', 'click', function () {
-        var cid = $(this).attr("cid").replace("btn-action-", "");
-        actionicon = document.getElementsByClassName('action-user');
-        for (var i = 0, n = actionicon.length; i < n; i++) {
-            actionicon[i].classList.remove("show-action");
-        }
-       document.getElementById("action-" + cid).classList.toggle("show-action");
-    });
+
     $("#comments").scroll(function () {
        @* actionicon = document.getElementsByClassName('action-user');
         for (var i = 0, n = actionicon.length; i < n; i++) {
@@ -591,7 +665,7 @@
         var cont = $("#content-cmt").val();
 
         if (@demoWebCore_1.Models.AuthRequest.id== 0) {
-             window.location.href = "/Auth/Auth?type=login&&page=post-detail-" + @mdl.id;
+             window.location.href = "/Auth/Auth?type=login";
         }
        else if (cont.length > 0) {
 
@@ -606,8 +680,24 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
+
                     var e = document.getElementById("comments");
-                    alert(true);
+                    var action = "";
+                    if (@AuthRequest.id== data.user_id) {
+                        action = '<span class="span-action edit-span" cid="edit-' + data.id + '">edit</span><br/>' +
+                            '<span class="span-action  delete-span" cid="delete-' + data.id + '">delete</span><br/>';
+
+                    } else { action = '<span class="span-action report-span" cid="report-' + data.id + '">report</span>';}
+                    if (@mdl.user_id == @AuthRequest.id && @AuthRequest.id != data.user_id) {
+                                    if (data.hide == false) {
+                                        action += '<span class="span-action  hide-span" cid="hide-' + data.id + '">hide</span>';
+
+                                    } else {
+                                        action +=' <span class="span-action unhide-span" cid="unhide-'+data.id+'">unhide</span>'
+
+                                    }
+                        action += ' <span class="span-action delete-span" cid="delete-'+data.id+'">delete</span>';
+                    }
                     $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                         + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name.Substring(0, 1))</span ></span >' +
                         ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
@@ -616,15 +706,15 @@
                         + '<p style=" word-wrap: break-word;">' + cont + '</p>'
                         +'</div >'
                 + '<div style="height:100%;width:12%;float:left;padding:5px;text-align:center">'
-                        + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data+'">'
-                + '<i class="fa fa-heart" id="heart-'+data+'" ></i>'
-               + '<span style="color:rgb(138 38 31)" id="heart-count-'+data+'">0</span>'
+                        + '<button style="width:70%;float:left; margin-right:10%;" class="btn-cmt favorite" id="favorite-'+data.id+'">'
+                + '<i class="fa fa-heart" id="heart-'+data.id+'" ></i>'
+               + '<span style="color:rgb(138 38 31)" id="heart-count-'+data.id+'">0</span>'
                 + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
-                + '<button class="btn-cmt" cid="btn-action-'+data+'"><i class="fa fa-exclamation" style="color: #b08585; "></i> }</button><div id="action-'+data+'" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">'+
-                        '<span class="span-action">edit</span><br/>' +
-                        '<span class="span-action">delete</span><br/> <span class="span-action">report</span>'+
+                        + '<button class="btn-cmt" cid="btn-action-' + data.id + '"><i class="fa fa-exclamation" style="color: #b08585; "></i> </button><div id="action-' + data.id +'" class="action-user" style=" display:none;padding: 5px 0;  text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">'+
+                        action +
+
                         '</div> </div>  </div>  </div> </div>');
-                    alert(true);
+
 
                     ResetComment();
                     $("#comments").scrollTop($("#comments").height());
@@ -678,11 +768,27 @@
                              }
                              var cont = "";
                              var user_name = getUserName(data[i].user_id);
+                             var action = "";
                              if (CheckUserReact(data[i].id)=="true") {
                                  cont = '<i class="fa fa-heart" id="heart-' + data[i].id + '" style="color: rgb(199, 50, 40) "></i>';
                              } else {
                                  cont = '<i class="fa fa-heart" id="heart-' + data[i].id + '"></i>';
                              }
+                               if (@AuthRequest.id== data[i].user_id) {
+                                action = '<span class="span-action edit-span" cid="edit-' + data[i].id + '">edit</span><br/>' +
+                                    '<span class="span-action  delete-span" cid="delete-' + data[i].id + '">delete</span><br/>';
+
+                    } else { action = '<span class="span-action report-span" cid="report-' + data[i].id + '">report</span>';}
+                             if (@mdl.user_id == @AuthRequest.id && @AuthRequest.id != data[i].user_id) {
+                                    if (data.hide == false) {
+                                        action += '<span class="span-action  hide-span" cid="hide-' + data[i].id + '">hide</span>';
+
+                                    } else {
+                                        action +=' <span class="span-action unhide-span" cid="unhide-'+data[i].id+'">unhide</span>'
+
+                                    }
+                        action += ' <span class="span-action delete-span" cid="delete-'+data[i].id+'">delete</span>';
+                    }
                              $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                                  + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >' + user_name.slice(0, 1) + '</span ></span >' +
                                  ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
@@ -694,12 +800,12 @@
                                  + cont + '<span style="color:rgb(138 38 31)" id="heart-count-' + data[i].id + '">' + GetTotal(data[i].id) + '</span>'
                                  + '</button>' + '<div id="action-cmt" style="width: 20%; float: left; padding: 0 2px; margin-top: 25%;display: block; ">'
                                  + '<button class="btn-cmt" cid="btn-action-' + data[i].id + '"><i class="fa fa-exclamation" style="color: #b08585; "></i> </button><div id="action-' + data[i].id + '" class="action-user" style=" display:none;padding: 5px 0; text-align: left; background: #49a274; border-radius: 10px; z-index: 5; height: auto; width: 100px;">' +
-                                 '<span class="span-action">edit</span><br/>' +
-                                 '<span class="span-action">delete</span><br/>' +
-                                 '<span class="span-action">report</span>' +
+                                action+
                                  '</div> </div>  </div>  </div> </div>');
 
+
                          }
+
                      }
                      }
 
@@ -820,9 +926,11 @@
 
 
      });
+
     $('body').delegate('.favorite', 'click', function () {
+
         if (@AuthRequest.id== 0) {
-                window.location.href = "/Auth/Auth?type=login&&page=post-detail-" + @mdl.id;
+                window.location.href = "/Auth/Auth?type=login";
         } else {
             var thisID = $(this).attr("id").replace("favorite-", "");
             if ($("#heart-" + thisID).css("color") == "rgb(220, 211, 211)") {
@@ -841,7 +949,132 @@
         }
     });
 
+    $('body').delegate('.btn-cmt', 'click', function () {
+        var cid = $(this).attr("cid").replace("btn-action-", "");
+        actionicon = document.getElementsByClassName('action-user');
+        for (var i = 0, n = actionicon.length; i < n; i++) {
+            if (actionicon[i] == document.getElementById("action-" + cid)) {
+                document.getElementById("action-" + cid).classList.toggle("show-action");
+            } else { actionicon[i].classList.remove("show-action"); }
+        }
 
+    });
+    $('body').delegate('.hide-span', 'click', function () {
+        var cid = $(this).attr("cid").replace("hide-", "");
+
+        $.ajax({
+            type: "POST",
+            url: "HideAndUnhideComment" + "?cid="+cid+"&&status="+1,
+            processData: false,
+            contentType: false,
+            success: function () {
+                alert("hide success");
+                $("#action-" + cid).append('<span class="span-action unhide-span" cid="unhide-'+cid+'">unhide</span>');
+                $('[cid="hide-'+cid+'"]').remove();
+
+            }
+        });
+    });
+    $('body').delegate('.unhide-span', 'click', function () {
+        var cid = $(this).attr("cid").replace("unhide-", "");
+
+        $.ajax({
+            type: "POST",
+            url: "HideAndUnhideComment" + "?cid=" + cid + "&&status=" + 0,
+            processData: false,
+            contentType: false,
+            success: function () {
+                alert("unhide success");
+                $("#action-" + cid).append('<span class="span-action hide-span" cid="hide-' + cid + '">hide</span>');
+                $('[cid="unhide-' + cid + '"]').remove();
+
+            }
+        });
+    });
+    $('body').delegate('.delete-span', 'click', function () {
+        var cid = $(this).attr("cid").replace("delete-", "");
+        $("#confirm-collect").css("display", "block");
+
+        $("#btn-confirm").attr("c-id", cid);
+
+
+    });
+     function ResetConfirm() {
+        $("#confirm-collect").css("display", "none");
+        $("#btn-confirm").attr("c-id", 0);
+        $(".redirect-detail").css("pointer-events", "inherit");
+    };
+    $("#close-confirm").click(function () {
+        ResetConfirm();
+    });
+    $("#btn-confirm").click(function () {
+        var e = $(this).attr("c-id");
+        var fdt = new FormData();
+        fdt.append("id", e);
+        dt=@mdl.id;
+       $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteComment", "Post")",
+                data: fdt,
+                processData: false,
+                contentType: false,
+           success: function () {
+               ResetConfirm();
+               $("#item-cmt-" + e).remove();
+                }
+            });
+    });
+    $("#btn-cancel").click(function () {
+
+        ResetConfirm();
+    });
+
+     $('body').delegate('.edit-span', 'click', function () {
+        var cid = $(this).attr("cid").replace("edit-", "");
+        $("#edit-comment").css("display", "block");
+         $("#btnSaveComment").attr("c-id", cid);
+         var w = document.getElementById("content-" + cid).innerHTML;
+         $("#txtEdit").val(w);
+          document.getElementById("action-" + cid).classList.remove("show-action"); }
+         
+
+
+
+    });
+     function ResetFormEdit() {
+         $("#edit-comment").css("display", "none");
+        $("#btnSaveComment").attr("c-id", 0);
+
+    };
+    $("#close-edit").click(function () {
+        ResetFormEdit();
+    });
+    $("#btnSaveComment").click(function () {
+        var e = $(this).attr("c-id");
+        var _name = $("#txtEdit").val();
+        if (_name.length == 0) {
+            document.getElementById("content_error").innerHTML = "* Content is required";
+
+        } else {
+              var fdt = new FormData();
+            fdt.append("cid", e);
+            fdt.append("content", _name);
+               $.ajax({
+                type: "POST",
+                url: "@Url.Action("EditComment", "Post")",
+                data: fdt,
+                processData: false,
+                contentType: false,
+           success: function () {
+               ResetFormEdit();
+
+               $("#txtEdit").val(_name);
+                }
+            });
+        }
+
+    });
+    
     function ReactAction(value, cmtID) {
 
         $.ajax({

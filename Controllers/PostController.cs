@@ -30,7 +30,7 @@ namespace demoWebCore_1.Controllers
         IPostOtherService _postOtherService =null;
         ICommentService _commentService =null;
         IReactService _reactService =null;
-        public static int k, post;
+        public static int k;
         public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt, IReactService r)
         {
             _postService = p;
@@ -72,7 +72,7 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult PostDetail(int id)
         {
-            post = id;
+           
             ViewBag.postService = _postService;
             ViewBag.reactService = _reactService;
             if (AuthRequest.id == 0)
@@ -83,14 +83,15 @@ namespace demoWebCore_1.Controllers
             {
                 TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
             }
-            var w = _postService.GetPostByID(id==0?post:id);
-            ViewBag.data =_postService.GetPostByUserID(w.user_id, id==0?post:id);
+            var w = _postService.GetPostByID(id);
+            ViewBag.data =_postService.GetPostByUserID(w.user_id,id);
             TempData["bgc"] = "#d3e3dc";
-            ViewBag.listComment = _commentService.GetListComment(id==0?post:id);
+            ViewBag.listComment = _commentService.GetListComment(id);
             ViewBag.model = w;
 
             return View();
         }
+        
         public List<Comment> LoadMoreCmt(int postID, int value)
         {
             var skip = _commentService.GetListComment(postID).Count - value*3;
@@ -141,12 +142,12 @@ namespace demoWebCore_1.Controllers
             return true;
 
         }
-        public int CommentAction(int postID,string content)
+        
+        public Comment CommentAction(int postID,string content)
         {
             Comment c = _commentService.SaveComment(new Comment() { post_id=postID,user_id=AuthRequest.id,content=content,created_at=DateTime.Now });
-            
             _reactService.CreateReact(new React() { cmt_id = c.id, listUser = "[]", total = 0 });
-            return c.id;
+            return c;
         }
         public void ReactAction(int cmtID, int value)
         {
@@ -208,6 +209,44 @@ namespace demoWebCore_1.Controllers
        public List<Collect> GetCollectionByUserID()
         {
             return _collectService.GetCollectionByUserID(AuthRequest.id); 
+        }
+        public bool HideAndUnhideComment(int cid, int status)
+        {
+            try
+            {
+                _commentService.UpdateComment(new Comment (){ id = cid, hide = status == 1 ? true : false });
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+           
+        }
+        public bool DeleteComment(int id)
+        {
+            try
+            {
+                _commentService.Delete(id);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool EditComment(int id, string content)
+        {
+            try
+            {
+                _commentService.Edit(id, content);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
         }
     }
 }

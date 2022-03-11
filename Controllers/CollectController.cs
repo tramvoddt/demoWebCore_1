@@ -16,7 +16,7 @@ namespace demoWebCore_1.Controllers
         ICollectService collectService = null;
         IPostService postService = null;
         IPostOtherService postOtherService = null;
-        public static int cid = 0;
+        public static int cid;
         public CollectController(ICollectService db, IPostService p, IPostOtherService po)
         {
 
@@ -68,11 +68,18 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult CollectionDetail(int cID)
         {
+            cid = cID;
             TempData["listCollect"] = collectService.GetCollectionByUserID(AuthRequest.id);
             ViewBag.collectName = collectService.GetCollectionName(cID);
             ViewBag.post = postService.GetListPostByListID(postService.GetPostByCollection(cID));
             ViewBag.postService =postService;
             return View();
+        }
+        public int RemovePost(int id)
+        {
+            postService.RemovePost(id);
+            return cid;
+
         }
         //CHECKDUP
         public bool NameExists(string name)

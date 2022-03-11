@@ -12,5 +12,8 @@ namespace demoWebCore_1.IService
         Comment SaveComment(Comment c);
         DataContext GetDataContext();
         List<Comment> GetListComment(int postID);
+        Comment UpdateComment(Comment c);
+        void Delete(int id);
+        void Edit(int id, string content);
     }
 }

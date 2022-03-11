@@ -89,5 +89,22 @@ namespace demoWebCore_1.Service
             var q = ct.Post.Where(x => x.user_id == id&&x.id!=postID).ToList();
             return q ?? null;
         }
+        public void RemovePost(int id)
+        {
+            var w = ct.Post.FirstOrDefault(x => x.id == id && x.user_id == AuthRequest.id);
+            if (w == null)
+            {
+                var r = ct.PostOther.FirstOrDefault(x => x.post_id == id && x.user_id == AuthRequest.id);
+                ct.Remove(r);
+            }
+            else
+            {
+                ct.Remove(w);
+
+                List<PostOther> r = ct.PostOther.Where(x => x.post_id == id).ToList();
+                ct.RemoveRange(r);
+            }
+            ct.SaveChanges();
+        }
     }
 }
