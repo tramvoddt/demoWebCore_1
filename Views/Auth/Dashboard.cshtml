@@ -1,6 +1,131 @@
-﻿@{ Layout = "~/Views/Shared/LayoutAdmin.cshtml"; }
-<div class="home-content main">
-    <div class="sub-main" style="margin:auto;background:#fafafa;width: 95%; height: 800px; display: table; border-radius: 10px; box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
+﻿@{ Layout = "~/Views/Shared/LayoutAdmin.cshtml";
 
+}
+<div class="home-content main">
+    <div class="sub-main" style="margin:auto ;background:#fafafa;width: 95%; height: auto; display: table; border-radius: 10px; box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
+        <div style="display:table-row">
+            <table class="table  col-11 container" style="margin-top:20px" id="table-id">
+                <tr>
+                    <th><input type="checkbox" id="check-all" /></th>
+                    <th>#</th>
+
+                    <th>Subject</th>
+                    <th>Content</th>
+                    <th>Request date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                @{int k = 1;}
+                @foreach (var item in ViewBag.data)
+                {
+
+            <tr class="table-item">
+
+                <td><input type="checkbox" /></td>
+                <td>@k @{k++;} </td>
+
+                <td>@item.subject</td>
+                <td>@item.content</td>
+                <td>@item.created_at.ToString("HH:mm dd/MM/yyyy ")</td>
+                <td>@(item.status==true? "Accepted" : "Declined")</td>
+                <td>
+                    <a href="#" class="action-icon" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 8px 5px 8px 10px; ">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="#" class="action-icon" style="background: linear-gradient(to left,#ed3021,#f66d63); margin-left:0.4vw">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+                }
+            </table>
+
+            <!--		Start Pagination -->
+            <div class="pagination-container" style="cursor:pointer">
+
+                <nav aria-label="Page navigation example" style="position:unset;box-shadow:none; background:none;">
+                    <ul class="pagination">
+                        <li class="page-item page-link" data-page="prev">&lt;</li>
+                        @for (int i = 1; i <= ViewBag.pagi; i++)
+                        {
+                            <li class="page-item page-link" data-page="page-@i">@i</li>
+                        }
+                        <li class="page-item page-link" data-page="next" id="prev">&gt;</li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
     </div>
 </div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    var pages = 1;
+    $(".page-item").click(function () {
+        var str = $(this).attr("data-page");
+        var re = document.getElementsByClassName('page-item');
+        for (var i = 0; i < re.length; i++) {
+            $(re[i]).css("background", "#fafafa");
+        }
+      
+        if (str == "prev"&&pages>1) {
+            pages -=1;
+            $('[data-page=page-' + pages + ']').css("background", "#ddd");
+        } else if (str == "next" && pages <=@ViewBag.pagi) {
+            pages +=1;
+            $('[data-page=page-' + pages + ']').css("background", "#ddd");
+
+        } else {
+            if (pages == parseInt(str.replace("page-", ""))) {
+                pages = -1;
+            } else {
+                pages = parseInt(str.replace("page-", ""));
+            }
+            $(this).css("background", "#ddd");
+
+
+        }
+        if (pages > 0 && pages <=@ViewBag.pagi) {
+            var r = document.getElementsByClassName('table-item');
+            while (r.length > 0) {
+                r[0].parentNode.removeChild(r[0]);
+            }
+            var formDT = new FormData();
+            formDT.append("p", pages);
+            var row = pages == 1 ? 1 : 10 * (pages - 1) + 1;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("LoadData", "Auth")",
+                data: formDT,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var sts = "Declined";
+                        if (data[i].status == true) {
+                            sts = "Accepted";
+                        }
+                        var date = moment(data[i].created_at).format('HH:mm dd/MM/yyyy');
+                        $("#table-id").append(' <tr class="table-item">' +
+                            '<td><input type="checkbox" /></td>' +
+                            '<td>' + row + '</td>' +
+                            ' <td>' + data[i].subject + '</td>' +
+                            '<td>' + data[i].content + '</td>' +
+                            '<td>' + date + '</td>' +
+                            '<td>' + sts + '</td>' +
+                            '<td> <a href="#" class="action-icon" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 8px 5px 8px 10px; ">' +
+                            '<i class="fa fa-edit"></i></a>' +
+                            '<a href="#" class="action-icon" style="background: linear-gradient(to left,#ed3021,#f66d63); margin-left:0.4vw">' +
+                            '<i class="fa fa-trash"></i> </a>  </td> </tr>');
+                        row = row + 1;
+
+
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

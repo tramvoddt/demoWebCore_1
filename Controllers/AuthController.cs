@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace demoWebCore_1.Controllers
@@ -27,6 +28,7 @@ namespace demoWebCore_1.Controllers
         IPostService _postService = null;
         IPostOtherService _postOtherService = null;
         public static string pages ="index";
+        public static int page = 1;
         public AuthController(IUserService db, ICollectService c,IPostService p, IPostOtherService po)
         {
 
@@ -132,7 +134,35 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult Dashboard()
         {
+            ViewBag.data = LoadData(page);
+            ViewBag.pagi = RowEvent(_postService.GetPosts().Count);
+            ViewBag.currentPage = page;
             return View();
+        }
+        private static readonly Regex _regex = new Regex("[^0-9]+"); 
+        public static bool IsNumber(string text)
+        {
+            return _regex.IsMatch(text);
+        }
+        public int RowEvent(int i)
+        {
+            
+            double pagi = i/10.0;
+            if (IsNumber(pagi.ToString()))
+            {
+                pagi = (int)pagi;
+
+                pagi += 1;
+
+            }
+            return (int)pagi;
+        }
+        public List<Post> LoadData(int p)
+        {
+            int currentSkip = 10 * (p - 1);
+            
+            return _postService.GetPosts().OrderByDescending(x => x.id).Skip(currentSkip).Take(10).ToList();
+            
         }
         //CHECK DUP
         public JsonResult PhoneExists(Users model)
