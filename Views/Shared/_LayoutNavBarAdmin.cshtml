@@ -1,0 +1,75 @@
+﻿<style>
+    .show {
+        display: none;
+    }
+
+    .dropdown {
+        float: right;
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        position: fixed;
+        background-color: #d8f1e2;
+        min-width: 160px;
+        border-radius: 5px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        right: 0;
+        margin-top: -1vh;
+    }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+    .dropdown a:hover {
+        background-color: #cbddd5;
+    }
+</style>
+<nav class="col-12" style="background: #f7faf9;box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
+    <div class="sidebar-button">
+        <i class='bx bx-menu sidebarBtn'></i>
+        <span class="dashboard" style="letter-spacing:2px; color:#868686;font-weight:500">@(TempData["title"]??"Hello")</span>
+    </div>
+
+    <div>
+
+        <div class="cart-icon" style="float:right;margin-right:3vw;">
+            <h6 onclick="ShowAction()" class="cart-icon nameCurrent dropbtn " style="float: right; color: #69aa91; margin-top: 3vh; margin-left:1vw; cursor: pointer">@(AuthRequest.name??"VHNGREAMMMMM")</h6>
+
+            <div class="dropdown" style="float:left!important; margin-top:8vh; margin-left:-3vw">
+
+                <div id="myDropdown" class="dropdown-content show">
+                    <a href="@Url.Action("Index","Home")">Go to Home</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="@Url.Action("ClientLogout","Auth")">  <i class="fa fa-sign-out-alt" style="color:black; margin-right:0.5vw"></i>Logout</a>
+                </div>
+            </div>
+        </div>
+        <span style="padding: 8px 14px; margin-top: 1.3vh; border-radius: 50%; background: rgb(202 231 219); color: white; float: right;">@AuthRequest.name.Substring(0,1)</span>
+
+    </div>
+</nav>
+
+<script>
+    function ShowAction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.add('show');
+                }
+            }
+        }
+    }
+</script>

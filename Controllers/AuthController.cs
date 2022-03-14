@@ -113,7 +113,10 @@ namespace demoWebCore_1.Controllers
                     var str1 = HttpContext.Session.GetString("auth");
                     var obj = JsonConvert.DeserializeObject<Users>(str1);
                     AuthRequest.SetCurrent(obj.id, (int)obj.role_id, obj.name);
-
+                    if (AuthRequest.roleId == 1)
+                    {
+                        return RedirectToAction("Dashboard", "Auth");
+                    }
                 }
               
             }
@@ -126,6 +129,10 @@ namespace demoWebCore_1.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Dashboard()
+        {
+            return View();
         }
         //CHECK DUP
         public JsonResult PhoneExists(Users model)

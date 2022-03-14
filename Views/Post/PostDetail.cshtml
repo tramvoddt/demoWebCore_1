@@ -345,7 +345,7 @@
                                 <div style="height: 100%; width: 85%; float: left;margin-right:1%">
                                     <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@p.GetDataContext().Users.FirstOrDefault(x => x.id == item.user_id).name</a>
                                     <span>@(item.created_at.ToShortDateString()==DateTime.Now.ToShortDateString()?item.created_at.ToString("HH:mm"):item.created_at.ToString("dd/MM/yyyy HH:mm"))</span>
-                                    <p style=" word-wrap: break-word;" id="content-@item.id">@item.content </p>
+                                    <p style=" word-wrap: break-word;" id="content-@item.id">@item.content</p>
 
                                 </div>
                                 <div style="height:100%;width:12%;float:left;padding:5px;text-align:center">
@@ -1035,7 +1035,7 @@
          $("#btnSaveComment").attr("c-id", cid);
          var w = document.getElementById("content-" + cid).innerHTML;
          $("#txtEdit").val(w);
-          document.getElementById("action-" + cid).classList.remove("show-action"); }
+          document.getElementById("action-" + cid).classList.remove("show-action"); 
          
 
 
@@ -1057,7 +1057,7 @@
 
         } else {
               var fdt = new FormData();
-            fdt.append("cid", e);
+            fdt.append("id", e);
             fdt.append("content", _name);
                $.ajax({
                 type: "POST",
@@ -1065,10 +1065,12 @@
                 data: fdt,
                 processData: false,
                 contentType: false,
-           success: function () {
+                   success: function () {
+                       document.getElementById("content-" + e).innerHTML = _name;
+                      
+
                ResetFormEdit();
 
-               $("#txtEdit").val(_name);
                 }
             });
         }

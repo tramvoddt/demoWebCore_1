@@ -1,0 +1,36 @@
+﻿
+<div class="logo-details" style="background: #f7faf9; box-shadow:0 0.8rem 0.75rem rgb(84 199 150/ 70%) ">
+    <img src="~/lib/imgs/logo.png" class="col-8 container" width="150" />
+
+</div>
+<ul class="nav-links" style="margin-top:30px">
+    <li>
+        <a href="@Url.Action("Approval","Auth")" id="auth" class=" menu">
+            <i class="fa fa-tv icons"></i>
+            <span class="links_name">Approval of posts</span>
+        </a>
+    </li>
+    <li>
+        <a id="users" href="@Url.Action("ReportComment","Auth")" class="menu">
+
+            <i class="fa fa-object-ungroup icons "></i>
+            <span class="links_name">Report Comment</span>
+        </a>
+    </li>
+    <li>
+        <a id="users" href="@Url.Action("Contact","Auth")" class="menu">
+
+            <i class="fa fa-copy icons "></i>
+            <span class="links_name">Contacts</span>
+        </a>
+    </li>
+
+</ul>
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+   document.getElementById('@TempData["cateAdmin"]').classList.add("active");
+    });
+
+</script>

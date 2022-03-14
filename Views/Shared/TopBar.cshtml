@@ -15,7 +15,8 @@
             margin-top:0.7vh;
             background: rgb(104 167 135 / 0.92);
             width: 230px;
-            height: 190px;
+            height: auto;
+
             box-shadow: rgb(169 204 189 / 0.2) 5px 5px;
             border-radius: 10px;
         }
@@ -77,15 +78,22 @@
 
                         <div id="myDropdown" class="dropdown-content">
                             <a href="#" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
-                                <i class="fa fa-gear" style="padding: 0 10px; "></i>Setting
+                                <i class="fa fa-gear" style="padding: 0 10px; color: white; "></i>Setting
                             </a>
 
                             <a href="#" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
-                                <i class="fa fa-user" style="padding: 0 10px;"></i> My Account
+                                <i class="fa fa-user" style="padding: 0 10px; color: white;"></i> My Account
 
 
                             </a>
+                            @if (AuthRequest.roleId == 1)
+                            {
+                            <a href="@Url.Action("Dashboard", "Auth")" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                                <i class="fa fa-user" style="padding: 0 10px; color: white;"></i> Go to dashboard
 
+
+                            </a>
+                            }
                             <a href="@Url.Action("ClientLogout","Auth")" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
                                 Logout
                             </a>
