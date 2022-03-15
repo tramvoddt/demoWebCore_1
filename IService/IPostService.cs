@@ -20,5 +20,7 @@ namespace demoWebCore_1.IService
         void RemovePost(int id);
         void UpdatePost(List<Post> l, bool sts);
         void UpdateAllPost(bool val);
+        bool ReportComment( int cmt_id);
+        bool CheckUserReport(int cmtID);
     }
 }

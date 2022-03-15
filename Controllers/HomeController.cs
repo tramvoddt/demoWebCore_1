@@ -31,7 +31,7 @@ namespace demoWebCore_1.Controllers
         {
             TempData["type"] = "nav1";
             TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
-            ViewBag.data = _postService.GetPosts();
+            ViewBag.data = _postService.GetPosts().Where(x=>x.status==true).ToList();
             ViewBag.user = _userService;
             ViewBag.collect = _collectService;
             ViewBag.post = _postService;

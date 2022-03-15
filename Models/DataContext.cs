@@ -42,5 +42,6 @@ namespace demoWebCore_1.Models
         public DbSet<Comment> Comment { get; set; }
         public DbSet<PostOther> PostOther { get; set; }
         public DbSet<React> React { get; set; }
+        public DbSet<Reports> Reports { get; set; }
     }
 }

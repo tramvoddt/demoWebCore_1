@@ -1028,6 +1028,29 @@
 
         ResetConfirm();
     });
+    $('body').delegate('.report-span', 'click', function () {
+        var cid = $(this).attr("cid").replace("edit-", "");
+        var fdt = new FormData();
+        fdt.append("cmt_id",cid);
+        if (confirm("Are you sure you want  report this comment?")) {
+             $.ajax({
+                type: "POST",
+                url: "@Url.Action("ReportComment","Post")",
+                data: fdt,
+                processData: false,
+                contentType: false,
+                   success: function (data) {
+                       if (data == true) {
+                           alert("You have successfully reported")
+                       } else {
+                           alert("Sorry you have reported this comment")
+
+                       }
+
+                }
+            });
+        }
+    });
 
      $('body').delegate('.edit-span', 'click', function () {
         var cid = $(this).attr("cid").replace("edit-", "");
@@ -1035,8 +1058,8 @@
          $("#btnSaveComment").attr("c-id", cid);
          var w = document.getElementById("content-" + cid).innerHTML;
          $("#txtEdit").val(w);
-          document.getElementById("action-" + cid).classList.remove("show-action"); 
-         
+          document.getElementById("action-" + cid).classList.remove("show-action");
+
 
 
 
@@ -1067,7 +1090,7 @@
                 contentType: false,
                    success: function () {
                        document.getElementById("content-" + e).innerHTML = _name;
-                      
+
 
                ResetFormEdit();
 
@@ -1076,7 +1099,7 @@
         }
 
     });
-    
+
     function ReactAction(value, cmtID) {
 
         $.ajax({

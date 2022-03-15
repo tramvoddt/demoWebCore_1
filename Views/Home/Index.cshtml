@@ -5,6 +5,7 @@
     demoWebCore_1.IService.IUserService u = ViewBag.user;
     demoWebCore_1.IService.ICollectService c = ViewBag.collect;
     demoWebCore_1.IService.IPostService p = ViewBag.post;
+    List<demoWebCore_1.Models.ModelViews.Post> data =(List<demoWebCore_1.Models.ModelViews.Post>) ViewBag.data;
 }
 <style>
     #container {
@@ -131,7 +132,7 @@
     <button onclick="window.location.href='Post/Index'" style="pointer-events: all!important;border-radius: 50%;border: 5px solid rgb(125 175 152 / 0.43);background: #fff;padding: 18px 25px;font-size: 23px"><i class="fa fa-plus" style="pointer-events:none"></i></button>
 </div>
 <div id="container" class="cols">
-    @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Post>)ViewBag.data)
+    @foreach (var item in data)
             {
     <div class="box-img" >
 

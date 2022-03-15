@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace demoWebCore_1.Service
 {
-    public class PostService:IPostService
+    public class PostService : IPostService
     {
         private readonly DataContext ct;
         public PostService(DataContext context)
@@ -34,8 +34,8 @@ namespace demoWebCore_1.Service
         public Post GetPostByID(int id)
         {
             var post = ct.Post.FirstOrDefault(x => x.id == id);
-            
-             return post??null;
+
+            return post ?? null;
         }
         public List<Post> GetPosts()
         {
@@ -52,21 +52,21 @@ namespace demoWebCore_1.Service
 
             }
 
-            return p??null;
+            return p ?? null;
         }
         public bool CheckStatusCollection(int collect_id)
         {
-            var post = ct.Collect.FirstOrDefault(x=>x.id==collect_id);
-            
-            return post==null ?true:false;
+            var post = ct.Collect.FirstOrDefault(x => x.id == collect_id);
+
+            return post == null ? true : false;
         }
 
-       public List<int> GetPostByCollection(int collectID)
+        public List<int> GetPostByCollection(int collectID)
         {
-            
-            return ct.PostOther.OrderByDescending(x=>x.id).Where(x => x.collection_id == collectID).Select(x=>x.post_id).ToList();
-          
-          
+
+            return ct.PostOther.OrderByDescending(x => x.id).Where(x => x.collection_id == collectID).Select(x => x.post_id).ToList();
+
+
         }
         public List<Post> GetListPostByListID(List<int> ls)
         {
@@ -80,13 +80,13 @@ namespace demoWebCore_1.Service
         }
         public bool CheckChooseCollection(int postID, int collectionID)
         {
-            var q = ct.PostOther.FirstOrDefault(x => x.post_id == postID && x.user_id == AuthRequest.id&&x.collection_id==collectionID);
+            var q = ct.PostOther.FirstOrDefault(x => x.post_id == postID && x.user_id == AuthRequest.id && x.collection_id == collectionID);
             return q == null ? false : true;
 
         }
-        public List<Post> GetPostByUserID(int id,int postID)
+        public List<Post> GetPostByUserID(int id, int postID)
         {
-            var q = ct.Post.Where(x => x.user_id == id&&x.id!=postID).ToList();
+            var q = ct.Post.Where(x => x.user_id == id && x.id != postID).ToList();
             return q ?? null;
         }
         public void RemovePost(int id)
@@ -113,7 +113,7 @@ namespace demoWebCore_1.Service
                 item.status = sts;
                 ct.SaveChanges();
             }
-        
+
         }
         public void UpdateAllPost(bool val)
         {
@@ -126,6 +126,54 @@ namespace demoWebCore_1.Service
                 }
 
             }
+        }
+        public bool ReportComment(int cmt_id)
+        {
+            if (CheckUserReport(cmt_id))
+            {
+                return false;
+            }
+            else
+            {
+                var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmt_id);
+                if (w == null)
+                {
+                    ct.Reports.Add(new Reports() { id = AuthRequest.id, cmt_id = cmt_id, list_user = "[]", total = 1 });
+
+                }
+                else {
+                    List<UserReport> l = new List<UserReport>();
+                    l = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserReport>>(w.list_user);
+                    l.Add(new UserReport() { id = AuthRequest.id, created_at = DateTime.Now });
+                    w.total += 1;
+                    w.list_user = Newtonsoft.Json.JsonConvert.SerializeObject(l);
+
+                }
+                ct.SaveChanges();
+
+                return true;
+
+            }
+
+
+        }
+        public bool CheckUserReport(int cmtID)
+        {
+            var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmtID);
+            if (w != null)
+            {
+                List<UserReport> ls = new List<UserReport>();
+                ls = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserReport>>(w.list_user);
+                foreach (var item in ls)
+                {
+                    if (item.id == AuthRequest.id)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+
         }
 
     }

@@ -41,7 +41,7 @@
                 <td>@item.created_at.ToString("HH:mm dd/MM/yyyy ")</td>
                 <td class="sts-item" id="sts-@item.id">@(item.status==true? "Accepted" : "Refused")</td>
                 <td>
-                    <span id="view-post-@item" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">
+                    <span pid="view-post-@item.id" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">
                         <i class="fa fa-eye"></i>
                     </span>
                    
@@ -80,7 +80,36 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript">
     var pages = 1;
+    $('body').delegate('.action-icon', 'click', function () {
+         $("#view-post").css("display", "table");
+        $("#view-post").height($(".body-wrapper").height());
+        var pid = $(this).attr("pid").replace("view-post-", "");
+        var fdt = new FormData();
+        fdt.append("pid", pid);
+        
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetPostByID", "Post")",
+            data: fdt,
+                processData: false,
+                contentType: false,
+            success: function (data) {
+                var str = ' <span pid="post-' + data.id + '" id="refuse-item" style="cursor:pointer; padding: 15px; background: #e86342; color: white; float: right;margin-left:1vw">Refuse</span>';
 
+                if (data.status == false) {
+                    str = '<span pid="post-' + data.id + '" id="accept-item" style="cursor: pointer; padding: 15px; background: #47dcab; color: white; float: right; ">Accept</span> </div>';
+
+                }
+                $("#view-main").append('<div style="float:left;padding:0" class="col-5">' +
+                    '<img style = " border-radius: 15px; width: inherit; height: auto" src = "/Post/GetImageFile/' + data.id + '" > </div >' +
+                    ' <div style="height: auto;float:left;border-radius:15px;" class="col-6"> <h2>Subject: ' + data.subject + '</h2> <br/> <h4>Content: ' + data.content + '</h4> <h4>Url:<a style=" word-wrap: break-word;" target="blank" href="' + data.url + '">' + data.url + '</a></h4> </div>' +
+                    '<span id="close-view" style="float:right;right:0;cursor:pointer;color:white;font-size:20px;font-weight:600;background:#cbdcd3;border-radius:10px;padding:5px 10px">X</span>' +
+                    '<div style="height:50px;float:left;top:70px" class="col-7">' + str);
+                }
+            });
+
+    });
+    
     function SelectAll(source) {
         checkboxes = document.getElementsByClassName('sub-check');
         for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -109,10 +138,8 @@
         ActionAll(0);
     });
     function ActionAll(value) {
-        var str = "Refused";
         var conf = "Are you sure to REFUSED these posts ?";
         if (value == 1) {
-            str = "Accepted";
             conf = "Are you sure to ACCEPT these posts ?";
         }
         if (confirm(conf)) {
@@ -131,11 +158,36 @@
             });
         }
     }
-    $("#accept-post").click(function () {
+    $('body').delegate('#accept-item', 'click', function () {
+        if (confirm("Are you sure to ACCEPT this post?")) {
+            var fdt = new FormData();
+            var pid = $(this).attr("pid").replace("post-", "");
+            fdt.append("ls", pid);
+            fdt.append("sts", 1);
+            document.getElementById("sts-" + pid).innerHTML = "Accepted";
+
+            UpdateStatus(fdt);
+            CloseView();
+
+        }
+    });
+
+    $('body').delegate('#refuse-item', 'click', function () {
+        if (confirm("Are you sure to ACCEPT this post?")) {
+            var fdt = new FormData();
+            var pid = $(this).attr("pid").replace("post-", "");
+            fdt.append("ls", pid);
+            fdt.append("sts", 0);
+            UpdateStatus(fdt);
+            document.getElementById("sts-" + pid).innerHTML = "Refused";
+
+            CloseView();
+        }
+    });$("#accept-post").click(function () {
         if (CheckCheckbox() == true) {
-            checkboxes = document.getElementsByClassName('sub-check');
             if (confirm("Are you sure to ACCEPT these post(s)?")) {
                 var fdt = new FormData();
+                checkboxes = document.getElementsByClassName('sub-check');
 
                 for (var i = 0; i < checkboxes.length; i++) {
                     if (checkboxes[i].checked == true) {
@@ -145,20 +197,13 @@
                         document.getElementById("sts-" + r).innerHTML = "Accepted";
                     }
                 }
-                 $.ajax({
-                            type: "POST",
-                            url: "@Url.Action("UpdatePost", "Post")",
-                            data: fdt,
-                            processData: false,
-                            contentType: false,
-                            success: function () {
-
-                            }
-                 });
+                UpdateStatus(fdt);
                 ResetCheckbox();
+
             }
         }
     });
+
     $("#refuse-post").click(function () {
         if (CheckCheckbox() == true) {
             checkboxes = document.getElementsByClassName('sub-check');
@@ -173,7 +218,15 @@
                         document.getElementById("sts-" + r).innerHTML = "Refused";
                     }
                 }
-                 $.ajax({
+                UpdateStatus(fdt);
+
+                ResetCheckbox();
+
+            }
+        }
+    });
+    function UpdateStatus(fdt) {
+         $.ajax({
                             type: "POST",
                             url: "@Url.Action("UpdatePost", "Post")",
                             data: fdt,
@@ -182,11 +235,9 @@
                             success: function () {
 
                             }
-                        });
-            }
-            ResetCheckbox();
-        }
-    });
+         });
+
+    }
     function CheckCheckbox() {
         checkboxes = document.getElementsByClassName('sub-check');
         var count = 0;
@@ -286,7 +337,7 @@
                             '<td>' + data[i].content + '</td>' +
                             '<td>' + date + '</td>' +
                             '<td class="sts-item" id="sts-'+data[i].id+'">' + st + '</td>' +
-                            '<td>  <span id="view-post-' + data[i].id + '" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">' +
+                            '<td>  <span pid="view-post-' + data[i].id + '" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">' +
                             '<i class="fa fa-eye"></i> </span> </td> </tr>');
                         row = row + 1;
 
@@ -343,5 +394,6 @@
         var select = $("#status-select").val();
         LoadData(1, select);
     });
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

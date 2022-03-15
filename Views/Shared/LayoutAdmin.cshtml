@@ -23,7 +23,10 @@
             @{ Html.RenderPartial("_LayoutNavBarAdmin");}
             @RenderBody()
         </section>
-
+        <div id="view-post" style="display:none;background:rgb(70 127 108 / 0.13);width:100%;position:absolute;z-index:3;top:0;">
+            <div id="view-main" style="width: 75%; height: auto; background: #fafafa; border-radius: 15px; margin: 3% auto; display: table;padding:10px">
+               
+            </div>
     </div>
 
 
@@ -62,6 +65,25 @@
 
         document.addEventListener("DOMContentLoaded", function (e) {
             document.getElementById('@TempData["cate"]').classList.add("active-nav");
+           
         });
     }
+    $('body').delegate('#close-view', 'click', function () {
+        CloseView();
+
+    });
+    $('#view-post').on('click', function (e) {
+        if (e.target == this) {
+            CloseView();
+        }
+    });
+    function CloseView() {
+        $("#view-main").empty();
+        $("#view-post").css("display", "none");
+        $("#view-post").height(0);
+
+
+
+    }
+    
 </script>
