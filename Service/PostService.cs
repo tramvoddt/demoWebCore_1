@@ -106,5 +106,27 @@ namespace demoWebCore_1.Service
             }
             ct.SaveChanges();
         }
+        public void UpdatePost(List<Post> l, bool sts)
+        {
+            foreach (var item in l)
+            {
+                item.status = sts;
+                ct.SaveChanges();
+            }
+        
+        }
+        public void UpdateAllPost(bool val)
+        {
+            foreach (var item in GetPosts())
+            {
+                if (item.status != val)
+                {
+                    item.status = val;
+                    ct.SaveChanges();
+                }
+
+            }
+        }
+
     }
 }

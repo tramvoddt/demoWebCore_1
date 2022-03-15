@@ -57,4 +57,11 @@
         } else
             sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
     }
+
+    if (@TempData["cate"]!= null) {
+
+        document.addEventListener("DOMContentLoaded", function (e) {
+            document.getElementById('@TempData["cate"]').classList.add("active-nav");
+        });
+    }
 </script>

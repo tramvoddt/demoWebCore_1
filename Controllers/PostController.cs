@@ -248,5 +248,14 @@ namespace demoWebCore_1.Controllers
                 return false;
             }
         }
+        public void UpdatePost(List<int> ls,int sts)
+        {
+            List<Post> l = _postService.GetListPostByListID(ls);
+            _postService.UpdatePost(l, sts == 0 ? false : true);
+        }
+        public void UpdateAllPost(int val)
+        {
+            _postService.UpdateAllPost(val==1?true:false);
+        }
     }
 }

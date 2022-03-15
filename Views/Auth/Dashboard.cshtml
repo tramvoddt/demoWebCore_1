@@ -4,9 +4,21 @@
 <div class="home-content main">
     <div class="sub-main" style="margin:auto ;background:#fafafa;width: 95%; height: auto; display: table; border-radius: 10px; box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
         <div style="display:table-row">
+            <div style="width:100%;height:70px;padding:20px 0">
+                <span id="accept-post" style="margin:auto auto 2vh 2vw;cursor:pointer;border:none;color:white;border-radius:15px; background: linear-gradient(to right, #ebe263, #e59a38);padding:15px 18px">Accept selected</span>
+                <span id="refuse-post" style="margin:auto auto 2vh 1vw;cursor:pointer;border:none;color:white;border-radius:15px; background: linear-gradient(to right, #e69d69, #d66236);padding:15px 18px">Refuse selected</span>
+                <select id="status-select" style="width:20vw;height:35px;margin-left:1vw;border:none;background:#e8f7f1;border-radius:15px;padding-left:10px;">
+                    <option value="-1">All</option>
+                    <option value="1">Accepted</option>
+                    <option value="0">Declined</option>
+                </select>
+                <span id="accept-all-post" style="margin:auto auto 2vh 17vw;cursor:pointer;border:none;color:white;border-radius:15px; background: linear-gradient(to right, #f0ea97, #e09859);padding:15px 18px">Accept all</span>
+                <span id="refuse-all-post" style="margin:auto auto 2vh 1vw;cursor:pointer;border:none;color:white;border-radius:15px; background: linear-gradient(to right, #e39470, #cd6d40);padding:15px 18px">Refuse all</span>
+
+            </div>
             <table class="table  col-11 container" style="margin-top:20px" id="table-id">
                 <tr>
-                    <th><input type="checkbox" id="check-all" /></th>
+                    <th><input type="checkbox" id="check-all" onclick="SelectAll(this)" /></th>
                     <th>#</th>
 
                     <th>Subject</th>
@@ -21,20 +33,18 @@
 
             <tr class="table-item">
 
-                <td><input type="checkbox" /></td>
+                <td><input type="checkbox" class="sub-check"  post-item="post-@item.id" /></td>
                 <td>@k @{k++;} </td>
 
                 <td>@item.subject</td>
                 <td>@item.content</td>
                 <td>@item.created_at.ToString("HH:mm dd/MM/yyyy ")</td>
-                <td>@(item.status==true? "Accepted" : "Declined")</td>
+                <td class="sts-item" id="sts-@item.id">@(item.status==true? "Accepted" : "Refused")</td>
                 <td>
-                    <a href="#" class="action-icon" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 8px 5px 8px 10px; ">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                    <a href="#" class="action-icon" style="background: linear-gradient(to left,#ed3021,#f66d63); margin-left:0.4vw">
-                        <i class="fa fa-trash"></i>
-                    </a>
+                    <span id="view-post-@item" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">
+                        <i class="fa fa-eye"></i>
+                    </span>
+                   
                 </td>
             </tr>
                 }
@@ -44,13 +54,21 @@
             <div class="pagination-container" style="cursor:pointer">
 
                 <nav aria-label="Page navigation example" style="position:unset;box-shadow:none; background:none;">
-                    <ul class="pagination">
+                    <ul class="pagination" id="paginations">
                         <li class="page-item page-link" data-page="prev">&lt;</li>
                         @for (int i = 1; i <= ViewBag.pagi; i++)
                         {
+                            if (i == 1)
+                            {
+                                <li class="page-item page-link" data-page="page-1" style="background:#ddd">@i</li>
+
+                            }
+                            else
+                            {
                             <li class="page-item page-link" data-page="page-@i">@i</li>
+                            }
                         }
-                        <li class="page-item page-link" data-page="next" id="prev">&gt;</li>
+                        <li class="page-item page-link" data-page="next" >&gt;</li>
                     </ul>
                 </nav>
             </div>
@@ -62,19 +80,165 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript">
     var pages = 1;
-    $(".page-item").click(function () {
+
+    function SelectAll(source) {
+        checkboxes = document.getElementsByClassName('sub-check');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    $(".sub-check").click(function () {
+
+        checkboxes = document.getElementsByClassName('sub-check');
+        var k = checkboxes.length;
+        for (var i = 0, n = k; i < n; i++) {
+            if (checkboxes[i].checked == false) {
+                document.getElementById("check-all").checked = false;
+                k -= 1;
+                break;
+            }
+        }
+        if (k == checkboxes.length) {
+            document.getElementById("check-all").checked = true;
+        }
+    });
+    $("#accept-all-post").click(function () {
+        ActionAll(1);
+    });
+    $("#refuse-all-post").click(function () {
+        ActionAll(0);
+    });
+    function ActionAll(value) {
+        var str = "Refused";
+        var conf = "Are you sure to REFUSED these posts ?";
+        if (value == 1) {
+            str = "Accepted";
+            conf = "Are you sure to ACCEPT these posts ?";
+        }
+        if (confirm(conf)) {
+            var fdt = new FormData();
+            fdt.append("val", value)
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("UpdateAllPost", "Post")",
+                data: fdt,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    window.location.href = "@Url.Action("Dashboard","Auth")"
+                }
+            });
+        }
+    }
+    $("#accept-post").click(function () {
+        if (CheckCheckbox() == true) {
+            checkboxes = document.getElementsByClassName('sub-check');
+            if (confirm("Are you sure to ACCEPT these post(s)?")) {
+                var fdt = new FormData();
+
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked == true) {
+                        var r = $(checkboxes[i]).attr("post-item").replace("post-", "");
+                        fdt.append("ls", r);
+                        fdt.append("sts", 1);
+                        document.getElementById("sts-" + r).innerHTML = "Accepted";
+                    }
+                }
+                 $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("UpdatePost", "Post")",
+                            data: fdt,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+
+                            }
+                 });
+                ResetCheckbox();
+            }
+        }
+    });
+    $("#refuse-post").click(function () {
+        if (CheckCheckbox() == true) {
+            checkboxes = document.getElementsByClassName('sub-check');
+            if (confirm("Are you sure to REFUSE these post(s)?")) {
+                var fdt = new FormData();
+
+               for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked == true) {
+                        var r = $(checkboxes[i]).attr("post-item").replace("post-", "");
+                        fdt.append("ls", r);
+                        fdt.append("sts", 0);
+                        document.getElementById("sts-" + r).innerHTML = "Refused";
+                    }
+                }
+                 $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("UpdatePost", "Post")",
+                            data: fdt,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+
+                            }
+                        });
+            }
+            ResetCheckbox();
+        }
+    });
+    function CheckCheckbox() {
+        checkboxes = document.getElementsByClassName('sub-check');
+        var count = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            alert("Please select at least 1 post");
+            return false;
+        } else {
+            return true;
+        }
+    }
+    function ResetCheckbox() {
+        document.getElementById("check-all").checked = false;
+
+        checkboxes = document.getElementsByClassName('sub-check');
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+
+        }
+    }
+    $('body').delegate('.page-item', 'click', function () {
+
         var str = $(this).attr("data-page");
+
         var re = document.getElementsByClassName('page-item');
         for (var i = 0; i < re.length; i++) {
             $(re[i]).css("background", "#fafafa");
         }
-      
-        if (str == "prev"&&pages>1) {
-            pages -=1;
-            $('[data-page=page-' + pages + ']').css("background", "#ddd");
+
+        if (str == "prev"&&pages>=1) {
+
+              if (pages ==1) {
+                pages = 1;
+
+            } else {
+                pages -= 1;
+
+            }
+
         } else if (str == "next" && pages <=@ViewBag.pagi) {
-            pages +=1;
-            $('[data-page=page-' + pages + ']').css("background", "#ddd");
+            if (pages ==@ViewBag.pagi) {
+                pages = @ViewBag.pagi;
+
+            } else {
+                pages += 1;
+
+            }
+
 
         } else {
             if (pages == parseInt(str.replace("page-", ""))) {
@@ -83,17 +247,25 @@
                 pages = parseInt(str.replace("page-", ""));
             }
             $(this).css("background", "#ddd");
-
-
         }
-        if (pages > 0 && pages <=@ViewBag.pagi) {
+        var select = $("#status-select").val();
+        LoadData(pages, select);
+
+
+    });
+    function LoadData( page,  sts) {
+
+        if (page > 0 && page <=@ViewBag.pagi) {
+            document.getElementById("check-all").checked = false;
+
             var r = document.getElementsByClassName('table-item');
             while (r.length > 0) {
                 r[0].parentNode.removeChild(r[0]);
             }
             var formDT = new FormData();
-            formDT.append("p", pages);
-            var row = pages == 1 ? 1 : 10 * (pages - 1) + 1;
+            formDT.append("p", page);
+            formDT.append("status", sts);
+            var row = page == 1 ? 1 : 10 * (page - 1) + 1;
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("LoadData", "Auth")",
@@ -102,30 +274,74 @@
                 contentType: false,
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var sts = "Declined";
+                        var st = "Refuse";
                         if (data[i].status == true) {
-                            sts = "Accepted";
+                            st = "Accepted";
                         }
                         var date = moment(data[i].created_at).format('HH:mm dd/MM/yyyy');
                         $("#table-id").append(' <tr class="table-item">' +
-                            '<td><input type="checkbox" /></td>' +
+                            '<td><input type="checkbox" class="sub-check"  post-item="post-'+data[i].id+'" /></td>' +
                             '<td>' + row + '</td>' +
                             ' <td>' + data[i].subject + '</td>' +
                             '<td>' + data[i].content + '</td>' +
                             '<td>' + date + '</td>' +
-                            '<td>' + sts + '</td>' +
-                            '<td> <a href="#" class="action-icon" style="background: linear-gradient(to right, #f8dd6a, #edc621); padding: 8px 5px 8px 10px; ">' +
-                            '<i class="fa fa-edit"></i></a>' +
-                            '<a href="#" class="action-icon" style="background: linear-gradient(to left,#ed3021,#f66d63); margin-left:0.4vw">' +
-                            '<i class="fa fa-trash"></i> </a>  </td> </tr>');
+                            '<td class="sts-item" id="sts-'+data[i].id+'">' + st + '</td>' +
+                            '<td>  <span id="view-post-' + data[i].id + '" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">' +
+                            '<i class="fa fa-eye"></i> </span> </td> </tr>');
                         row = row + 1;
 
 
                     }
+
+                    var f = new FormData();
+                    f.append("status", sts);
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetCount", "Auth")",
+                        data: f,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            var fdt = new FormData();
+                            fdt.append("i", data);
+                            $.ajax({
+                                type: "POST",
+                                url: "@Url.Action("RowEvent", "Auth")",
+                                data: fdt,
+                                processData: false,
+                                contentType: false,
+                                success: function (dt) {
+                                    var r = document.getElementsByClassName('page-item');
+                                    while (r.length > 0) {
+                                        r[0].parentNode.removeChild(r[0]);
+                                    }
+                                    var strs = "";
+                                    for (var j = 1; j <= dt; j++) {
+                                        if (j == page) {
+                                            strs += '<li class="page-item page-link" data-page="page-'+j+'" style="background:#ddd">' + j + '</li>';
+
+                                        }
+                                        else {
+                                            strs += '<li class="page-item page-link" data-page="page-' + j + '">' + j + '</li>'
+                                        }
+                                    }
+                                    $("#paginations").append('<li class= "page-item page-link" data-page="prev" >&lt;</li > ' + strs + '<li class= "page-item page-link" data-page="next"  >&gt;</li>');
+
+                                }
+                            });
+
+                        }
+
+                    });
                 }
             });
-        }
 
+        }
+    }
+    $("#status-select").change(function () {
+
+        var select = $("#status-select").val();
+        LoadData(1, select);
     });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

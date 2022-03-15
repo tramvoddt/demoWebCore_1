@@ -134,7 +134,8 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult Dashboard()
         {
-            ViewBag.data = LoadData(page);
+            TempData["cate"] = "approval";
+            ViewBag.data = LoadData(page,-1);
             ViewBag.pagi = RowEvent(_postService.GetPosts().Count);
             ViewBag.currentPage = page;
             return View();
@@ -157,12 +158,38 @@ namespace demoWebCore_1.Controllers
             }
             return (int)pagi;
         }
-        public List<Post> LoadData(int p)
+        public List<Post> LoadData(int p, int status)
         {
             int currentSkip = 10 * (p - 1);
-            
-            return _postService.GetPosts().OrderByDescending(x => x.id).Skip(currentSkip).Take(10).ToList();
-            
+            if (status == -1)
+            {
+                return _postService.GetPosts().OrderByDescending(x => x.id).Skip(currentSkip).Take(10).ToList();
+
+            }
+            else if (status == 0)
+            {
+                return _postService.GetPosts().OrderByDescending(x => x.id).Where(x=>x.status==false).Skip(currentSkip).Take(10).ToList();
+
+            }
+            return _postService.GetPosts().OrderByDescending(x => x.id).Where(x => x.status == true).Skip(currentSkip).Take(10).ToList();
+
+
+        }
+        public int GetCount(int status)
+        {
+            if (status == -1)
+            {
+                return _postService.GetPosts().ToList().Count;
+
+            }
+            else if (status == 0)
+            {
+                return _postService.GetPosts().Where(x => x.status == false).ToList().Count;
+
+            }
+            return _postService.GetPosts().Where(x => x.status == true).ToList().Count;
+
+
         }
         //CHECK DUP
         public JsonResult PhoneExists(Users model)

@@ -18,5 +18,7 @@ namespace demoWebCore_1.IService
         bool CheckChooseCollection(int postID, int collectID);
         List<Post> GetPostByUserID(int id, int post_id);
         void RemovePost(int id);
+        void UpdatePost(List<Post> l, bool sts);
+        void UpdateAllPost(bool val);
     }
 }

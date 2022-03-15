@@ -47,11 +47,12 @@
 
 <script type="text/javascript">
 
-   
-       document.addEventListener("DOMContentLoaded", function(e) {
-           document.getElementById('@TempData["type"]').classList.add("active-nav");
-       });
+    if (@TempData["type"]!= null) {
 
+        document.addEventListener("DOMContentLoaded", function (e) {
+            document.getElementById('@TempData["type"]').classList.add("active-nav");
+        });
+    }
 
 
 </script>
