@@ -1029,7 +1029,7 @@
         ResetConfirm();
     });
     $('body').delegate('.report-span', 'click', function () {
-        var cid = $(this).attr("cid").replace("edit-", "");
+        var cid = $(this).attr("cid").replace("report-", "");
         var fdt = new FormData();
         fdt.append("cmt_id",cid);
         if (confirm("Are you sure you want  report this comment?")) {

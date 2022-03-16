@@ -134,10 +134,10 @@ namespace demoWebCore_1.Controllers
         }
         public IActionResult Dashboard()
         {
+            TempData["title"] = "Approval of posts";
             TempData["cate"] = "approval";
             ViewBag.data = LoadData(page,-1);
             ViewBag.pagi = RowEvent(_postService.GetPosts().Count);
-            ViewBag.currentPage = page;
             return View();
         }
         private static readonly Regex _regex = new Regex("[^0-9]+"); 
@@ -223,6 +223,97 @@ namespace demoWebCore_1.Controllers
         public IActionResult LoginAdmin()
         {
             return View();
+        }
+        public IActionResult ReportComment()
+        {
+            TempData["title"] = "Report Comment";
+            ViewBag.data = _postService.GetReports();
+            ViewBag.psrv = _postService;
+            TempData["cate"] = "reports";
+            ViewBag.data = LoadDataReport(page, -1, -1);
+            ViewBag.pagi = RowEvent(_postService.GetReports().Count);
+            return View();
+        }
+        public List<Reports> LoadDataReport(int p, int status, int sort)
+        {
+            int currentSkip = 10 * (p - 1);
+            List<Reports> ls = new List<Reports>();
+            switch (status)
+            {
+                case -1:
+                    ls = _postService.GetReports().Skip(currentSkip).Take(10).ToList();
+                    break;
+                case 0:
+                    ls = _postService.GetReports().Where(x => x.status == 0).Skip(currentSkip).Take(10).ToList();
+                    break;
+                case 2:
+                    ls = _postService.GetReports().Where(x => x.status == 2).Skip(currentSkip).Take(10).ToList();
+                    break;
+                default:
+                    ls = _postService.GetReports().Where(x => x.status == 1).Skip(currentSkip).Take(10).ToList();
+                    break;
+
+            }
+            switch (sort)
+            {
+                case 1:
+                    return ls.OrderBy(x => x.total).ToList();
+                case 0:
+                    return ls.OrderByDescending(x => x.total).ToList();
+                default:
+                    return ls.OrderByDescending(x => x.id).ToList();
+            }
+
+        }
+        public int GetCountReport(int status, int sort)
+        {
+            List<Reports> ls = new List<Reports>();
+            switch (status)
+            {
+                case -1:
+                    ls = _postService.GetReports().ToList();
+                    break;
+                case 0:
+                    ls = _postService.GetReports().Where(x => x.status == 0).ToList();
+                    break;
+                case 2:
+                    ls = _postService.GetReports().Where(x => x.status == 2).ToList();
+                    break;
+                default:
+                    ls = _postService.GetReports().Where(x => x.status == 1).ToList();
+                    break;
+
+            }
+            switch (sort)
+            {
+                case 1:
+                    return ls.OrderBy(x => x.total).ToList().Count;
+                case 0:
+                    return ls.OrderByDescending(x => x.total).ToList().Count;
+                default:
+                    return ls.OrderByDescending(x => x.id).ToList().Count;
+            }
+
+        }
+        public string GetUserByCmtID(int id, string type)
+        {
+            switch (type)
+            {
+                case "code":
+                    return _postService.GetUserByCmtID(id).code;
+
+                default:
+                    return _postService.GetUserByCmtID(id).name;
+
+            }
+        }
+        public string GetContentComment(int id)
+        {
+            return _postService.GetDataContext().Comment.FirstOrDefault(x => x.id == id).content;
+        }
+        public int GetPostID(int id)
+        {
+            return _postService.GetPostByCmtID(id).id;
         }
     }
 }

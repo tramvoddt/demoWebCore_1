@@ -138,13 +138,16 @@ namespace demoWebCore_1.Service
                 var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmt_id);
                 if (w == null)
                 {
-                    ct.Reports.Add(new Reports() { id = AuthRequest.id, cmt_id = cmt_id, list_user = "[]", total = 1 });
+
+                    List<int> ls_user = new List<int>();
+                    ls_user.Add(AuthRequest.id);
+                    ct.Reports.Add(new Reports() { cmt_id = cmt_id, list_user = Newtonsoft.Json.JsonConvert.SerializeObject(ls_user), total = 1 });
 
                 }
                 else {
-                    List<UserReport> l = new List<UserReport>();
-                    l = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserReport>>(w.list_user);
-                    l.Add(new UserReport() { id = AuthRequest.id, created_at = DateTime.Now });
+                    List<int> l = new List<int>();
+                    l = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(w.list_user);
+                    l.Add(AuthRequest.id);
                     w.total += 1;
                     w.list_user = Newtonsoft.Json.JsonConvert.SerializeObject(l);
 
@@ -159,22 +162,58 @@ namespace demoWebCore_1.Service
         }
         public bool CheckUserReport(int cmtID)
         {
-            var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmtID);
+            var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmtID&&x.status!=2);
             if (w != null)
             {
-                List<UserReport> ls = new List<UserReport>();
-                ls = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserReport>>(w.list_user);
-                foreach (var item in ls)
+                List<int> ls = new List<int>();
+                ls = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(w.list_user);
+                if (ls.Contains(AuthRequest.id))
                 {
-                    if (item.id == AuthRequest.id)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
 
         }
+        public List<Reports> GetReports()
+        {
+            return ct.Reports.OrderByDescending(x => x.id).ToList()??null;
+        }
+        public Users GetUserByCmtID(int cmtID)
+        {
+            return ct.Users.FirstOrDefault(x => x.id == (ct.Comment.FirstOrDefault(x => x.id == cmtID).user_id));
+        }
+        public Post GetPostByCmtID(int cmtID)
+        {
+            return ct.Post.FirstOrDefault(x => x.id == (ct.Comment.FirstOrDefault(x => x.id == cmtID).post_id));
+        }
+        public void UpdateReport(List<Reports> l, int sts)
+        {
+            foreach (var item in l)
+            {
+                item.status = sts;
+                if (sts == 1)
+                {
+                    var cmt = ct.Comment.FirstOrDefault(x => x.id == item.cmt_id);
+                    if (cmt != null)
+                    {
+                        ct.Comment.Remove(cmt);
+                    }
+                }
+                ct.SaveChanges();
+            }
 
+        }
+        public List<Reports> GetListReportByListInt(List<int> ls)
+        {
+            List<Reports> p = new List<Reports>();
+            foreach (var item in ls)
+            {
+                var post = ct.Reports.FirstOrDefault(x => x.id == item);
+                p.Add(post);
+            }
+            return p;
+
+        }
     }
 }

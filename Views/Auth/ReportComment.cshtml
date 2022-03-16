@@ -1,0 +1,452 @@
+﻿@{ Layout = "~/Views/Shared/LayoutAdmin.cshtml";
+    demoWebCore_1.Service.PostService p = ViewBag.psrv;
+}
+<div class="home-content main">
+    <div class="sub-main" style="margin:auto ;background:#fafafa;width: 95%; height: auto; display: table; border-radius: 10px; box-shadow: 0 0.25rem 0.75rem rgb(84 199 150 / 0.2)">
+        <div style="display:table-row">
+            <div style="width:100%;height:70px;padding:20px 0">
+                <span id="delete-comment" style="margin:auto auto 2vh 2vw;cursor:pointer;border:none;color:white;border-radius:15px; background: linear-gradient(to right, #ebe263, #e59a38);padding:15px 18px">Delete comment</span>
+                <select id="status-select" style="width:20vw;height:35px;margin-left:1vw;border:none;background:#e8f7f1;border-radius:15px;padding-left:10px;">
+                    <option value="-1">All</option>
+                    <option value="1">Handled</option>
+                    <option value="0">Delay</option>
+                    <option value="2">Refused</option>
+                </select>
+                <select id="sort-select" style="width:15vw;height:35px;margin-left:1vw;border:none;background:#e8f7f1;border-radius:15px;padding-left:10px;">
+                    <option value="-1">New</option>
+                    <option value="0">Total descending</option>
+                    <option value="1">Total ascending</option>
+                </select>
+
+            </div>
+            <table class="table  col-11 container" style="margin-top:20px" id="table-id">
+                <tr>
+                    <th><input type="checkbox" id="check-all" onclick="SelectAll(this)" /></th>
+                    <th>#</th>
+                    <th style="width:150px">User's code</th>
+                    <th>User's name</th>
+                    <th>Content of comment</th>
+                    <th>Total reported</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                @{int k = 1;}
+                @foreach (var item in (List<demoWebCore_1.Models.ModelViews.Reports>)ViewBag.data)
+                {
+
+            <tr class="table-item">
+
+                <td><input type="checkbox" class="sub-check" report-item="report-@item.id" /></td>
+                <td>@k @{k++;} </td>
+                <td id="uc-@item.id">@(p.GetUserByCmtID(item.cmt_id).code)</td>
+                <td id="un-@item.id">@(p.GetUserByCmtID(item.cmt_id).name)</td>
+                <td id="content-@item.id">@(p.GetDataContext().Comment.FirstOrDefault(x=>x.id==item.cmt_id).content)</td>
+                <td>@item.total</td>
+                <td class="sts-item" id="sts-@item.id">@(item.status==1?"Handled":(item.status == 0 ? "Delay":"Refuse"))</td>
+                <td>
+                    <span rid="r-@item.id" pid="view-post-@(p.GetPostByCmtID(item.cmt_id).id)" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">
+                        <i class="fa fa-eye"></i>
+                    </span>
+
+                </td>
+            </tr>
+                }
+            </table>
+
+            <!--		Start Pagination -->
+            <div class="pagination-container" style="cursor:pointer">
+
+                <nav aria-label="Page navigation example" style="position:unset;box-shadow:none; background:none;">
+                    <ul class="pagination" id="paginations">
+                        <li class="page-item page-link" data-page="prev">&lt;</li>
+                        @for (int i = 1; i <= ViewBag.pagi; i++)
+                        {
+                            if (i == 1)
+                            {
+                                <li class="page-item page-link" data-page="page-1" style="background:#ddd">@i</li>
+
+                            }
+                            else
+                            {
+                                <li class="page-item page-link" data-page="page-@i">@i</li>
+                            }
+                        }
+                        <li class="page-item page-link" data-page="next">&gt;</li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    var pages = 1;
+    $('body').delegate('.action-icon', 'click', function () {
+         $("#view-post").css("display", "table");
+        $("#view-post").height($(".body-wrapper").height());
+        var pid = $(this).attr("pid").replace("view-post-", "");
+        var rid = $(this).attr("rid").replace("r-", "");
+        var cont = document.getElementById("content-" + rid).innerHTML;
+        var un = document.getElementById("un-" + rid).innerHTML;
+        var uc = document.getElementById("uc-" + rid).innerHTML;
+        var fdt = new FormData();
+        fdt.append("pid", pid);
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetPostByID", "Post")",
+            data: fdt,
+                processData: false,
+                contentType: false,
+            success: function (data) {
+                var str = "";
+                var sts = document.getElementById("sts-" + rid).innerHTML;
+                if (sts == "Delay") {
+                    str = '<span pid="report-' + rid + '" id="delete-item-cmt" style="cursor: pointer; padding: 15px; background: #47dcab; color: white; float: right;margin-left:1vw; ">Delete Comment</span> ';
+                    str += '<span pid="report-' + rid + '" id="refuse-item-cmt" style="cursor: pointer; padding: 15px; background: #c63939; color: white; float: right; ">Refuse</span> ';
+
+                }
+                $("#view-main").append('<div style="float:left;padding:0" class="col-5">' +
+                    '<img style = " border-radius: 15px; width: inherit; height: auto" src = "/Post/GetImageFile/' + data.id + '" > </div >' +
+                    ' <div style="height: auto;float:left;border-radius:15px;" class="col-6"> <h3>Subject: ' + data.subject + '</h3> <h5>Content: ' + data.content + '</h5> <h5>Url:<a style=" word-wrap: break-word;" target="blank" href="' + data.url + '">' + data.url + '</a></h5>'+
+                    '<br/><h6>User\'\s name: ' + un + '</h6><h6>User\'\s code: ' + uc +'</h6><br/><h2>Content of comment: '+cont+'</h2></div > ' +
+                    '<span id="close-view" style="float:right;right:0;cursor:pointer;color:white;font-size:20px;font-weight:600;background:#cbdcd3;border-radius:10px;padding:5px 10px">X</span>' +
+                    '<div style="height:50px;float:left;top:70px" class="col-7">' + str +'</div>');
+                }
+            });
+
+    });
+
+    function SelectAll(source) {
+        checkboxes = document.getElementsByClassName('sub-check');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    $(".sub-check").click(function () {
+
+        checkboxes = document.getElementsByClassName('sub-check');
+        var k = checkboxes.length;
+        for (var i = 0, n = k; i < n; i++) {
+            if (checkboxes[i].checked == false) {
+                document.getElementById("check-all").checked = false;
+                k -= 1;
+                break;
+            }
+        }
+        if (k == checkboxes.length) {
+            document.getElementById("check-all").checked = true;
+        }
+    });
+   
+   
+    $('body').delegate('#delete-item-cmt', 'click', function () {
+        if (confirm("Are you sure to DELETE THIS COMMENT?")) {
+            var fdt = new FormData();
+            var pid = $(this).attr("pid").replace("report-", "");
+            fdt.append("ls", pid);
+            fdt.append("sts", 1);
+            document.getElementById("sts-" + pid).innerHTML = "Handled";
+            UpdateStatus(fdt);
+            CloseView();
+
+        }
+    });
+
+    $('body').delegate('#refuse-item-cmt', 'click', function () {
+        if (confirm("Are you sure to REFUSED THIS REPORT?")) {
+            var fdt = new FormData();
+            var pid = $(this).attr("pid").replace("report-", "");
+            fdt.append("ls", pid);
+            fdt.append("sts", 2);
+            UpdateStatus(fdt);
+            document.getElementById("sts-" + pid).innerHTML = "Refused";
+            CloseView();
+        }
+    }); $("#delete-comment").click(function () {
+        if (CheckCheckbox() == true) {
+            if (confirm("Are you sure to DELETE these comment(s)?")) {
+                var fdt = new FormData();
+                checkboxes = document.getElementsByClassName('sub-check');
+
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked == true) {
+                        var r = $(checkboxes[i]).attr("report-item").replace("report-", "");
+                        fdt.append("ls", r);
+                        fdt.append("sts", 1);
+                        document.getElementById("sts-" + r).innerHTML = "Handled";
+                    }
+                }
+                UpdateStatus(fdt);
+                ResetCheckbox();
+
+            }
+        }
+    });
+
+    
+    function UpdateStatus(fdt) {
+         $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("UpdateReport", "Post")",
+                            data: fdt,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+
+                            }
+         });
+
+    }
+    function CheckCheckbox() {
+        checkboxes = document.getElementsByClassName('sub-check');
+        var count = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            alert("Please select at least 1 post");
+            return false;
+        } else {
+            return true;
+        }
+    }
+    function ResetCheckbox() {
+        document.getElementById("check-all").checked = false;
+
+        checkboxes = document.getElementsByClassName('sub-check');
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+
+        }
+    }
+    $('body').delegate('.page-item', 'click', function () {
+
+        var str = $(this).attr("data-page");
+
+        var re = document.getElementsByClassName('page-item');
+        for (var i = 0; i < re.length; i++) {
+            $(re[i]).css("background", "#fafafa");
+        }
+
+        if (str == "prev"&&pages>=1) {
+
+              if (pages ==1) {
+                pages = 1;
+
+            } else {
+                pages -= 1;
+
+            }
+
+        } else if (str == "next" && pages <=@ViewBag.pagi) {
+            if (pages ==@ViewBag.pagi) {
+                pages = @ViewBag.pagi;
+
+            } else {
+                pages += 1;
+
+            }
+
+
+        } else {
+            if (pages == parseInt(str.replace("page-", ""))) {
+                pages = -1;
+            } else {
+                pages = parseInt(str.replace("page-", ""));
+            }
+            $(this).css("background", "#ddd");
+        }
+        var select = $("#status-select").val();
+        var sort = $("#sort-select").val();
+        LoadDataReport(1, select, sort);
+
+    });
+    function LoadDataReport( page,  sts,sort) {
+
+        if (page > 0 && page <=@ViewBag.pagi) {
+            document.getElementById("check-all").checked = false;
+
+            var r = document.getElementsByClassName('table-item');
+            while (r.length > 0) {
+                r[0].parentNode.removeChild(r[0]);
+            }
+            var formDT = new FormData();
+            formDT.append("p", page);
+            formDT.append("status", sts);
+            formDT.append("sort", sort);
+            var row = page == 1 ? 1 : 10 * (page - 1) + 1;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("LoadDataReport", "Auth")",
+                data: formDT,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var st = data[i].status == 1 ? "Handled" : (data[i].status == 0?"Delay":"Refused");
+
+                        var uc = GetUserCode(data[i].cmt_id);
+                        var un = GetUserName(data[i].cmt_id);
+                        $("#table-id").append('<tr class="table-item"> <td><input type="checkbox" class="sub-check" report-item="report-'+data[i].id+'" /></td>'+
+                            '<td id="uc-' + data[i].id +'">' + row + ' </td> <td>' + uc + '</td>' +
+                            '<td id="un-' + data[i].id +'">' + un + '</td>' +
+                            '<td id="content-' + data[i].id+'">' + GetContentComment(data[i].cmt_id) + '</td><td>' + data[i].total + '</td>' +
+               ' <td class="sts-item" id="sts-'+data[i].id+'">'+st+'</td>'+
+                '<td> <span rid="r-'+data[i].id+'" pid="view-post-'+GetPostId(data[i].cmt_id)+'" class="action-icon" style="cursor:pointer;background: linear-gradient(to right, #63eb85, #2ad77c); padding: 10px;border-radius:10px;color:white; ">'+
+                        '<i class="fa fa-eye"></i>  </span>  </td> </tr>');
+                        row = row + 1;
+
+
+                    }
+
+                    var f = new FormData();
+                    f.append("status", sts);
+                    f.append("sort", sort);
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetCountReport", "Auth")",
+                        data: f,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            var fdt = new FormData();
+                            fdt.append("i", data);
+                            $.ajax({
+                                type: "POST",
+                                url: "@Url.Action("RowEvent", "Auth")",
+                                data: fdt,
+                                processData: false,
+                                contentType: false,
+                                success: function (dt) {
+                                    var r = document.getElementsByClassName('page-item');
+                                    while (r.length > 0) {
+                                        r[0].parentNode.removeChild(r[0]);
+                                    }
+                                    var strs = "";
+                                    for (var j = 1; j <= dt; j++) {
+                                        if (j == page) {
+                                            strs += '<li class="page-item page-link" data-page="page-'+j+'" style="background:#ddd">' + j + '</li>';
+
+                                        }
+                                        else {
+                                            strs += '<li class="page-item page-link" data-page="page-' + j + '">' + j + '</li>'
+                                        }
+                                    }
+                                    $("#paginations").append('<li class= "page-item page-link" data-page="prev" >&lt;</li > ' + strs + '<li class= "page-item page-link" data-page="next"  >&gt;</li>');
+
+                                }
+                            });
+
+                        }
+
+                    });
+                }
+            });
+
+        }
+    }
+     function GetUserName(cmtId) {
+         var f = new FormData();
+         f.append("id", cmtId);
+         f.append("type", "name");
+
+           var q= $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUserByCmtID", "Auth")",
+                data: f,
+                async: false,
+                processData: false,
+                contentType: false,
+               success: function (data) {
+                    return data;
+
+
+               }
+           }).responseText;
+
+        return q;
+
+    };
+     function GetUserCode(cmtId) {
+         var f = new FormData();
+         f.append("id", cmtId);
+
+         f.append("type", "code");
+           var q= $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUserByCmtID", "Auth")",
+                data: f,
+                async: false,
+                processData: false,
+                contentType: false,
+               success: function (data) {
+
+                    return data;
+
+               }
+           }).responseText;
+
+        return q;
+
+    };
+    function GetContentComment(cmtId) {
+         var f = new FormData();
+        f.append("id", cmtId);
+
+           var q= $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetContentComment", "Auth")",
+                data: f,
+                async: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    return data;
+
+               }
+           }).responseText;
+
+        return q;
+
+    };
+    function GetPostId(cmtId) {
+         var f = new FormData();
+         f.append("id", cmtId);
+
+           var q= $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetPostID", "Auth")",
+                data: f,
+                async: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    return data;
+
+               }
+           }).responseText;
+
+        return q;
+
+    };
+    $("#status-select").change(function () {
+        SearchFilter();
+    });
+    $("#sort-select").change(function () {
+        SearchFilter();
+
+    });
+    function SearchFilter() {
+
+        var select = $("#status-select").val();
+        var sort = $("#sort-select").val();
+        LoadDataReport(1, select, sort);
+    }
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

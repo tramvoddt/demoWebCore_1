@@ -261,9 +261,14 @@ namespace demoWebCore_1.Controllers
         {
             return _postService.GetPostByID(pid)??null;
         }
-        public void ReportComment(int post_id, int cmt_id)
+        public bool ReportComment( int cmt_id)
         {
-            _postService.ReportComment(cmt_id);
+            return _postService.ReportComment(cmt_id);
+        }
+        public void UpdateReport(List<int> ls, int sts)
+        {
+            List<Reports> l = _postService.GetListReportByListInt(ls);
+            _postService.UpdateReport(l, sts);
         }
     }
 }

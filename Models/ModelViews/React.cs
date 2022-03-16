@@ -13,7 +13,6 @@ namespace demoWebCore_1.Models.ModelViews
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id", TypeName = "int")]
         public int id { get; set; }
-
         [Column("cmt_id", TypeName = "int")]
         public int cmt_id { get; set; }
         [Column("list_user", TypeName = "varchar")]

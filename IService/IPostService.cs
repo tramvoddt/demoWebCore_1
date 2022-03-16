@@ -22,5 +22,12 @@ namespace demoWebCore_1.IService
         void UpdateAllPost(bool val);
         bool ReportComment( int cmt_id);
         bool CheckUserReport(int cmtID);
+        List<Reports> GetReports();
+        Users GetUserByCmtID(int id);
+        Post GetPostByCmtID(int id);
+        void UpdateReport(List<Reports> l, int sts);
+
+        List<Reports> GetListReportByListInt(List<int> ls);
+        
     }
 }
