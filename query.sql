@@ -11,4 +11,6 @@ set identity_insert reports off;
 select*from comments
 alter table reports
 add status int default 0;
-update reports set list_user='[5]' where id=6
+update comments set sts=0 where id=49
+update reports set status=0 where id=7
+delete from reports where cmt_id=51

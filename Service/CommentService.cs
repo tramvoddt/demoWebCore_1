@@ -43,7 +43,7 @@ namespace demoWebCore_1.Service
        public  List<Comment> GetListComment(int postID)
         {
             List<Comment> ls = new List<Comment>();
-             var l = ct.Comment.Where(x => x.post_id == postID).ToList();
+             var l = ct.Comment.Where(x => x.post_id == postID&&x.status==false).ToList();
             foreach (var item in l)
             {
                 if (item.hide == true) {

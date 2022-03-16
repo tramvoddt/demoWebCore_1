@@ -150,6 +150,12 @@ namespace demoWebCore_1.Service
                     l.Add(AuthRequest.id);
                     w.total += 1;
                     w.list_user = Newtonsoft.Json.JsonConvert.SerializeObject(l);
+                    if (w.status == 2)
+                    {
+                        w.status = 0;
+                    }
+
+                    
 
                 }
                 ct.SaveChanges();
@@ -162,7 +168,7 @@ namespace demoWebCore_1.Service
         }
         public bool CheckUserReport(int cmtID)
         {
-            var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmtID&&x.status!=2);
+            var w = ct.Reports.FirstOrDefault(x => x.cmt_id == cmtID);
             if (w != null)
             {
                 List<int> ls = new List<int>();
@@ -181,7 +187,8 @@ namespace demoWebCore_1.Service
         }
         public Users GetUserByCmtID(int cmtID)
         {
-            return ct.Users.FirstOrDefault(x => x.id == (ct.Comment.FirstOrDefault(x => x.id == cmtID).user_id));
+            var w = ct.Users.FirstOrDefault(x => x.id == ct.Comment.FirstOrDefault(x => x.id == cmtID).user_id);
+            return w;
         }
         public Post GetPostByCmtID(int cmtID)
         {
@@ -191,13 +198,16 @@ namespace demoWebCore_1.Service
         {
             foreach (var item in l)
             {
-                item.status = sts;
+                if (item.status != 2 && item.status != 1)
+                {
+                    item.status = sts;
+                }
                 if (sts == 1)
                 {
                     var cmt = ct.Comment.FirstOrDefault(x => x.id == item.cmt_id);
                     if (cmt != null)
                     {
-                        ct.Comment.Remove(cmt);
+                        cmt.status = true;
                     }
                 }
                 ct.SaveChanges();
