@@ -1,5 +1,6 @@
 ﻿using demoWebCore_1.IService;
 using demoWebCore_1.Models;
+using demoWebCore_1.Models.ModelViews;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,12 +21,12 @@ namespace demoWebCore_1.Controllers
             _postService = c;
             _collectService = co;
             _userService = u;
-            /*Services.ServiceClient cli = new Services.ServiceClient();
-            var val = cli.GetListCollectAsync();
+           /* Services.ServiceClient cli = new Services.ServiceClient();
+            var val = cli.GetListPostAsync();
             var res = val.Result;
-            List<CollectContract> list = new List<CollectContract>();
-            list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CollectContract>>(res);*/
-      }
+            List<Post> list = new List<Post>();
+            list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Post>>(res);*/
+        }
 
         public IActionResult Index()
         {

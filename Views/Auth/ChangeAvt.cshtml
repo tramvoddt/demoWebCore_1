@@ -1,0 +1,307 @@
+﻿@model demoWebCore_1.Models.ModelViews.Collect
+@*
+
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Change Avt";
+}
+<style>
+    #trashimg:focus {
+        outline: none
+    }
+
+    #txtSubject:focus, .p-content:focus {
+        outline: none;
+        border: none;
+        background: #eff7f4;
+    }
+
+    #txtName:focus, #close-create:focus, #btnSave:focus {
+        outline: none;
+    }
+
+    #txtSubject {
+        padding: 2px 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 3px solid #5ba58b;
+        font-size: 25px;
+        color: #2b8364;
+        font-weight: 700;
+        background: none;
+        height: 43px;
+    }
+
+    .scroll-none {
+        overflow: hidden;
+    }
+
+    .p-content {
+        padding: 5px 10px;
+        width: 100%;
+        border: 1px solid #5ba58b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #2b8364;
+        background: none;
+        float: left
+    }
+
+    .p-content-light {
+        padding: 10px 10px;
+        width: 100%;
+        border: 2px solid #2af78b;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #e1e8e6;
+        background: none;
+    }
+
+    #txtNameCollect::placeholder {
+        color: #e1e8e6;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .error_ {
+        color: #ec584c;
+        font-size: 15px;
+        font-style: italic;
+        float: left
+    }
+
+    .show-create {
+        display: block !important;
+    }
+
+    .form-control {
+        border: 1px solid #5ba58b;
+        border-radius: 8px;
+    }
+
+    .btn-action {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid #17a55b;
+        background: #17a55b;
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        .btn-action:hover {
+            background: none;
+            color: #17a55b;
+        }
+
+    #btnCreate {
+        transition: 0.4s all ease-out;
+        padding: 8px 33px;
+        border: 1px solid white;
+        background: white;
+        color: #17a55b;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 2px;
+    }
+
+        #btnCreate:hover {
+            background: none;
+            color: white;
+        }
+</style>
+<div class="text-center container col-9" style="display:table;min-height: 500px;height:auto; background: #fafafa; padding: 50px 30px; border-radius: 10px; margin: 5vh auto 15vh auto;box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
+    <button id="btnChoose" style="margin-bottom:20px"class="btn-action">Choose from my post</button>
+
+    <div style="display:table-row; height: auto; min-height: 350px; background: none; float: left; " class="col-12">
+
+        <div id="viewer" class="container">
+
+
+            @if (true)
+            {
+                <img id="imgViewer" src="~/lib/imgs/avtdefault.jpg" style="border:none; width:200px;height:200px;margin-bottom:5vh;border-radius:50%;" />
+            }
+            <div id="content">Click or drag to upload</div>
+
+
+        </div>
+        <input type="file" id="file-upload" class="main-post" accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp" aria-hidden="true" tabindex="-1" style="cursor: pointer; height: 100%; opacity: 0;
+position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
+    </div>
+
+    <div class="col-12 container" style="margin-bottom:20px">
+
+        <button id="trashimg" style="width:50px;height:50px;padding:10px; background: rgb(225, 44, 44); border-radius: 50%; border: 0px; font-size: 20px; display: block;" class="container "><i style="color:white;pointer-events:none;font-size:20px" class="fa fa-trash"></i></button>
+
+    </div>
+
+
+    <h3 style="margin-bottom:20px;">@AuthRequest.name</h3>
+    <button id="btnSave" class="btn-action">Save</button>
+
+
+</div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#trashimg").css("display", "none");
+
+        });
+        $("#trashimg").click(function () {
+            $("#imgViewer").attr("src", "/lib/imgs/avtdefault.jpg");
+            $("#file-upload").val(null);
+
+            $("#trashimg").css("display", "none");
+            document.getElementById("content").innerHTML = "Click or drag to upload";
+            $("#content").css("color", "#17bb7e");
+
+
+        });
+        $("#drop").change(function () {
+
+            if ($(this).val() == 0) {
+                document.getElementById("create-collect").classList.toggle("show-create");
+                $(".main-post").css("pointer-events","none");
+
+            }
+        });
+    $("#close-create").click(function () {
+        ResetFormCreate();
+        var select = document.getElementById('drop');
+        $(select).val(-1);
+
+        });
+    function ResetFormCreate() {
+
+        document.getElementById("txtNameCollect").value = "";
+
+        $('#status-collect').prop('checked', false);
+        document.getElementById("create-collect").classList.toggle("show-create");
+        $(".main-post").css("pointer-events", "inherit");
+
+
+    }
+        $("#file-upload").change(function (e) {
+            var files = e.target.files;
+            document.getElementById("content").innerHTML = "Click or drag to change";
+            $("#content").css("font-weight", "normal");
+
+            $("#content").css("color", "#5a6964");
+            $("#trashimg").css("display", "block");
+            $("#imgViewer").css("border", "none");
+
+            $("#imgViewer").attr("src", window.URL.createObjectURL(files[0]));
+
+        });
+
+        $("#btnSave").click(function () {
+
+
+            if ($("#imgViewer").attr("src") == "/lib/imgs/avtdefault.jpg") {
+                $("#imgViewer").css("border", "2px solid #db3e32");
+                document.getElementById("content").innerHTML = "please choose 1 picture";
+                $("#content").css("color", "#db3e32");
+                $("#content").css("font-weight", "600");
+            } else {
+
+            var files = $("#file-upload").prop("files");
+            var formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append("file", files[i]);
+
+            }
+
+
+            @*$.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePost", "Post")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    window.location.href = "@Url.Action("MyAccount", "Auth")";
+                },
+                error: function () {
+
+                }
+            });*@
+        }
+
+        });
+    $("#btnCreate").click(function () {
+            document.getElementById("name_error").innerHTML = "";
+            var _name = $("#txtNameCollect").val();
+        var sts = $('#status-collect:checked').val()=="true"?true:false;
+
+            var _sts = (sts == false ? "Public" : "Private");
+
+            if (_name.length == 0) {
+                document.getElementById("name_error").innerHTML = "* Name is required";
+
+            }
+
+            if (_name.length>0) {
+                var formData = new FormData();
+
+                formData.append("name", _name);
+                formData.append("status", sts);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NameExists", "Collect")"+"?name="+_name,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == true) {
+                        document.getElementById("name_error").innerHTML = "This name already exists";
+
+                    } else {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveCollect", "Collect")",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                var select = document.getElementById('drop');
+
+                                    $(select).append('<option value=' + data + '>' + _name+" - "+_sts+ '</option>');
+                                $(select).val(data);
+                                ResetFormCreate();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+
+
+                }
+
+            });
+        }
+
+    });
+    function CreateCollect(){
+
+    }
+    $("#btnRead").click(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetPost","Post",new {id=18 })",
+
+            success: function (data) {
+                $("#txtSubject").val(data.subject),
+                    $("#imgViewer").attr("src", "data:image/ipg;base64," + data.img + "")
+            },
+            error: function () {
+                console.log("error")
+            }
+        });
+    });
+    </script>

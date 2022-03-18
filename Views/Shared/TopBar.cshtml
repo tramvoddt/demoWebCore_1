@@ -60,7 +60,7 @@
 
 
             </div>
-            @if (demoWebCore_1.Models.AuthRequest.id!=0)
+            @if (demoWebCore_1.Models.AuthRequest.id != 0)
             {
 
                 <div style="width:100px; height:40px;float:right;text-align:right" class="col-3">
@@ -68,7 +68,7 @@
                         <i class="fa fa-bell" style="color: #f6fbf9; font-size: 20px; pointer-events: none "></i>
                     </button>
 
-                    <button type="button" class="icon-current user-current" onclick="window.location.href = '@Url.Action("MyAccount","Auth")'">
+                    <button type="button" class="icon-current user-current" onclick="window.location.href = '@Url.Action("MyAccount", "Auth")'">
                         @demoWebCore_1.Models.AuthRequest.name
                     </button>
                     <button type="button" class="icon-current dropbtnn" style="padding: 0; background: none;">
@@ -81,7 +81,7 @@
                                 <i class="fa fa-gear" style="padding: 0 10px; color: white; "></i>Setting
                             </a>
 
-                            <a href="#" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                            <a   href="@Url.Action("ChangeAvt", "Auth")"  class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
                                 <i class="fa fa-user" style="padding: 0 10px; color: white;"></i> My Account
 
 
@@ -94,7 +94,7 @@
 
                             </a>
                             }
-                            <a href="@Url.Action("ClientLogout","Auth")" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
+                            <a href="@Url.Action("ClientLogout", "Auth")" class="col-12" style=" color: white; padding: 15px 16px; text-align: left; text-decoration: none; display: block;">
                                 Logout
                             </a>
                         </div>
@@ -108,11 +108,11 @@
             else
             {
                 <div style=" width:100px; height:40px;float:right;text-align:right" class="col-3">
-                    <button type="button" class="user-signup" onclick="window.location.href='@Url.Action("Auth","Auth",new { type="sign-up" })'">
+                    <button type="button" class="user-signup" onclick="window.location.href='@Url.Action("Auth", "Auth", new { type = "sign-up" })'">
                         Sign Up
                     </button>
 
-                    <button type="button" class="user-login" onclick="window.location.href='@Url.Action("Auth","Auth",new { type="login" })'">
+                    <button type="button" class="user-login" onclick="window.location.href='@Url.Action("Auth", "Auth", new { type = "login" })'">
                         Login
                     </button>
                 </div>
@@ -132,5 +132,13 @@
             document.getElementById("myDropdown").classList.toggle("show");
         }
     }
-    
+   
+    if (@TempData["type"]!= null) {
+
+        document.addEventListener("DOMContentLoaded", function (e) {
+            document.getElementById('@TempData["type"]').classList.add("active-nav");
+        });
+    }
+
+
 </script>

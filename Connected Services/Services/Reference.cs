@@ -19,8 +19,8 @@ namespace Services
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetData", ReplyAction="http://tempuri.org/IService/GetDataResponse")]
         System.Threading.Tasks.Task<string> GetDataAsync(int value);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetListCollect", ReplyAction="http://tempuri.org/IService/GetListCollectResponse")]
-        System.Threading.Tasks.Task<string> GetListCollectAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetListPost", ReplyAction="http://tempuri.org/IService/GetListPostResponse")]
+        System.Threading.Tasks.Task<string> GetListPostAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
@@ -78,9 +78,9 @@ namespace Services
             return base.Channel.GetDataAsync(value);
         }
         
-        public System.Threading.Tasks.Task<string> GetListCollectAsync()
+        public System.Threading.Tasks.Task<string> GetListPostAsync()
         {
-            return base.Channel.GetListCollectAsync();
+            return base.Channel.GetListPostAsync();
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

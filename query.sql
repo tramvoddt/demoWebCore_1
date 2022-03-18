@@ -14,3 +14,4 @@ add status int default 0;
 update comments set sts=0 where id=49
 update reports set status=0 where id=7
 delete from reports where cmt_id=51
+select*from categories

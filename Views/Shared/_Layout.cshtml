@@ -12,13 +12,81 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </head>
+
 <body>
     @{Html.RenderPartial("TopBar"); }
+    <style>
+        .btn-action-choose {
+            transition: 0.4s all ease-out;
+            padding: 8px 33px;
+            border: 2px solid white;
+            background: none;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 2px;
+        }
 
+            .btn-action-choose:hover, :focus {
+                background: #17a55b;
+                color: white;
+                outline: none;
+            }
+        .box-img-post {
+            float: left;
+            border: 2px solid white;
+            background: rgb(255 255 255 / 0.56);
+            cursor: pointer;
+            border-radius: 10px;
+            height: auto;
+            margin-bottom: 1.5vh;
+        }
+        .col {
+            -webkit-column-count: 6;
+            -moz-column-count: 6;
+            column-count: 6;
+            -webkit-column-gap: 15px;
+            -moz-column-gap: 15px;
+            column-gap: 15px;
+        }
+        .box-img-post img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: 1s;
+            clear: both;
+        }
+      
+        
+    </style>
     <div class="container col-12" style="height:auto; min-height:500px;padding-top:70px;background:@TempData["bgc"];color:#17bb7e;display:table">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    </div>
+    <div id="view-post" style="background:rgb(70 127 108 / 0.03);width:100%;position:absolute;z-index:3;top:55px;height:800px">
+        <div id="view-main" class="col" style="width: 75%; height: 550px;overflow-x:scroll;background:rgb(70 127 108 / 0.80); border-radius: 15px 15px 0 0; margin: 2% auto 0 auto;padding:10px">
+               @for (int i = 0; i < 3; i++)
+                {
+
+                    <div class="box-img-post"><img src="~/lib/imgs/c.jpg" style="border-radius:10px;width:150px;height:auto" /></div>
+
+                    <div class="box-img-post"><img src="~/lib/imgs/c.jpg" style="border-radius:10px;width:150px;height:auto" /></div>
+                    <div class="box-img-post"><img src="~/lib/imgs/avtdefault.jpg" style="border-radius:10px;width:150px;height:auto" /></div>
+                    <div class="box-img-post"><img src="~/lib/imgs/avtdefault.jpg" style="border-radius:10px;width:150px;height:auto" /></div>
+                    <div class="box-img-post"><img src="~/lib/imgs/avtdefault.jpg" style="border-radius:10px;width:150px;height:auto" /></div>
+                    <div class="box-img-post"><img src="~/lib/imgs/a.png" style="border-radius: 10px; width: 150px; height: auto" /></div>
+                    <div class="box-img-post"><img src="~/lib/imgs/a.png" style="border-radius: 10px; width: 150px; height: auto" /></div>
+                }
+
+        </div>
+        <div style="width: 75%; border-radius:0 0 15px 15px;height: 70px; background: rgb(70 127 108/0.85);  margin: auto; padding:10px;text-align:center" class="col-12 container">
+            <button class="btn-action-choose">OK</button>
+
+            <button class="btn-action-choose">Cancel</button>
+
+        </div>
+
     </div>
     @{Html.RenderPartial("Footer"); }
 
@@ -45,14 +113,3 @@
 </body>
 </html>
 
-<script type="text/javascript">
-
-    if (@TempData["type"]!= null) {
-
-        document.addEventListener("DOMContentLoaded", function (e) {
-            document.getElementById('@TempData["type"]').classList.add("active-nav");
-        });
-    }
-
-
-</script>

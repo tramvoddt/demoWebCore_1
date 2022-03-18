@@ -203,7 +203,10 @@ namespace demoWebCore_1.Controllers
             bool emailExists = !userService.GetDataContext().Users.Any(x => x.email == model.email);
             return Json(emailExists);
         }
-      
+            public IActionResult ChangeAvt()
+            {
+            return View();
+            }
 
         //LOGOUT
         public IActionResult ClientLogout()
