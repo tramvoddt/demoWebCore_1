@@ -20,7 +20,10 @@ namespace Services
         System.Threading.Tasks.Task<string> GetDataAsync(int value);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetListPost", ReplyAction="http://tempuri.org/IService/GetListPostResponse")]
-        System.Threading.Tasks.Task<string> GetListPostAsync();
+        System.Threading.Tasks.Task<string> GetListPostAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/SaveAvtFile", ReplyAction="http://tempuri.org/IService/SaveAvtFileResponse")]
+        System.Threading.Tasks.Task SaveAvtFileAsync(int uid, byte[] avt);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.3-preview3.21351.2")]
@@ -78,9 +81,14 @@ namespace Services
             return base.Channel.GetDataAsync(value);
         }
         
-        public System.Threading.Tasks.Task<string> GetListPostAsync()
+        public System.Threading.Tasks.Task<string> GetListPostAsync(int id)
         {
-            return base.Channel.GetListPostAsync();
+            return base.Channel.GetListPostAsync(id);
+        }
+        
+        public System.Threading.Tasks.Task SaveAvtFileAsync(int uid, byte[] avt)
+        {
+            return base.Channel.SaveAvtFileAsync(uid, avt);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -111,7 +119,7 @@ namespace Services
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_IService))
             {
-                return new System.ServiceModel.EndpointAddress("http://localhost:62447/Service.svc");
+                return new System.ServiceModel.EndpointAddress("http://localhost:51152/Service.svc");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

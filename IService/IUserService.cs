@@ -14,5 +14,6 @@ namespace demoWebCore_1.IService
         Users LoginAction(string user, string pass);
         DataContext GetDataContext();
         string GetUserName(int id);
+        Users GetUserByID(int id);
     }
 }

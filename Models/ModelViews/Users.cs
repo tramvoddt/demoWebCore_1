@@ -59,5 +59,8 @@ namespace demoWebCore_1.Models.ModelViews
         //status
         [Column("status", TypeName = "bit")]
         public bool status { get; set; }
+        //avt
+        [Column("avt", TypeName = "varbinary")]
+        public byte[] avt { get; set; }
     }
 }

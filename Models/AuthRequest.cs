@@ -12,6 +12,7 @@ namespace demoWebCore_1.Models
         public static int roleId;
         public static string name;
         public static string roleName;
+        public static byte[] avt;
 
         public static List<string> permissions = new List<string>();
 
@@ -56,11 +57,12 @@ namespace demoWebCore_1.Models
             name = null;
             roleName = null;
         }
-        public static void SetCurrent(int Id, int roleID, string _name)
+        public static void SetCurrent(int Id, int roleID, string _name,byte[] avtbyte)
         {
             id = Id;
             roleId = roleID;
             name = _name;
+            avt = avtbyte;
 
         }
       

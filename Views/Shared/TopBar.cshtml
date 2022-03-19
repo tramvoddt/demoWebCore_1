@@ -127,12 +127,12 @@
         if (!event.target.matches('.dropbtnn')) {
             document.getElementById("myDropdown").classList.remove("show");
 
-        }
-        else {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
+        } 
+       
     }
-   
+    $(".dropbtnn").click(function () {
+        document.getElementById("myDropdown").classList.toggle("show");
+    })
     if (@TempData["type"]!= null) {
 
         document.addEventListener("DOMContentLoaded", function (e) {

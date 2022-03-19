@@ -21,11 +21,7 @@ namespace demoWebCore_1.Controllers
             _postService = c;
             _collectService = co;
             _userService = u;
-           /* Services.ServiceClient cli = new Services.ServiceClient();
-            var val = cli.GetListPostAsync();
-            var res = val.Result;
-            List<Post> list = new List<Post>();
-            list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Post>>(res);*/
+           
         }
 
         public IActionResult Index()

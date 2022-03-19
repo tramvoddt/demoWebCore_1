@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -112,13 +113,7 @@ namespace demoWebCore_1.Controllers
                 {
                     var str = JsonConvert.SerializeObject(u);
                     HttpContext.Session.SetString("auth", str);
-                    var str1 = HttpContext.Session.GetString("auth");
-                    var obj = JsonConvert.DeserializeObject<Users>(str1);
-                    AuthRequest.SetCurrent(obj.id, (int)obj.role_id, obj.name);
-                    if (AuthRequest.roleId == 1)
-                    {
-                        return RedirectToAction("Dashboard", "Auth");
-                    }
+                 
                 }
               
             }
@@ -205,9 +200,65 @@ namespace demoWebCore_1.Controllers
         }
             public IActionResult ChangeAvt()
             {
+            if (AuthRequest.id == 0)
+            {
+                return RedirectToAction("Auth", "Auth", new { type = "login" });
+            }
+           
             return View();
             }
+        public List<Post> GetListPost()
+        {
+            Services.ServiceClient cli = new Services.ServiceClient();
+            var val = cli.GetListPostAsync(AuthRequest.id);
+            var res = val.Result;
+            List<Post> list = new List<Post>();
+            list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Post>>(res);
+            return list;
+        }
+        public void SaveAvt(IFormFile f, int postID)
+        {
+            var u = userService.GetDataContext().Users.FirstOrDefault(x => x.id == AuthRequest.id);
+            if (postID == 0)
+            {
+                
+                    using (var ms = new MemoryStream())
+                    {
+                        f.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        u.avt = fileBytes;
+                        
+                    }
 
+            }
+            else
+            {
+                var p = _postService.GetPostByID(postID);
+                u.avt = p.img;
+
+            }
+            AuthRequest.avt = u.avt;
+            Services.ServiceClient cli = new Services.ServiceClient();
+            cli.SaveAvtFileAsync(AuthRequest.id, AuthRequest.avt);
+
+        }
+        public FileContentResult GetAvtFile()
+        {
+           
+            return new FileContentResult(GetImage(Convert.ToBase64String(AuthRequest.avt)), "image/jpg");
+
+        }
+
+
+        public byte[] GetImage(string base64)
+        {
+            byte[] bytes = null;
+            if (!string.IsNullOrEmpty(base64))
+            {
+                bytes = Convert.FromBase64String(base64);
+            }
+            return bytes;
+        }
         //LOGOUT
         public IActionResult ClientLogout()
         {

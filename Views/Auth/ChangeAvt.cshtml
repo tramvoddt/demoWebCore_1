@@ -117,14 +117,19 @@
 <div class="text-center container col-9" style="display:table;min-height: 500px;height:auto; background: #fafafa; padding: 50px 30px; border-radius: 10px; margin: 5vh auto 15vh auto;box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <button id="btnChoose" style="margin-bottom:20px"class="btn-action">Choose from my post</button>
 
-    <div style="display:table-row; height: auto; min-height: 350px; background: none; float: left; " class="col-12">
+    <div style="display:table-row; height: auto; min-height: 280px; background: none; float: left; " class="col-12">
 
         <div id="viewer" class="container">
 
 
-            @if (true)
+            @if (AuthRequest.avt != null)
             {
-                <img id="imgViewer" src="~/lib/imgs/avtdefault.jpg" style="border:none; width:200px;height:200px;margin-bottom:5vh;border-radius:50%;" />
+                <img id="imgViewer" src='@Url.Action("GetAvtFile", "Auth")' style="border:none; width:200px;height:200px;margin-bottom:5vh;border-radius:50%;" />
+            }
+            else
+            {
+                <img id="imgViewer" src='~/lib/imgs/avtdefault.jpg' style="border:none; width:200px;height:200px;margin-bottom:5vh;border-radius:50%;" />
+
             }
             <div id="content">Click or drag to upload</div>
 
@@ -134,9 +139,9 @@
 position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
     </div>
 
-    <div class="col-12 container" style="margin-bottom:20px">
+    <div class="col-12 container" style="float:left;  margin-bottom:20px;height:50px">
 
-        <button id="trashimg" style="width:50px;height:50px;padding:10px; background: rgb(225, 44, 44); border-radius: 50%; border: 0px; font-size: 20px; display: block;" class="container "><i style="color:white;pointer-events:none;font-size:20px" class="fa fa-trash"></i></button>
+        <button id="trashimg" style="width:50px;height:50px;padding:10px; background: rgb(225, 44, 44); border-radius: 50%; border: 0px; font-size: 20px; display: block;" class="container "><i style="color:white;pointer-events:none;font-size:20px; " class="fa fa-trash"></i></button>
 
     </div>
 
@@ -147,7 +152,10 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
 
 </div>
 
-    <script type="text/javascript">
+<script type="text/javascript">
+
+
+    var post_img = 0;
         $(document).ready(function () {
             $("#trashimg").css("display", "none");
 
@@ -155,7 +163,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         $("#trashimg").click(function () {
             $("#imgViewer").attr("src", "/lib/imgs/avtdefault.jpg");
             $("#file-upload").val(null);
-
+            post_img = 0;
             $("#trashimg").css("display", "none");
             document.getElementById("content").innerHTML = "Click or drag to upload";
             $("#content").css("color", "#17bb7e");
@@ -208,31 +216,82 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
                 $("#content").css("color", "#db3e32");
                 $("#content").css("font-weight", "600");
             } else {
+                var formData = new FormData();
+           
+                if (post_img == 0) {
+                    var files = $("#file-upload").prop("files");
+                    formData.append("postID", 0);
 
-            var files = $("#file-upload").prop("files");
-            var formData = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                formData.append("file", files[i]);
+                    for (var i = 0; i < files.length; i++) {
+                        formData.append("f", files[i]);
 
-            }
+                    }
+                } else {
+                    formData.append("postID", post_img);
+                    formData.append("f", null);
+
+                }
 
 
-            @*$.ajax({
+
+            $.ajax({
                 type: "POST",
-                url: "@Url.Action("SavePost", "Post")",
+                url: "@Url.Action("SaveAvt", "Auth")",
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function () {
-                    window.location.href = "@Url.Action("MyAccount", "Auth")";
+                    window.location.reload();
                 },
-                error: function () {
-
-                }
-            });*@
+               
+            });
         }
 
         });
+    $("#btnChoose").click(function () {
+       
+        $("#view-post").css("display", "block");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetListPost", "Auth")",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+
+                var strs = "";
+                for (var i = 0; i < data.length; i++) {
+
+                    strs += '<div class="box-img-post" pimg="pimg-'+data[i].id+'"><img src="/Post/GetImageFile/' + data[i].id + '" class="choose-post" style="border-radius:10px;width:170px;height:auto" /></div>';
+                  
+
+                }
+                  $("#view-post").append('<div id="view-main" class="col" style="width: 75%; height: 550px;overflow-x:scroll;background:rgb(70 127 108 / 0.80); border-radius: 15px 15px 0 0; margin: 2% auto 0 auto;padding:10px">' + strs + '</div><div style="width: 75%; border-radius:0 0 15px 15px;height: 70px; background: rgb(70 127 108/0.85);  margin: auto; padding:10px;text-align:center" class="col-12 container">'
+                    + ' <button id="btnOK" class="btn-action-choose" > OK</button > <button id="btnCancel" class="btn-action-choose">Cancel</button> </div >');
+
+            }
+        });
+    });
+    $('body').delegate('#btnCancel', 'click', function () {
+        CloseView();
+    });
+    $('body').delegate('#btnOK', 'click', function () {
+        if (post_img == 0) { alert("Please choose 1 picture") }
+        else {
+            CloseView();
+
+            $("#imgViewer").attr("src", "/Post/GetImageFile/" + post_img);
+            $("#trashimg").css("display", "block");
+        }
+    });
+   
+    function CloseView() {
+        $("#view-post").empty();
+        $("#view-post").css("display", "none");
+        $("#view-post").height(0);
+
+
+
+    }
     $("#btnCreate").click(function () {
             document.getElementById("name_error").innerHTML = "";
             var _name = $("#txtNameCollect").val();
@@ -287,9 +346,7 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         }
 
     });
-    function CreateCollect(){
-
-    }
+    
     $("#btnRead").click(function () {
         $.ajax({
             type: "GET",
@@ -304,4 +361,33 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
             }
         });
     });
-    </script>
+    $('body').delegate('.box-img-post', 'click', function () {
+            img_post = document.getElementsByClassName("box-img-post");
+            for (var i = 0; i < img_post.length; i++) {
+                $(img_post[i]).children(":first").css("border-color", "#fafafa");
+                $(img_post[i]).find("span").remove();
+                if (img_post[i] == this) {
+                    if ($(this).children(":first").css("border-color") == "rgb(34, 240, 172)") {
+                        $(this).children(":first").css("border-color", "#fafafa");
+                        post_img = 0;
+                        $(this).find("span").remove();
+
+                    } else {
+                        $(this).children(":first").css("border-color", "#22f0ac");
+                        post_img = parseInt($(this).attr("pimg").replace("pimg-", ""));
+                        $(this).append(' <span style="position: absolute;z-index:15; background: #22f0ac; border-radius: 10px 0 50px 0; width: 28px; height: 28px;top:0;padding:2px 5px;font-size:13px"><i class= "fa fa-check" style = "color:white;" ></i> </span >');
+                    }
+                }
+            }
+    });
+    $(".dropbtnn").click(function () {
+        document.getElementById("myDropdown").classList.toggle("show");
+    })
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtnn')) {
+            document.getElementById("myDropdown").classList.remove("show");
+
+        }
+
+    }
+</script>

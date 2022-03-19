@@ -21,10 +21,8 @@ namespace demoWebCore_1.Service
 
             if (d != null && BCrypt.Net.BCrypt.Verify(pass, d.password) == true)
             {
-                Users item = new Users { id = d.id, name = d.name, code = d.code, email = d.email, password = d.password, phone = d.phone, role_id = (int)d.role_id, created_at = (DateTime)d.created_at, status = (bool)d.status };
-                AuthRequest.id = item.id;
-                AuthRequest.name = item.name;
-                AuthRequest.roleId = (int)item.role_id;
+                Users item = new Users { id = d.id, name = d.name, code = d.code, email = d.email, password = d.password, phone = d.phone, role_id = (int)d.role_id, created_at = (DateTime)d.created_at, status = (bool)d.status ,avt=d.avt};
+                AuthRequest.SetCurrent(item.id, (int)item.role_id, item.name, item.avt);
                 return item;
             }
 
@@ -48,6 +46,11 @@ namespace demoWebCore_1.Service
         {
             return ct;
         }
+        public Users GetUserByID(int id)
+        {
+            return ct.Users.FirstOrDefault(x => x.id == id) ?? null;
+        }
+
     }
 
 }
