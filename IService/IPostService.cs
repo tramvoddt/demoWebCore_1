@@ -28,6 +28,8 @@ namespace demoWebCore_1.IService
         void UpdateReport(List<Reports> l, int sts);
 
         List<Reports> GetListReportByListInt(List<int> ls);
-        
+        string CheckSelected(int postID);
+
+
     }
 }

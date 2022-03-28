@@ -23,12 +23,15 @@ namespace demoWebCore_1.Controllers
             _userService = u;
            
         }
-
+        public string CheckSelected(int postID)
+        {
+            return _postService.CheckSelected(postID);
+        }
         public IActionResult Index()
         {
             TempData["type"] = "nav1";
             TempData["listCollect"] = _collectService.GetCollectionByUserID(AuthRequest.id);
-            ViewBag.data = _postService.GetPosts().Where(x=>x.status==true).ToList();
+            ViewBag.data = _postService.GetPosts().Where(x=>x.status==true).Take(20).ToList();
             ViewBag.user = _userService;
             ViewBag.collect = _collectService;
             ViewBag.post = _postService;

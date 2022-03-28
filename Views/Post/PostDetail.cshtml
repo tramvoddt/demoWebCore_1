@@ -698,7 +698,7 @@
                                     }
                         action += ' <span class="span-action delete-span" cid="delete-'+data.id+'">delete</span>';
                     }
-                    $(e).append('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
+                    $(e).append('<div style="width:100%; height:auto;padding:5px 0" id="item-cmt-' + data.id+'"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                         + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name.Substring(0, 1))</span ></span >' +
                         ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
                         ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">@(demoWebCore_1.Models.AuthRequest.id == 0 ? "" : demoWebCore_1.Models.AuthRequest.name)</a>' +
@@ -743,6 +743,7 @@
 
                      if (data == null) {
                          $("#load-more").remove();
+                         count = 0;
                      } else {
                          for (var i = 0; i < data.length; i++) {
                              var dateTimeAgo = "";
@@ -789,7 +790,7 @@
                                     }
                         action += ' <span class="span-action delete-span" cid="delete-'+data[i].id+'">delete</span>';
                     }
-                             $(e).prepend('<div style="width:100%; height:auto;padding:5px 0"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
+                             $(e).prepend('<div style="width:100%; height:auto;padding:5px 0" id="item-cmt-'+data[i].id+'"> <span style="float:left; width:50px;margin-right:0.5vw;padding:10px">'
                                  + '<span style = "padding:9px 15px; border-radius:50%;background:#cad3cc; color:white" >' + user_name.slice(0, 1) + '</span ></span >' +
                                  ' <div style="height:auto;padding:3px 0 3px 15px;width:500px;float:left;background:#eef7f2;border-radius:15px;text-align:left;margin-bottom:10px"><div style="height: 100%; width: 85%; float: left;margin-right:1%">' +
                                  ' <a href="#" style="margin:5px 0 0 0;color:black;font-weight:500">' + user_name + '</a>'
@@ -994,7 +995,6 @@
     $('body').delegate('.delete-span', 'click', function () {
         var cid = $(this).attr("cid").replace("delete-", "");
         $("#confirm-collect").css("display", "block");
-
         $("#btn-confirm").attr("c-id", cid);
 
 
@@ -1020,7 +1020,8 @@
                 contentType: false,
            success: function () {
                ResetConfirm();
-               $("#item-cmt-" + e).remove();
+               document.getElementById("item-cmt-" + e).remove();
+
                 }
             });
     });
@@ -1111,6 +1112,16 @@
 
             }
         });
+    }
+    $(".dropbtnn").click(function () {
+        document.getElementById("myDropdown").classList.toggle("show");
+    })
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtnn')) {
+            document.getElementById("myDropdown").classList.remove("show");
+
+        }
+
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

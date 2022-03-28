@@ -250,7 +250,6 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
         });
     $("#btnChoose").click(function () {
        
-        $("#view-post").css("display", "block");
         $.ajax({
             type: "POST",
             url: "@Url.Action("GetListPost", "Auth")",
@@ -267,9 +266,11 @@ position: absolute; width: 100%; left: 0px; top: 0px; font-size: 0px;">
                 }
                   $("#view-post").append('<div id="view-main" class="col" style="width: 75%; height: 550px;overflow-x:scroll;background:rgb(70 127 108 / 0.80); border-radius: 15px 15px 0 0; margin: 2% auto 0 auto;padding:10px">' + strs + '</div><div style="width: 75%; border-radius:0 0 15px 15px;height: 70px; background: rgb(70 127 108/0.85);  margin: auto; padding:10px;text-align:center" class="col-12 container">'
                     + ' <button id="btnOK" class="btn-action-choose" > OK</button > <button id="btnCancel" class="btn-action-choose">Cancel</button> </div >');
+                $("#view-post").css("display", "block");
 
             }
         });
+
     });
     $('body').delegate('#btnCancel', 'click', function () {
         CloseView();

@@ -225,5 +225,27 @@ namespace demoWebCore_1.Service
             return p;
 
         }
+        public string CheckSelected(int postID)
+        {
+            var q = ct.Collect.Where(x => x.user_id == AuthRequest.id).ToList();
+            var p = ct.Post.FirstOrDefault(x => x.id == postID);
+            string res = "<option style='color:black' value='-1'>Choose</option> <option style='color:black' value='0'>Create</option>";
+            foreach (var item in q)
+            {
+                if((p.collection_id == item.id && p.user_id == AuthRequest.id) || CheckChooseCollection(p.id, item.id))
+                {
+                   res+="<option style='color:black' selected='selected' value="+item.id+">"+item.name +"-"+(item.status == true ? "Private" : "Public")+"</option>'";
+
+                }
+                else
+                {
+                    res += "<option style='color:black' value=" + item.id + ">" + item.name + "-" + (item.status == true ? "Private" : "Public") + "</option>'"; 
+
+
+                }
+            }
+            return res+="</select>";
+              
+        }
     }
 }

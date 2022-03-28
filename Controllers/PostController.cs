@@ -30,7 +30,9 @@ namespace demoWebCore_1.Controllers
         IPostOtherService _postOtherService =null;
         ICommentService _commentService =null;
         IReactService _reactService =null;
-        public static int k;
+        public static int k,j;
+        public static List<Post>[] count= { };
+        public static int c= 1, check=1;
         public PostController(IPostService p,ICollectService c,IPostOtherService po, ICommentService cmt, IReactService r)
         {
             _postService = p;
@@ -126,19 +128,26 @@ namespace demoWebCore_1.Controllers
                 if (q.collection_id != collect_id)
                 {
                     q.collection_id = collect_id;
-                    r.collection_id = collect_id;
-
                     _postService.GetDataContext().SaveChanges();
-                    return true;
+                    
 
-                }
-                else
-                {
-                    return false;
                 }
 
             }
-             _postOtherService.SavePost(new PostOther() { user_id = AuthRequest.id, post_id = post_id, collection_id = collect_id, created_at=DateTime.Now });
+            else if (r != null)
+            {
+                if (r.collection_id != collect_id)
+                {
+                    r.collection_id = collect_id;
+                    _postService.GetDataContext().SaveChanges();
+                   
+
+                }
+            }
+            if (r == null && q == null)
+            {
+                _postOtherService.SavePost(new PostOther() { user_id = AuthRequest.id, post_id = post_id, collection_id = collect_id, created_at = DateTime.Now });
+            }
             return true;
 
         }
@@ -172,13 +181,15 @@ namespace demoWebCore_1.Controllers
             using (WebClient webClient = new WebClient())
             {
                 string val = "http://localhost:20194/Post/GetImageFile?id="+id;
+                var w = _postService.GetPostByID(id).subject.Replace(" ","-")+"-";
+
                 byte[] data = webClient.DownloadData(val);
 
                 using (MemoryStream mem = new MemoryStream(data))
                 {
                     using (var yourImage = Image.FromStream(mem))
                     {
-                        string download = Environment.GetEnvironmentVariable("USERPROFILE") + @"\" + "Downloads" + @"\" + Helpers.RandomCode() + ".jpg";
+                        string download = Environment.GetEnvironmentVariable("USERPROFILE") + @"\" + "Downloads" + @"\" +w+ Helpers.RandomCode() + ".jpg";
                         yourImage.Save(download, ImageFormat.Jpeg);
                     }
                 }
@@ -227,7 +238,9 @@ namespace demoWebCore_1.Controllers
         {
             try
             {
-                _commentService.Delete(id);
+                var c=_commentService.GetDataContext().Comment.FirstOrDefault(x=>x.id==id);
+                c.status = true;
+                _commentService.GetDataContext().SaveChanges();
                 return true;
             }
             catch (Exception)
@@ -269,6 +282,45 @@ namespace demoWebCore_1.Controllers
         {
             List<Reports> l = _postService.GetListReportByListInt(ls);
             _postService.UpdateReport(l, sts);
+        }
+        public List<Post> LazyLoadPost()
+        {
+           
+                var skip = _postService.GetPosts().Count - c * 20;
+                int take = 20;
+                if (skip < 0)
+                {
+                    if (j == 0)
+                    {
+                        j++;
+                        take = skip + 15;
+                    }
+                    else if (j == 1) { return null; }
+
+                }
+                var ls = _postService.GetPosts().Where(x => x.status == true).Skip(skip).Take(take).ToList();
+                if (!CheckLoad(ls))
+                {
+                    count.Append(ls);
+                    c++;
+                    return ls;
+                }
+            return null;
+
+        }
+        public bool CheckLoad(List<Post> ls)
+        {
+            
+            foreach (var item in count)
+            {
+                if (item == ls)
+                {
+                    return true;
+                   
+                }
+
+            }
+            return false;
         }
     }
 }
