@@ -286,26 +286,11 @@ namespace demoWebCore_1.Controllers
         public List<Post> LazyLoadPost()
         {
            
-                var skip = _postService.GetPosts().Count - c * 20;
+                var skip =  c * 20;
                 int take = 20;
-                if (skip < 0)
-                {
-                    if (j == 0)
-                    {
-                        j++;
-                        take = skip + 15;
-                    }
-                    else if (j == 1) { return null; }
-
-                }
-                var ls = _postService.GetPosts().Where(x => x.status == true).Skip(skip).Take(take).ToList();
-                if (!CheckLoad(ls))
-                {
-                    count.Append(ls);
-                    c++;
-                    return ls;
-                }
-            return null;
+            c++;
+                var ls= _postService.GetPosts().Where(x => x.status == true).Skip(skip).Take(take).ToList();
+            return ls;
 
         }
         public bool CheckLoad(List<Post> ls)

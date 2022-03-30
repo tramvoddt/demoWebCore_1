@@ -184,6 +184,7 @@
 
 
 </div>
+<div class="col-12" id="loading" style="margin-top:-100px;height:100px;text-align:center; color:white;font-size:20px;"><span style="background: #ec584c; padding: 15px 20px;cursor:pointer">Load more</span></div>
 <div class="text-center container col-5" id="create-collect" style="display:none;position:absolute;position:fixed;top:200px; margin-left:30vw; min-height: 320px; z-index: 10; height: auto; background: #136546; padding: 10px 30px; border-radius: 10px; box-shadow: 1px 1px 30px 10px rgb(245 237 232 / 0.35)">
     <div style="width:100%;text-align:left; padding-bottom:20px;">
         <label class="col-5" style="font-size:25px;font-weight:700;color:white;padding:0">Create collection</label>
@@ -208,44 +209,60 @@
 <script type="text/javascript">
     var count = [0];
     var e = 0;
-    $(window).scroll(function () {
+    
+
+    $("#loading").click(function () {
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("LazyLoadPost", "Post")",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.length == 0) {
+                    $("#loading").css("display", "none");
+
+                }
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        console.log(data[i].subject)
+                        var res = CheckSelected(data[i].id);
+                        console.log("res: " + res);
+                        var strs = "";
+                        if (data[i].url.length >= 16 && data[i].url != "") {
+                            strs = '<div class="url_" style="bottom:10px;position:absolute;margin-left:10px"> <button id="redirect-' + data[i].id + '" style="padding:0 10px;float:left" class="btn-redirect"> <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i> ' + data[i].url.slice(8, 16) + '</button> </div>'
+                        }
+                        $("#container").append('<div class="box-img" ><img src="/Post/GetImageFile/' + data[i].id + '"/> <div class="action">' +
+                            '<div class="content" style="height:15%;"><select class="drop form-control  col-7 select-' + data[i].id + '" style="float:left;border:none;background:transparent; color:white;">' +
+                            res + '<button class="btnSavePost col-4" id="' + data[i].id + '" onclick="SavePost(this.id)">Save</button></div>'
+                            + '<div class="redirect-detail" style="height:72%"   pid="item-' + data[i].id + '"></div>' +
+                            strs + '</div> <a style="color:#1f6231;"> <span style="float:left;width:100%;font-weight:600;padding-left:5px ;">' + data[i].subject + '</span> </a></div>');
+
+                    }
+                }
+
+
+            }
+
+        });
+
+
+
+    });
+
+
+   @* $(window).scroll(function () {
         console.log(parseInt($(window).scrollTop()) + " " + ($(document).height() - $(window).height() - 500));
-        if (parseInt($(window).scrollTop()) == $(document).height() - $(window).height() - 500 ) {
-             $.ajax({
-                            type: "POST",
-                            url: "@Url.Action("LazyLoadPost", "Post")",
-                            processData: false,
-                            contentType: false,
-                 success: function (data) {
-                      
-                     console.log(data);
-                     if (data != null) {
-                         for (var i = 0; i < data.length; i++) {
-                             console.log(data[i].subject)
-                             var res = CheckSelected(data[i].id);
-                             console.log("res: "+res);
-                             var strs = "";
-                             if (data[i].url.length >= 16 && data[i].url != "") {
-                                 strs = '<div class="url_" style="bottom:10px;position:absolute;margin-left:10px"> <button id="redirect-' + data[i].id + '" style="padding:0 10px;float:left" class="btn-redirect"> <i style="pointer-events:none;margin-right:0.5vw;" class="fa fa-arrow-right"></i> ' + data[i].url.slice(8, 16) + '</button> </div>'
-                             }
-                             $("#container").append('<div class="box-img" ><img src="/Post/GetImageFile/' + data[i].id + '"/> <div class="action">' +
-                                 '<div class="content" style="height:15%;"><select class="drop form-control  col-7 select-' + data[i].id + '" style="float:left;border:none;background:transparent; color:white;">' +
-                                 res + '<button class="btnSavePost col-4" id="' + data[i].id + '" onclick="SavePost(this.id)">Save</button></div>'
-                                 + '<div class="redirect-detail" style="height:72%"   pid="item-' + data[i].id + '"></div>' +
-                                 strs + '</div> <a style="color:#1f6231;"> <span style="float:left;width:100%;font-weight:600;padding-left:5px ;">' + data[i].subject + '</span> </a></div>');
+        if (parseInt($(window).scrollTop()) >= $(document).height() - $(window).height() - 500) {
+            $("#loading").css("display", "block");
+            sleep(500);
 
-                         }
-                     }
-
-
-                 }
-
-             });
 
         }
 
 
-    });
+    });*@
+
     function sleep(delay) {
         var start = new Date().getTime();
         while (new Date().getTime() < start + delay);
@@ -404,7 +421,5 @@
         $('#status-collect').prop('checked', false);
         document.getElementById("create-collect").classList.toggle("show-create");
         $(".main-post").css("pointer-events", "inherit");
-
-
     }
 </script>
