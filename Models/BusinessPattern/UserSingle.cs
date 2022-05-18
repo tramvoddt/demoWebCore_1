@@ -10,6 +10,8 @@ namespace demoWebCore_1.Models.BusinessPattern
     public class UserSingle // AuthController
     {
         private static UserSingle _UserSingle = null;
+        private readonly DataContext ct;
+
 
         private UserSingle()
 
